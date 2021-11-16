@@ -27,11 +27,12 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <ListView layoutX="-24.0" layoutY="26.0" prefHeight="340.0" prefWidth="152.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
-                  <HBox layoutX="-36.0" layoutY="-21.0" prefHeight="27.0" prefWidth="152.0" spacing="30.0" AnchorPane.bottomAnchor="339.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ListView layoutX="-24.0" layoutY="20.0" prefHeight="346.0" prefWidth="152.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
+                  <HBox layoutX="-36.0" layoutY="-21.0" prefHeight="27.0" prefWidth="152.0" spacing="25.0" AnchorPane.bottomAnchor="339.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Index" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" Index" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Trend" />
                      </children>
                   </HBox>
                </children></AnchorPane>
@@ -42,12 +43,15 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <SplitPane dividerPositions="0.5147392290249433" layoutX="102.0" layoutY="-35.0" prefHeight="113.0" prefWidth="443.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-                                </items>
-                              </SplitPane>
+                              <HBox layoutX="19.0" layoutY="-25.0" prefHeight="17.0" prefWidth="438.0" spacing="50.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="  Pattern Name" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Profit Loss" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End" />
+                                 </children>
+                              </HBox>
+                              <ListView prefHeight="113.0" prefWidth="438.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
                            </children>
                         </AnchorPane>
                     </items>
