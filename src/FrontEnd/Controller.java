@@ -28,20 +28,17 @@ public class Controller implements Initializable {
     private TableColumn<Market, String> trendColumn;
 
     private ArrayList<Market> marketsData = new ArrayList<>();
+    ObservableList<Market> markets = FXCollections.observableArrayList();
 
     public Controller(ArrayList<Market> marketsData) {
         this.marketsData = marketsData;
     }
 
-//    public void setMarketsData(ArrayList<Market> marketsData) {
-//        this.marketsData = marketsData;
-//    }
-//
-//    public ArrayList<Market> getMarketsData() {
-//        return this.marketsData;
-//    }
-
-
+    //Method to show the chart that gets clicked on the table
+    @FXML void showChart() {
+        Market selectedMarket = marketsTableView.getSelectionModel().getSelectedItem();
+        System.out.println(selectedMarket.getIndex());
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,8 +53,6 @@ public class Controller implements Initializable {
 
     //Method to get markets
     public ObservableList<Market> getMarkets() {
-        ObservableList<Market> markets = FXCollections.observableArrayList();
-
         for (int i = 0; i < marketsData.size(); i++) {
             markets.add(new Market(marketsData.get(i).getIndex(),
                     marketsData.get(i).getStatus(), marketsData.get(i).getTrend()));
@@ -65,6 +60,4 @@ public class Controller implements Initializable {
 
         return markets;
     }
-
-
 }

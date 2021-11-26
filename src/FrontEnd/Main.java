@@ -21,13 +21,12 @@ public class Main extends Application {
     private ArrayList<Market> markets = new ArrayList<>();
 
 
-
     public void start2() {
-
 
         //loader here
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("ssss"));
+        loader.setLocation(Main.class.getResource("homeScreen.fxml"));
+
     }
 
     //
