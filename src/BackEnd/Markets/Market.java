@@ -2,6 +2,8 @@ package BackEnd.Markets;
 
 import javafx.beans.property.SimpleStringProperty;
 
+import java.util.ArrayList;
+
 public class Market {
     private String index;
     private MarketTrend trend;
@@ -10,6 +12,13 @@ public class Market {
     private static CandleStickChart oneHourCandleStickChart;
     private static CandleStickChart fourHourCandleStickChart;
     private static CandleStickChart dayCandleStickChart;
+
+    private ArrayList<MarketValues> oneHourValues = new ArrayList<>();
+    private ArrayList<MarketValues> fourHourValues = new ArrayList<>();
+    private ArrayList<MarketValues> oneDayValues = new ArrayList<>();
+
+
+
 
     //Data columns for tables
     private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
@@ -30,9 +39,33 @@ public class Market {
     //Method to determine what chart to create under what time frame
     public static void createCandleStickChart() {
         //Find excel file, pass through here to
-        oneHourCandleStickChart = new CandleStickChart();
-        fourHourCandleStickChart = new CandleStickChart();
-        dayCandleStickChart = new CandleStickChart();
+//        oneHourCandleStickChart = new CandleStickChart();
+//        fourHourCandleStickChart = new CandleStickChart();
+//        dayCandleStickChart = new CandleStickChart();
+    }
+
+    public static CandleStickChart getOneHourCandleStickChart() {
+        return oneHourCandleStickChart;
+    }
+
+    public static void setOneHourCandleStickChart(CandleStickChart oneHourCandleStickChart) {
+        Market.oneHourCandleStickChart = oneHourCandleStickChart;
+    }
+
+    public static CandleStickChart getFourHourCandleStickChart() {
+        return fourHourCandleStickChart;
+    }
+
+    public static void setFourHourCandleStickChart(CandleStickChart fourHourCandleStickChart) {
+        Market.fourHourCandleStickChart = fourHourCandleStickChart;
+    }
+
+    public static CandleStickChart getDayCandleStickChart() {
+        return dayCandleStickChart;
+    }
+
+    public static void setDayCandleStickChart(CandleStickChart dayCandleStickChart) {
+        Market.dayCandleStickChart = dayCandleStickChart;
     }
 
     //Table columns
@@ -104,5 +137,59 @@ public class Market {
 
     public void setCurrentTimeFrame(MarketTimeframe currentTimeFrame) {
         this.currentTimeFrame = currentTimeFrame;
+    }
+
+    //setters and getters for market values
+    public ArrayList<MarketValues> getOneHourValues() {
+        return oneHourValues;
+    }
+
+    public void addOneHourValues(float open, float close, float high, float low) {
+        oneHourValues.add(new MarketValues(open, close, high, low));
+    }
+
+    public ArrayList<MarketValues> getFourHourValues() {
+        return fourHourValues;
+    }
+
+    public void addFourHourValues(float open, float close, float high, float low) {
+        fourHourValues.add(new MarketValues(open, close, high, low));
+    }
+
+    public ArrayList<MarketValues> getOneDayValues() {
+        return oneDayValues;
+    }
+
+    public void addOneDayValues(float open, float close, float high, float low) {
+        oneDayValues.add(new MarketValues(open, close, high, low));
+    }
+
+    //Class to store the values
+    public static class MarketValues {
+        private float open;
+        private float close;
+        private float high;
+        private float low;
+
+        public MarketValues(float open, float close, float high, float low) {
+            this.open = open;
+            this.close = close;
+            this.high = high;
+            this.low = low;
+        }
+
+        public float getOpen() { return open; }
+
+        public float getClose() {
+            return close;
+        }
+
+        public float getHigh() {
+            return high;
+        }
+
+        public float getLow() {
+            return low;
+        }
     }
 }
