@@ -1,29 +1,22 @@
 package FrontEnd;
 
-import BackEnd.Markets.CandleStickChart;
 import BackEnd.Markets.Market;
 import BackEnd.Markets.MarketTrend;
 import BackEnd.Markets.Status;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
 import java.io.*;
-import java.util.Iterator;
 
 //
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main extends Application {
 
