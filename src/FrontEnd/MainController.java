@@ -1,6 +1,7 @@
 package FrontEnd;
 
 import BackEnd.markets.Market;
+import BackEnd.patterns.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,6 +34,12 @@ public class MainController implements Initializable {
     private TableColumn<Market, String> statusColumn;
     @FXML
     private TableColumn<Market, String> trendColumn;
+
+    /**
+     * Table and column definitions to display pattern recognition.
+     */
+    @FXML
+    private TableView<Patterns> patternsTableView;
 
     /** Holder for chart views to switch in. */
     @FXML
@@ -70,6 +77,10 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML void loadNews(){
+        System.out.println("Load news");
+    }
+
     /**
      * Initialise the columns within table.
      * @param location
@@ -80,6 +91,9 @@ public class MainController implements Initializable {
         indexColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableIndexColumn"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableStatusColumn"));
         trendColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableTrendColumn"));
+
+        marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     public void setMarkets(ArrayList<Market> markets) { this.marketsData = markets; }

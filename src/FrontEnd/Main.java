@@ -41,6 +41,7 @@ public class Main extends Application {
         stage.setTitle("Atkex");
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
+
         //stage.setMaximized(true);
 
         loadSaveData();
@@ -68,6 +69,8 @@ public class Main extends Application {
                 )
         );
 
+        mainPane.setPrefHeight(600);
+        mainPane.setPrefWidth(900);
         MainController mainController = loader.getController();
 
         ChartSelector.setMainController(mainController);
