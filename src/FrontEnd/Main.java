@@ -3,12 +3,22 @@ package FrontEnd;
 import BackEnd.Markets.Market;
 import BackEnd.Markets.MarketTrend;
 import BackEnd.Markets.Status;
+import BackEnd.chart.CandleStickChart;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 
 import java.io.*;
@@ -24,21 +34,50 @@ public class Main extends Application {
     private String rawDataLocation = "Resources/MarketsRawData";
     private final String rawDataFileType = ".csv";
 
+    @Override
+    public void start(Stage stage) throws Exception{
+        stage.setTitle("Atkex");
+        stage.getIcons().add(new Image("img/AtkexLogo.png"));
+        stage.setResizable(true);
+        //stage.setMaximized(true);
 
-    public void start2() {
-
-        System.out.println(markets.get(5).getOneHourValues().get(0).getOpen());
-        System.out.println(markets.get(5).getOneDayValues().get(0).getOpen());
-
-        //loader here
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("homeScreen.fxml"));
-
+        loadSaveData();
+        stage.setScene(
+                createScene(
+                        loadMainPane()
+                )
+        );
+        stage.show();
     }
 
+    private Pane loadMainPane() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        Pane mainPane = (Pane) loader.load(
+                getClass().getResourceAsStream(
+                        "homeScreen.fxml"
+                )
+        );
 
-    public void saveMarkets(String location) {
+        Controller controller = loader.getController();
 
+        ChartSelector.setMainController(controller);
+
+        createCharts();
+        controller.setMarkets(markets);
+
+        return mainPane;
+    }
+
+    private Scene createScene(Pane mainPane) {
+        Scene scene = new Scene(
+                mainPane
+        );
+
+        scene.getStylesheets().setAll(
+                getClass().getResource("CandleStickChartStyles.css").toExternalForm()
+        );
+
+        return scene;
     }
 
     public void loadSaveData() {
@@ -46,10 +85,14 @@ public class Main extends Application {
         String fourHourSuffix = ", 240" + rawDataFileType;
         String oneDaySuffix = ", 1D" + rawDataFileType;
 
+        //Find number of markets
+        File directoryP = new File("Resources/MarketsRawData");
+        String contents[] = directoryP.list();
+
         //Loop repeats for number of markets in folder
-        for (int i = 0; i < markets.size(); i++) {
+        for (int i = 0; i < contents.length; i++) {
             //Get index and make array of directory for markets
-            String index = markets.get(i).getIndex();
+            String index = contents[i];
             File directoryPath = new File("Resources/MarketsRawData/" + index);
             String marketsList[] = directoryPath.list();
 
@@ -66,8 +109,8 @@ public class Main extends Application {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
                                 markets.get(i).addOneHourValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[2]), Float.parseFloat(values[3]),
-                                        Float.parseFloat(values[4]));
+                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                        Float.parseFloat(values[3]));
 
                                 //create candlestick charts here
                                 //CandleStickChart bc = new CandleStickChart()
@@ -87,8 +130,8 @@ public class Main extends Application {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
                                 markets.get(i).addFourHourValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[2]), Float.parseFloat(values[3]),
-                                        Float.parseFloat(values[4]));
+                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                        Float.parseFloat(values[3]));
 
                                 //create candlestick charts here
                                 //CandleStickChart bc = new CandleStickChart()
@@ -104,12 +147,13 @@ public class Main extends Application {
                     try {
 
                         BufferedReader br = new BufferedReader(new FileReader(path));
+                        markets.add(new Market(index, Status.PENDING, MarketTrend.NO_TREND));
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
                                 markets.get(i).addOneDayValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[2]), Float.parseFloat(values[3]),
-                                        Float.parseFloat(values[4]));
+                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                        Float.parseFloat(values[3]));
 
                                 //create candlestick charts here
                                 //CandleStickChart bc = new CandleStickChart()
@@ -124,34 +168,64 @@ public class Main extends Application {
             }
         }
         System.out.println("Data successfully loaded");
+
     }
 
-    //
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+    private void createCharts() {
+        for (int m = 0; m < markets.size(); m++) {
 
-        String[] contents = getAllIndex();
-        for (int i = 0; i < contents.length; i++) {
-            markets.add(new Market(contents[i], Status.PENDING, MarketTrend.NO_TREND));
+            double xAxisLowerBound = 0;
+            for (int a = 0; a < markets.get(m).getOneDayValues().size(); a++) {
+                if (xAxisLowerBound == 0) {
+                    xAxisLowerBound = markets.get(m).getOneDayValues().get(a).getLow();
+                } else {
+                    if (markets.get(m).getOneDayValues().get(a).getLow() < xAxisLowerBound) {
+                        xAxisLowerBound = markets.get(m).getOneDayValues().get(a).getLow();
+                    }
+                }
+            }
+
+            double xAxisUpperBound = 0;
+            for (int a = 0; a < markets.get(m).getOneDayValues().size(); a++) {
+
+                if (xAxisUpperBound == 0) {
+                    xAxisUpperBound = markets.get(m).getOneDayValues().get(a).getHigh();
+                } else {
+                    if (markets.get(m).getOneDayValues().get(a).getHigh() > xAxisUpperBound) {
+                        xAxisUpperBound = markets.get(m).getOneDayValues().get(a).getHigh();
+                    }
+                }
+            }
+
+            final NumberAxis xAxis = new NumberAxis();
+            final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
+
+            final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
+            // setup chart
+            bc.setTitle(markets.get(m).getIndex() + " Chart");
+            xAxis.setLabel("Day");
+            yAxis.setLabel("Price");
+            // add starting data
+            XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+
+            for (int i = 0; i < markets.get(m).getOneDayValues().size(); i++) {
+                series.getData().add(
+                        new XYChart.Data<Number, Number>(i, markets.get(m).getOneDayValues().get(i).getOpen(),
+                                new CandleStickChart.CandleStickExtraValues(
+                                        markets.get(m).getOneDayValues().get(i).getClose(),
+                                        markets.get(m).getOneDayValues().get(i).getHigh(),
+                                        markets.get(m).getOneDayValues().get(i).getLow()))
+                );
+            }
+            ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
+            if (chartData == null) {
+                chartData = FXCollections.observableArrayList(series);
+                bc.setData(chartData);
+            } else {
+                bc.getData().add(series);
+            }
+            markets.get(m).setDayCandleStickChart(bc);
         }
-
-        Controller controller = new Controller(markets);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("homeScreen.fxml"));
-        loader.setController(controller);
-
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        //primaryStage.setMaximized(true);
-        primaryStage.setTitle("Atkex");
-        primaryStage.getIcons().add(new Image("img/AtkexLogo.png"));
-        primaryStage.setResizable(true);
-        primaryStage.show();
-
-        loadSaveData();
-        start2();
-
-
     }
 
     public static String[] getAllIndex() {

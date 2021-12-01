@@ -12,7 +12,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
-import BackEnd.chart.node.Candle;
 
 
 import java.util.ArrayList;
@@ -20,21 +19,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-
-//These classes store the data to be displayed to the UI and the values to be used within the algorithms for pattern recognition
+//These classes store the data to be displayed to the UI
 public class CandleStickChart<X, Y> extends XYChart<X, Y> {
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private String label;
 
     //copied
-    private static final double DEFAULT_CANDLE_WIDTH = 20d;
+    private static final double DEFAULT_CANDLE_WIDTH = 5d;
     private double candleWidth;//TODO Try to calculate candle width
     private ObservableList<Data<X, Y>> horizontalMarkers;
 
     public CandleStickChart(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
-        getStylesheets().add(getClass().getResource("/styles/CandleStickChartStyles.css").toExternalForm());
+        getStylesheets().add(getClass().getResource("/FrontEnd/CandleStickChartStyles.css").toExternalForm());
         candleWidth = DEFAULT_CANDLE_WIDTH;
         horizontalMarkers = FXCollections.observableArrayList();
         horizontalMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());

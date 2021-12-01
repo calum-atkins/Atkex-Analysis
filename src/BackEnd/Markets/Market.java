@@ -1,5 +1,6 @@
 package BackEnd.Markets;
 
+import BackEnd.chart.CandleStickChart;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ public class Market {
     private MarketTimeframe currentTimeFrame = MarketTimeframe.DAY;
     private static CandleStickChart oneHourCandleStickChart;
     private static CandleStickChart fourHourCandleStickChart;
-    private static CandleStickChart dayCandleStickChart;
+    private CandleStickChart dayCandleStickChart;
+
 
     private ArrayList<MarketValues> oneHourValues = new ArrayList<>();
     private ArrayList<MarketValues> fourHourValues = new ArrayList<>();
@@ -34,6 +36,7 @@ public class Market {
         this.tableTrendColumn = new SimpleStringProperty(trend.toString());
 
     }
+
 
 
     //Method to determine what chart to create under what time frame
@@ -60,84 +63,50 @@ public class Market {
         Market.fourHourCandleStickChart = fourHourCandleStickChart;
     }
 
-    public static CandleStickChart getDayCandleStickChart() {
+    public CandleStickChart getDayCandleStickChart() {
         return dayCandleStickChart;
     }
 
-    public static void setDayCandleStickChart(CandleStickChart dayCandleStickChart) {
-        Market.dayCandleStickChart = dayCandleStickChart;
+    public void setDayCandleStickChart(CandleStickChart dayCandleStickChart) {
+        this.dayCandleStickChart = dayCandleStickChart;
     }
 
     //Table columns
-    public String getTableIndexColumn() {
-        return tableIndexColumn.get();
-    }
+    public String getTableIndexColumn() { return tableIndexColumn.get(); }
 
-    public SimpleStringProperty tableIndexColumnProperty() {
-        return tableIndexColumn;
-    }
+    public SimpleStringProperty tableIndexColumnProperty() { return tableIndexColumn; }
 
-    public void setTableIndexColumn(String tableIndexColumn) {
-        this.tableIndexColumn.set(tableIndexColumn);
-    }
+    public void setTableIndexColumn(String tableIndexColumn) { this.tableIndexColumn.set(tableIndexColumn); }
 
-    public String getTableStatusColumn() {
-        return tableStatusColumn.get();
-    }
+    public String getTableStatusColumn() { return tableStatusColumn.get(); }
 
-    public SimpleStringProperty tableStatusColumnProperty() {
-        return tableStatusColumn;
-    }
+    public SimpleStringProperty tableStatusColumnProperty() { return tableStatusColumn; }
 
-    public void setTableStatusColumn(String tableStatusColumn) {
-        this.tableStatusColumn.set(tableStatusColumn);
-    }
+    public void setTableStatusColumn(String tableStatusColumn) { this.tableStatusColumn.set(tableStatusColumn); }
 
-    public String getTableTrendColumn() {
-        return tableTrendColumn.get();
-    }
+    public String getTableTrendColumn() { return tableTrendColumn.get(); }
 
-    public SimpleStringProperty tableTrendColumnProperty() {
-        return tableTrendColumn;
-    }
+    public SimpleStringProperty tableTrendColumnProperty() { return tableTrendColumn; }
 
-    public void setTableTrendColumn(String tableTrendColumn) {
-        this.tableTrendColumn.set(tableTrendColumn);
-    }
+    public void setTableTrendColumn(String tableTrendColumn) { this.tableTrendColumn.set(tableTrendColumn); }
 
-    //here
 
-    public String getIndex() {
-        return index;
-    }
 
-    public void setIndex(String index) {
-        this.index = index;
-    }
+    public String getIndex() { return index; }
 
-    public MarketTrend getTrend() {
-        return trend;
-    }
+    public void setIndex(String index) { this.index = index; }
 
-    public void setTrend(MarketTrend trend) {
-        this.trend = trend;
-    }
+    public MarketTrend getTrend() {return trend; }
 
-    public Status getStatus() {
-        return status;
-    }
+    public void setTrend(MarketTrend trend) { this.trend = trend; }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    public Status getStatus() { return status; }
 
-    public MarketTimeframe getCurrentTimeFrame() {
-        return currentTimeFrame;
-    }
+    public void setStatus(Status status) { this.status = status; }
 
-    public void setCurrentTimeFrame(MarketTimeframe currentTimeFrame) {
-        this.currentTimeFrame = currentTimeFrame;
-    }
+    public MarketTimeframe getCurrentTimeFrame() { return currentTimeFrame; }
+
+    public void setCurrentTimeFrame(MarketTimeframe currentTimeFrame) { this.currentTimeFrame = currentTimeFrame; }
 
     //setters and getters for market values
     public ArrayList<MarketValues> getOneHourValues() {
@@ -166,30 +135,24 @@ public class Market {
 
     //Class to store the values
     public static class MarketValues {
-        private float open;
-        private float close;
-        private float high;
-        private float low;
+        private double open;
+        private double close;
+        private double high;
+        private double low;
 
-        public MarketValues(float open, float close, float high, float low) {
+        public MarketValues(double open, double close, double high, double low) {
             this.open = open;
             this.close = close;
             this.high = high;
             this.low = low;
         }
 
-        public float getOpen() { return open; }
+        public double getOpen() { return open; }
 
-        public float getClose() {
-            return close;
-        }
+        public double getClose() { return close; }
 
-        public float getHigh() {
-            return high;
-        }
+        public double getHigh() { return high; }
 
-        public float getLow() {
-            return low;
-        }
+        public double getLow() { return low; }
     }
 }
