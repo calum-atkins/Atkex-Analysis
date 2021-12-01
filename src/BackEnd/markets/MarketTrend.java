@@ -1,5 +1,8 @@
-package BackEnd.Markets;
+package BackEnd.markets;
 
+/**
+ * Market trend of a market.
+ */
 public enum MarketTrend {
     UP,
     DOWN,

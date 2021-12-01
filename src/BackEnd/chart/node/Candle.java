@@ -4,7 +4,10 @@ import javafx.scene.Group;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 
-
+/**
+ * This class is used to create each candle within
+ * a chart to be displayed to the UI.
+ */
 public class Candle extends Group {
     private Line highLowLine = new Line();
     private Region bar = new Region();

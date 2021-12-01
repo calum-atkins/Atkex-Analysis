@@ -1,24 +1,19 @@
 package FrontEnd;
 
-import BackEnd.Markets.Market;
-import BackEnd.Markets.MarketTrend;
-import BackEnd.Markets.Status;
+import BackEnd.markets.Market;
+import BackEnd.markets.MarketTrend;
+import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 
 import java.io.*;
@@ -28,13 +23,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The main application class
+ */
 public class Main extends Application {
 
+    /** Array list to store data on all markets. */
     private ArrayList<Market> markets = new ArrayList<>();
-    private String rawDataLocation = "Resources/MarketsRawData";
+
+    /** Constant variables for convenient use */
+    private final String rawDataLocation = "resources/marketsRawData";
     private final String rawDataFileType = ".csv";
 
-
+    /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
         stage.setTitle("Atkex");
@@ -51,6 +52,14 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Loads the main pane for the UI.
+     * Sets up chart selector switching the markets chart.
+     * Creates all the charts that can be displayed.
+     *
+     * @return the loaded pane.
+     * @throws IOException if the pane could not be loaded.
+     */
     private Pane loadMainPane() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         Pane mainPane = (Pane) loader.load(
@@ -59,42 +68,52 @@ public class Main extends Application {
                 )
         );
 
-        Controller controller = loader.getController();
+        MainController mainController = loader.getController();
 
-        ChartSelector.setMainController(controller);
+        ChartSelector.setMainController(mainController);
 
         createCharts();
-        controller.setMarkets(markets);
+        mainController.setMarkets(markets);
 
         return mainPane;
     }
 
+    /**
+     * Creates the main application screen.
+     *
+     * @param mainPane the main application layout.
+     * @return the created scene.
+     */
     private Scene createScene(Pane mainPane) {
         Scene scene = new Scene(
                 mainPane
         );
 
         scene.getStylesheets().setAll(
-                getClass().getResource("CandleStickChartStyles.css").toExternalForm()
+                getClass().getResource("MainApplication.css").toExternalForm()
         );
 
         return scene;
     }
 
+    /**
+     * Loads raw market data into an array list of Market objects.
+     *
+     * Assigns open, close, high and low prices to the array.
+     */
     public void loadSaveData() {
         String oneHourSuffix = ", 60" + rawDataFileType;
         String fourHourSuffix = ", 240" + rawDataFileType;
         String oneDaySuffix = ", 1D" + rawDataFileType;
 
         //Find number of markets
-        File directoryP = new File("Resources/MarketsRawData");
+        File directoryP = new File(rawDataLocation);
         String contents[] = directoryP.list();
 
         //Loop repeats for number of markets in folder
         for (int i = 0; i < contents.length; i++) {
-            //Get index and make array of directory for markets
             String index = contents[i];
-            File directoryPath = new File("Resources/MarketsRawData/" + index);
+            File directoryPath = new File(rawDataLocation + "/" + index);
             String marketsList[] = directoryPath.list();
 
             String line = "";
@@ -104,17 +123,16 @@ public class Main extends Application {
                 if (marketsList[j].equals(index + oneHourSuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
                     try {
-
-                        BufferedReader br = new BufferedReader(new FileReader(path));
+                        BufferedReader br = new BufferedReader(
+                                new FileReader(path));
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
-                                markets.get(i).addOneHourValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                markets.get(i).addOneHourValues(
+                                        Float.parseFloat(values[1]),
+                                        Float.parseFloat(values[4]),
+                                        Float.parseFloat(values[2]),
                                         Float.parseFloat(values[3]));
-
-                                //create candlestick charts here
-                                //CandleStickChart bc = new CandleStickChart()
                             }
                         }
                     } catch (FileNotFoundException e) {
@@ -125,17 +143,16 @@ public class Main extends Application {
                 } else if (marketsList[j].equals(index + fourHourSuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
                     try {
-
-                        BufferedReader br = new BufferedReader(new FileReader(path));
+                        BufferedReader br = new BufferedReader(
+                                new FileReader(path));
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
-                                markets.get(i).addFourHourValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                markets.get(i).addFourHourValues(
+                                        Float.parseFloat(values[1]),
+                                        Float.parseFloat(values[4]),
+                                        Float.parseFloat(values[2]),
                                         Float.parseFloat(values[3]));
-
-                                //create candlestick charts here
-                                //CandleStickChart bc = new CandleStickChart()
                             }
                         }
                     } catch (FileNotFoundException e) {
@@ -146,18 +163,17 @@ public class Main extends Application {
                 } else if (marketsList[j].equals(index + oneDaySuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix;
                     try {
-
-                        BufferedReader br = new BufferedReader(new FileReader(path));
+                        BufferedReader br = new BufferedReader(
+                                new FileReader(path));
                         markets.add(new Market(index, Status.PENDING, MarketTrend.NO_TREND));
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
-                                markets.get(i).addOneDayValues(Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]), Float.parseFloat(values[2]),
+                                markets.get(i).addOneDayValues(
+                                        Float.parseFloat(values[1]),
+                                        Float.parseFloat(values[4]),
+                                        Float.parseFloat(values[2]),
                                         Float.parseFloat(values[3]));
-
-                                //create candlestick charts here
-                                //CandleStickChart bc = new CandleStickChart()
                             }
                         }
                     } catch (FileNotFoundException e) {
@@ -168,10 +184,13 @@ public class Main extends Application {
                 }
             }
         }
-        System.out.println("Data successfully loaded");
-
     }
 
+    /**
+     * Creates all charts necessary to be displayed.
+     * Adds all charts the the array list.
+     *
+     */
     private void createCharts() {
         for (int m = 0; m < markets.size(); m++) {
 
@@ -211,7 +230,8 @@ public class Main extends Application {
 
             for (int i = 0; i < markets.get(m).getOneDayValues().size(); i++) {
                 series.getData().add(
-                        new XYChart.Data<Number, Number>(i, markets.get(m).getOneDayValues().get(i).getOpen(),
+                        new XYChart.Data<Number, Number>(i,
+                                markets.get(m).getOneDayValues().get(i).getOpen(),
                                 new CandleStickChart.CandleStickExtraValues(
                                         markets.get(m).getOneDayValues().get(i).getClose(),
                                         markets.get(m).getOneDayValues().get(i).getHigh(),
@@ -229,22 +249,16 @@ public class Main extends Application {
         }
     }
 
-    public static String[] getAllIndex() {
-        File directoryPath = new File("Resources/MarketsRawData");
-        String contents[] = directoryPath.list();
+    /**
+     *
+     * @return markets array list.
+     */
+    public ArrayList<Market> getMarkets() { return markets; }
 
-        return contents;
-    }
+    /**
+     * @param markets array list.
+     */
+    public void setMarkets(ArrayList<Market> markets) { this.markets = markets; }
 
-    public ArrayList<Market> getMarkets() {
-        return markets;
-    }
-
-    public void setMarkets(ArrayList<Market> markets) {
-        this.markets = markets;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args); }
 }

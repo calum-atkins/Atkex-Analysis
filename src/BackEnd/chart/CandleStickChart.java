@@ -19,15 +19,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-//These classes store the data to be displayed to the UI
+/**
+ * These classes store the data to be displayed to the UI
+ */
+
 public class CandleStickChart<X, Y> extends XYChart<X, Y> {
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private String label;
 
-    //copied
     private static final double DEFAULT_CANDLE_WIDTH = 5d;
-    private double candleWidth;//TODO Try to calculate candle width
+    private double candleWidth;
     private ObservableList<Data<X, Y>> horizontalMarkers;
 
     public CandleStickChart(Axis<X> xAxis, Axis<Y> yAxis) {
@@ -255,11 +257,9 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         public Y getClose() {
             return close;
         }
-
         public Y getHigh() {
             return high;
         }
-
         public Y getLow() {
             return low;
         }

@@ -1,4 +1,4 @@
-package BackEnd.Patterns;
+package BackEnd.patterns;
 
 public class AscendingTriangle extends Patterns {
 }
