@@ -34,6 +34,7 @@ public class Main extends Application {
     private String rawDataLocation = "Resources/MarketsRawData";
     private final String rawDataFileType = ".csv";
 
+
     @Override
     public void start(Stage stage) throws Exception{
         stage.setTitle("Atkex");
