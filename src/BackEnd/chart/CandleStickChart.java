@@ -34,7 +34,7 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
 
     public CandleStickChart(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
-        getStylesheets().add(getClass().getResource("/FrontEnd/CandleStickChartStyles.css").toExternalForm());
+        getStylesheets().add(getClass().getResource("/FrontEnd/styles/CandleStickChartStyles.css").toExternalForm());
         candleWidth = DEFAULT_CANDLE_WIDTH;
         horizontalMarkers = FXCollections.observableArrayList();
         horizontalMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());

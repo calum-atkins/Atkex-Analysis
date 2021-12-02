@@ -77,10 +77,6 @@ public class MainController implements Initializable {
         }
     }
 
-    @FXML void loadNews(){
-        System.out.println("Load news");
-    }
-
     /**
      * Initialise the columns within table.
      * @param location

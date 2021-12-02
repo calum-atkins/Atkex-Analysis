@@ -38,7 +38,7 @@ public class Main extends Application {
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
-        stage.setTitle("Atkex");
+//        stage.setTitle("Atkex");
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
 
@@ -93,7 +93,7 @@ public class Main extends Application {
         );
 
         scene.getStylesheets().setAll(
-                getClass().getResource("MainApplication.css").toExternalForm()
+                getClass().getResource("styles/MainApplication.css").toExternalForm()
         );
 
         return scene;

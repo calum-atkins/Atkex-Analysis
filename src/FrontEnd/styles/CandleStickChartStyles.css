@@ -54,9 +54,9 @@ limitations under the License.
 }
 
 .axis {
-    -fx-text-fill: #FFFFFF;
-    -fx-font-color: #FFFFFF;
-    -fx-tick-label-fill: #FFFFFF;
+    -fx-text-fill: #000000;
+    -fx-font-color: #000000;
+    -fx-tick-label-fill: #000000;
     -fx-font-size: 18pt;
     -fx-font-family: "Segoe UI Light";
     -fx-tick-length: 20;
@@ -64,21 +64,21 @@ limitations under the License.
 }
 
 .chart-title {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #000000;
     -fx-font-size: 20pt;
     -fx-font-family: "Segoe UI Light";
 }
 
 .axis-label {
-    -fx-text-fill: #462300;
+    -fx-text-fill: #000000;
 }
 
 .axis-tick-mark {
-    -fx-stroke: #637040;
+    -fx-stroke: #657F92;
     -fx-stroke-width: 3;
 }
 .axis-minor-tick-mark {
-    -fx-stroke: #859656;
+    -fx-stroke: #657F92;
 }
 
 /*{
@@ -86,11 +86,11 @@ limitations under the License.
 }
 */
 .chart {
-    -fx-background-color: #657F92;
+    -fx-background-color: #c3c6c9;
 }
 .fx-background-color {
-    -fx-background-color: red;
+    -fx-background-color: #D6D6D6;
 }
 .chart-plot-background {
-    -fx-background-color: rgb(0,0,0,0.25);
+    -fx-background-color: #8293ad;
 }
