@@ -12,7 +12,8 @@ public class Market {
     private MarketTrend trend;
     private Status status;
     private MarketTimeframe currentTimeFrame = MarketTimeframe.DAY;
-
+    private int segment;
+    private double range;
 
     /**
      * Three candle stick charts for each time frame.
@@ -145,8 +146,13 @@ public class Market {
     }
 
     public void addPattern(Pattern p) {
-
     }
+
+    public int getSegment() { return segment; }
+    public void setSegment(int segment) { this.segment = segment; }
+
+    public double getRange() { return range; }
+    public void setRange(double range) { this.range = range; }
 
     /**
      * This class is used to create a single candle with each of its four necessary prices.

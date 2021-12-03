@@ -37,6 +37,7 @@ public class Main extends Application {
     /** Constant variables for convenient use */
     private final String rawDataLocation = "resources/marketsRawData";
     private final String rawDataFileType = ".csv";
+    private final String marketPreferences = "resources/marketPreferences/preferences.csv";
 
     /** start method to initialise application */
     @Override
@@ -47,13 +48,59 @@ public class Main extends Application {
 
         //stage.setMaximized(true);
 
+        /** Load market data */
         loadSaveData();
+
+        /** Load segment and range */
+        loadSegmentRange();
+
+        /** Generate Resistance/support */
+
+
+        /** Generate Trend */
+
+
+        /** Generate Patterns */
+
+
+        /** Load stage */
         stage.setScene(
                 createScene(
                         loadMainPane()
                 )
         );
         stage.show();
+    }
+
+    /**
+     * Method to laod segment and range preferences for support and resistance.
+     */
+    private void loadSegmentRange() {
+        String line = "";
+        try {
+            int j = 1;
+            BufferedReader br = new BufferedReader(
+                    new FileReader(marketPreferences));
+            while ((line = br.readLine()) != null) {
+                if (!line.equals("index,segments,range")) {
+
+                    String[] values = line.split(",");
+                    for (int i = 0; i < markets.size();i++) {
+                        if (values[0].equals(markets.get(i).getIndex())) {
+                            j++;
+                            markets.get(i).setSegment(Integer.parseInt(values[1]));
+
+                            markets.get(i).setRange(Double.parseDouble(values[2]));
+                        }
+                    }
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -118,12 +165,13 @@ public class Main extends Application {
 
         //Loop repeats for number of markets in folder
         for (int i = 0; i < contents.length; i++) {
+
             String index = contents[i];
             File directoryPath = new File(rawDataLocation + "/" + index);
             String marketsList[] = directoryPath.list();
 
             String line = "";
-            //Loop to repeat for three timeframes
+            /** Loop to repeat for three time frames and add values and store them */
             for (int j = 0; j < 3; j++) {
                 String path = null;
                 if (marketsList[j].equals(index + oneHourSuffix)) {
@@ -146,10 +194,7 @@ public class Main extends Application {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    /** Generate Patterns Here */
 
-
-                    /** -------------------------------------------------------------------------------------- */
                     //System.out.println(markets.get(i).getOneHourValues().size());
                     for (int k = 0; k < markets.size(); k++) {
                         //System.out.println(markets.get(i).getOneHourValues().get(k).getOpen());
@@ -207,8 +252,10 @@ public class Main extends Application {
                         e.printStackTrace();
                     }
                 }
+                findSegmentRange(markets.get(i).getIndex(), i);
             }
         }
+//        System.out.println(markets.get(0).getSegment());
     }
 
     /**
@@ -417,6 +464,28 @@ public class Main extends Application {
         return xAxisUpperBound;
     }
 
+    public void findSegmentRange(String index, int i) {
+//        File file = new File(marketPreferences);
+//        String line = "";
+//        try {
+//            BufferedReader br = new BufferedReader(
+//                    new FileReader(marketPreferences));
+//            while ((line = br.readLine()) != null) {
+//                if (!line.equals("index,segments,range")) {
+//                    String[] values = line.split(",");
+//                    System.out.println(values[0]);
+//                    if (values[0].equals(index)) {
+//                        markets.get(i).setSegment(Integer.parseInt(values[1]));
+//                        markets.get(i).setRange(Double.parseDouble(values[2]));
+//                    }
+//                }
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 
     /**
      *
