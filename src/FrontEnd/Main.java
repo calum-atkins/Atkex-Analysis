@@ -4,6 +4,8 @@ import BackEnd.markets.Market;
 import BackEnd.markets.MarketTrend;
 import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
+import BackEnd.patternRecognition.algorithms.criticalLevels;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ import java.io.*;
 //
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -143,6 +146,25 @@ public class Main extends Application {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    /** Generate Patterns Here */
+
+
+                    /** -------------------------------------------------------------------------------------- */
+                    //System.out.println(markets.get(i).getOneHourValues().size());
+                    for (int k = 0; k < markets.size(); k++) {
+                        //System.out.println(markets.get(i).getOneHourValues().get(k).getOpen());
+                    }
+                    //Generate Resistance/Support here, use a method
+
+                    if (markets.get(i).getIndex().equals("CADJPY")) {
+                        System.out.println("Working");
+                        markets.get(i).addOneHourSR(87);
+                        markets.get(i).addOneHourSR(88.5);
+                    }
+                    ArrayList<Double> oneHourSRList = criticalLevels.start(markets.get(i));
+                    markets.get(i).setOneHourSR(new ArrayList<Double>());
+
+
                 } else if (marketsList[j].equals(index + fourHourSuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
                     try {
@@ -253,6 +275,12 @@ public class Main extends Application {
             bc.getData().add(series);
         }
 
+        //Add resistance/support here
+        XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, 25);
+        bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
+
+
+
         return bc;
     }
 
@@ -293,6 +321,16 @@ public class Main extends Application {
             bc.setData(chartData);
         } else {
             bc.getData().add(series);
+        }
+
+        /** Add resistance/support here */
+        if (market.getIndex().equals("CADJPY")) {
+            System.out.println("Working");
+            for (int s = 0; s < market.getOneHourSR().size(); s++) {
+                XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourSR().get(s));
+                bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
+
+            }
         }
 
         return bc;

@@ -1,15 +1,18 @@
 package BackEnd.markets;
 
 import BackEnd.chart.CandleStickChart;
+import BackEnd.patternRecognition.Patterns;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Market {
     private String index;
     private MarketTrend trend;
     private Status status;
     private MarketTimeframe currentTimeFrame = MarketTimeframe.DAY;
+
 
     /**
      * Three candle stick charts for each time frame.
@@ -24,6 +27,12 @@ public class Market {
     private ArrayList<MarketValues> oneHourValues = new ArrayList<>();
     private ArrayList<MarketValues> fourHourValues = new ArrayList<>();
     private ArrayList<MarketValues> oneDayValues = new ArrayList<>();
+
+    private ArrayList<Double> oneHourSR = new ArrayList<>();
+    private ArrayList<Double> fourHourSR;
+    private ArrayList<Double> oneDaySR;
+
+    private Patterns patternsList;
 
     /**
      * Data columns for table.
@@ -124,6 +133,21 @@ public class Market {
         oneDayValues.add(new MarketValues(open, close, high, low));
     }
 
+    public void addOneHourSR(double value) {
+        oneHourSR.add(value);
+    }
+
+    public ArrayList<Double> getOneHourSR() {
+        return oneHourSR;
+    }
+    public void setOneHourSR(ArrayList<Double> oneHSR) {
+        this.oneHourSR = oneHSR;
+    }
+
+    public void addPattern(Pattern p) {
+
+    }
+
     /**
      * This class is used to create a single candle with each of its four necessary prices.
      */
@@ -132,6 +156,7 @@ public class Market {
         private double close;
         private double high;
         private double low;
+
 
         public MarketValues(double open, double close, double high, double low) {
             this.open = open;
@@ -144,5 +169,35 @@ public class Market {
         public double getClose() { return close; }
         public double getHigh() { return high; }
         public double getLow() { return low; }
+
     }
+
+    /**
+     * Class to store the support/resistance levels
+     */
+//    public static class SupportResistance {
+//        private double firstResistance;
+//        private double secondResistance;
+//        private double firstSupport;
+//        private double secondSupport;
+//
+//        public SupportResistance(double firstR, double secondR, double firstS, double secondS) {
+//            this.firstResistance = firstR;
+//            this.secondResistance = secondR;
+//            this.firstSupport = firstS;
+//            this.secondSupport = secondS;
+//        }
+//
+//        public double getFirstResistance() { return firstResistance; }
+//        public void setFirstResistance(double firstResistance) { this.firstResistance = firstResistance; }
+//        public double getSecondResistance() { return secondResistance; }
+//        public void setSecondResistance(double secondResistance) { this.secondResistance = secondResistance; }
+//        public double getFirstSupport() { return firstSupport; }
+//        public void setFirstSupport(double firstSupport) { this.firstSupport = firstSupport; }
+//        public double getSecondSupport() { return secondSupport; }
+//        public void setSecondSupport(double secondSupport) { this.secondSupport = secondSupport; }
+//
+//
+//    }
+
 }

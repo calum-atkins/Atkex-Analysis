@@ -3,13 +3,10 @@ package FrontEnd;
 
 import BackEnd.markets.Market;
 import BackEnd.markets.MarketTimeframe;
-import BackEnd.patterns.Patterns;
+import BackEnd.patternRecognition.Patterns;
 
-import com.sun.javafx.fxml.builder.JavaFXFontBuilder;
-import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -21,11 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
