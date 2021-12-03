@@ -1,20 +1,31 @@
 package FrontEnd;
 
+
 import BackEnd.markets.Market;
+import BackEnd.markets.MarketTimeframe;
 import BackEnd.patterns.Patterns;
+
+import com.sun.javafx.fxml.builder.JavaFXFontBuilder;
+import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -41,6 +52,9 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Patterns> patternsTableView;
 
+    @FXML
+    private ImageView imageViewLogo;
+
     /** Holder for chart views to switch in. */
     @FXML
     private StackPane chartView;
@@ -50,11 +64,18 @@ public class MainController implements Initializable {
     @FXML
     private Button loadDataButton;
 
+    @FXML
+    private ComboBox comboBox;
+
     /** Array list to store market data. */
     private static ArrayList<Market> marketsData = new ArrayList<>();
 
     /** List to display market data to markets table. */
     ObservableList<Market> marketsList = FXCollections.observableArrayList();
+
+    private MarketTimeframe currentTimeframe;
+
+
 
     public MainController() { }
 
@@ -68,11 +89,42 @@ public class MainController implements Initializable {
      */
     @FXML void showChart() {
         Market selectedMarket = marketsTableView.getSelectionModel().getSelectedItem();
-        System.out.println(selectedMarket.getIndex() + " Selected");
+        if (comboBox.getSelectionModel().getSelectedItem() == null) {
+            currentTimeframe = MarketTimeframe.ONE_HOUR;
+        } else {
+            switch (comboBox.getSelectionModel().getSelectedItem().toString()) {
+                case "4h":
+                    currentTimeframe = MarketTimeframe.FOUR_HOUR;
+                    break;
+                case "D":
+                    currentTimeframe = MarketTimeframe.DAY;
+                    break;
+                default:
+                    currentTimeframe = MarketTimeframe.ONE_HOUR;
+                    break;
+            }
+        }
+        if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
+            System.out.println("test");
+            selectedMarket = marketsData.get(0);
+        }
+        System.out.println(selectedMarket.getIndex() + " Selected || " + currentTimeframe.toString() + " Timeframe");
         for (int i = 0; i < marketsData.size();i++) {
             if (marketsData.get(i).getIndex().equals(selectedMarket.getIndex())) {
-                ChartSelector.loadChart(
-                        ChartSelector.getMarkets().get(i).getDayCandleStickChart());
+                switch (currentTimeframe) {
+                    case FOUR_HOUR:
+                        ChartSelector.loadChart(
+                                ChartSelector.getMarkets().get(i).getFourHourCandleStickChart());
+                        break;
+                    case DAY:
+                        ChartSelector.loadChart(
+                                ChartSelector.getMarkets().get(i).getDayCandleStickChart());
+                        break;
+                    default:
+                        ChartSelector.loadChart(
+                                ChartSelector.getMarkets().get(i).getOneHourCandleStickChart());
+                        break;
+                }
             }
         }
     }
@@ -90,6 +142,12 @@ public class MainController implements Initializable {
 
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        comboBox.getItems().add("1h");
+        comboBox.getItems().add("4h");
+        comboBox.getItems().add("D");
+
+        getMarkets();
     }
 
     public void setMarkets(ArrayList<Market> markets) { this.marketsData = markets; }

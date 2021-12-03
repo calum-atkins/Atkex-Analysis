@@ -38,6 +38,18 @@
 
 }
 
+.combo-box {
+   -fx-background-color:#B2B2B2;
+   -fx-border-width: 1, 1,1,1;
+   -fx-border-color: #767676;
+   -fx-background-insets: 0;
+   -fx-text-fill: black;
+   -fx-font-color: black;
+   -fx-font-size: 10pt;
+   -fx-font-family: "Proxima Nova";
+
+}
+
 .split-pane {
 
 }
@@ -57,4 +69,8 @@
 .scroll-pane {
     -fx-background-color:#CCCCCC;
     -fx-color:#CCCCCC;
+}
+
+.anchor-pane {
+    -fx-background-color:#B2B2B2;
 }

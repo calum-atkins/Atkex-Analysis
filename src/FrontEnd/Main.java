@@ -38,7 +38,7 @@ public class Main extends Application {
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
-//        stage.setTitle("Atkex");
+        stage.setTitle("Atkex");
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
 
@@ -196,61 +196,189 @@ public class Main extends Application {
      */
     private void createCharts() {
         for (int m = 0; m < markets.size(); m++) {
-
-            double xAxisLowerBound = 0;
-            for (int a = 0; a < markets.get(m).getOneDayValues().size(); a++) {
-                if (xAxisLowerBound == 0) {
-                    xAxisLowerBound = markets.get(m).getOneDayValues().get(a).getLow();
-                } else {
-                    if (markets.get(m).getOneDayValues().get(a).getLow() < xAxisLowerBound) {
-                        xAxisLowerBound = markets.get(m).getOneDayValues().get(a).getLow();
-                    }
-                }
-            }
-
-            double xAxisUpperBound = 0;
-            for (int a = 0; a < markets.get(m).getOneDayValues().size(); a++) {
-
-                if (xAxisUpperBound == 0) {
-                    xAxisUpperBound = markets.get(m).getOneDayValues().get(a).getHigh();
-                } else {
-                    if (markets.get(m).getOneDayValues().get(a).getHigh() > xAxisUpperBound) {
-                        xAxisUpperBound = markets.get(m).getOneDayValues().get(a).getHigh();
-                    }
-                }
-            }
-
-            final NumberAxis xAxis = new NumberAxis();
-            final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
-
-            final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
-            // setup chart
-            bc.setTitle(markets.get(m).getIndex() + " Chart");
-            xAxis.setLabel("Day");
-            yAxis.setLabel("Price");
-            // add starting data
-            XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
-
-            for (int i = 0; i < markets.get(m).getOneDayValues().size(); i++) {
-                series.getData().add(
-                        new XYChart.Data<Number, Number>(i,
-                                markets.get(m).getOneDayValues().get(i).getOpen(),
-                                new CandleStickChart.CandleStickExtraValues(
-                                        markets.get(m).getOneDayValues().get(i).getClose(),
-                                        markets.get(m).getOneDayValues().get(i).getHigh(),
-                                        markets.get(m).getOneDayValues().get(i).getLow()))
-                );
-            }
-            ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
-            if (chartData == null) {
-                chartData = FXCollections.observableArrayList(series);
-                bc.setData(chartData);
-            } else {
-                bc.getData().add(series);
-            }
-            markets.get(m).setDayCandleStickChart(bc);
+            markets.get(m).setDayCandleStickChart(
+                    createOneDayChart(
+                            markets.get(m)
+                    )
+            );
+            markets.get(m).setOneHourCandleStickChart(
+                    createOneHourChart(
+                            markets.get(m)
+                    )
+            );
+            markets.get(m).setFourHourCandleStickChart(
+                    createFourHourChart(
+                            markets.get(m)
+                    )
+            );
         }
     }
+
+    /**
+     * Method to create a viewable chart for the one day timeframe
+     * @param market The market to base the chart on
+     * @return The created CandleStickChart
+     */
+    public CandleStickChart createOneDayChart(Market market) {
+
+        double xAxisLowerBound = getXAxisLowerBound(market.getOneDayValues());
+        double xAxisUpperBound = getXAxisUpperBound(market.getOneDayValues());
+
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
+
+        final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
+        // setup chart
+        bc.setTitle(market.getIndex() + " Chart");
+        xAxis.setLabel("Day");
+        yAxis.setLabel("Price");
+        // add starting data
+        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+
+        for (int i = 0; i < market.getOneDayValues().size(); i++) {
+            series.getData().add(
+                    new XYChart.Data<Number, Number>(i,
+                            market.getOneDayValues().get(i).getOpen(),
+                            new CandleStickChart.CandleStickExtraValues(
+                                    market.getOneDayValues().get(i).getClose(),
+                                    market.getOneDayValues().get(i).getHigh(),
+                                    market.getOneDayValues().get(i).getLow()))
+            );
+        }
+        ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
+        if (chartData == null) {
+            chartData = FXCollections.observableArrayList(series);
+            bc.setData(chartData);
+        } else {
+            bc.getData().add(series);
+        }
+
+        return bc;
+    }
+
+    /**
+     * Method to create a viewable chart for the one hour timeframe
+     * @param market The market to base the chart on
+     * @return The created CandleStickChart
+     */
+    public CandleStickChart createOneHourChart(Market market) {
+
+        double xAxisLowerBound = getXAxisLowerBound(market.getOneHourValues());
+        double xAxisUpperBound = getXAxisUpperBound(market.getOneHourValues());
+
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
+
+        final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
+        // setup chart
+        bc.setTitle(market.getIndex() + " Chart");
+        xAxis.setLabel("Hourly");
+        yAxis.setLabel("Price");
+        // add starting data
+        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+
+        for (int i = 0; i < market.getOneHourValues().size(); i++) {
+            series.getData().add(
+                    new XYChart.Data<Number, Number>(i,
+                            market.getOneHourValues().get(i).getOpen(),
+                            new CandleStickChart.CandleStickExtraValues(
+                                    market.getOneHourValues().get(i).getClose(),
+                                    market.getOneHourValues().get(i).getHigh(),
+                                    market.getOneHourValues().get(i).getLow()))
+            );
+        }
+        ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
+        if (chartData == null) {
+            chartData = FXCollections.observableArrayList(series);
+            bc.setData(chartData);
+        } else {
+            bc.getData().add(series);
+        }
+
+        return bc;
+    }
+
+    /**
+     * Method to create a viewable chart for the four hour timeframe
+     * @param market The market to base the chart on
+     * @return The created CandleStickChart
+     */
+    public CandleStickChart createFourHourChart(Market market) {
+
+        double xAxisLowerBound = getXAxisLowerBound(market.getFourHourValues());
+        double xAxisUpperBound = getXAxisUpperBound(market.getFourHourValues());
+
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
+
+        final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
+        // setup chart
+        bc.setTitle(market.getIndex() + " Chart");
+        xAxis.setLabel("Four Hourly");
+        yAxis.setLabel("Price");
+        // add starting data
+        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+
+        for (int i = 0; i < market.getFourHourValues().size(); i++) {
+            series.getData().add(
+                    new XYChart.Data<Number, Number>(i,
+                            market.getFourHourValues().get(i).getOpen(),
+                            new CandleStickChart.CandleStickExtraValues(
+                                    market.getFourHourValues().get(i).getClose(),
+                                    market.getFourHourValues().get(i).getHigh(),
+                                    market.getFourHourValues().get(i).getLow()))
+            );
+        }
+        ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
+        if (chartData == null) {
+            chartData = FXCollections.observableArrayList(series);
+            bc.setData(chartData);
+        } else {
+            bc.getData().add(series);
+        }
+
+        return bc;
+    }
+
+    /**
+     * Method to return the lower bound
+     * @param values Market values from the raw data
+     * @return lowest value (swing low)
+     */
+    public double getXAxisLowerBound(ArrayList<Market.MarketValues> values) {
+        double lowerBound = 0;
+        for (int a = 0; a < values.size(); a++) {
+            if (lowerBound == 0) {
+                lowerBound = values.get(a).getLow();
+            } else {
+                if (values.get(a).getLow() < lowerBound) {
+                    lowerBound = values.get(a).getLow();
+                }
+            }
+        }
+        return lowerBound;
+    }
+
+    /**
+     * Method to return the upper bound
+     * @param values Market values from the raw data
+     * @return highest value (swing high)
+     */
+    public double getXAxisUpperBound(ArrayList<Market.MarketValues> values) {
+        double xAxisUpperBound = 0;
+        for (int a = 0; a < values.size(); a++) {
+
+            if (xAxisUpperBound == 0) {
+                xAxisUpperBound = values.get(a).getHigh();
+            } else {
+                if (values.get(a).getHigh() > xAxisUpperBound) {
+                    xAxisUpperBound = values.get(a).getHigh();
+                }
+            }
+        }
+        return xAxisUpperBound;
+    }
+
 
     /**
      *
