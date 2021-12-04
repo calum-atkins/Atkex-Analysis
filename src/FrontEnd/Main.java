@@ -34,6 +34,8 @@ public class Main extends Application {
     /** Array list to store data on all markets. */
     private ArrayList<Market> markets = new ArrayList<>();
 
+
+
     /** Constant variables for convenient use */
     private final String rawDataLocation = "resources/marketsRawData";
     private final String rawDataFileType = ".csv";
@@ -55,9 +57,10 @@ public class Main extends Application {
         loadSegmentRange();
 
         /** Generate Resistance/support */
+        //generateCriticalLevels();
 
+        /** Generate Trends */
 
-        /** Generate Trend */
 
 
         /** Generate Patterns */
@@ -72,8 +75,63 @@ public class Main extends Application {
         stage.show();
     }
 
+    private void generateCriticalLevels() {
+        /**Support/resistance attempt 1*/
+
+        for (Market m : markets) {
+            for (int i = 0; i < 3; i++) {
+                if (i == 0) {
+                    //Find the minimum value
+
+                    ArrayList<Float> arrayOfMin = m.getOneHourData().getMinSegments();
+                    while (!arrayOfMin.isEmpty()) {
+                        //find min
+                        float minOfArray = 0;
+                        ArrayList<Float> supportArray = new ArrayList<Float>();
+                        for (int j = 0; j < m.getOneHourData().getMinSegments().size(); j++) {
+                            if (j == 0) {
+                                minOfArray = m.getOneHourData().getMinSegments().get(j);
+                            } else if (m.getOneHourData().getMinSegments().get(j) < minOfArray) {
+                                minOfArray = m.getOneHourData().getMinSegments().get(j);
+                            }
+                        }
+                        System.out.println("min " + minOfArray);
+                        //Find any in range
+                        for (int j = 0; j < m.getOneHourData().getMinSegments().size(); j++) {
+                            //Remove min value
+                            if (m.getOneHourData().getMinSegments().get(j) == minOfArray) {
+                                arrayOfMin.remove(j);
+                                supportArray.add(minOfArray);
+                            }
+                            if ((m.getOneHourData().getMinSegments().get(j) / minOfArray) < 1.015
+                                    && (m.getOneHourData().getMinSegments().get(j) / minOfArray) > 0.985) {
+                                supportArray.add(m.getOneHourData().getMinSegments().get(j));
+                            } else {
+                                arrayOfMin.remove(j);
+                            }
+                        }
+
+                        float supportLevel = 0;
+                        for (int j = 0; j < supportArray.size(); j++) {
+                            supportLevel += supportArray.get(j);
+                        }
+                        supportLevel /= supportArray.size();
+                        m.getOneHourData().addCriticalLevel(supportLevel);
+                        System.out.println("Here : " + supportLevel);
+                        supportArray = arrayOfMin;
+
+                        int strengthSupport = supportArray.size();
+                        m.getOneHourData().setMinSegments(arrayOfMin);
+                    }
+                }
+                }
+            }
+        }
+
+
+
     /**
-     * Method to laod segment and range preferences for support and resistance.
+     * Method to load segment and range preferences for support and resistance.
      */
     private void loadSegmentRange() {
         String line = "";
@@ -154,6 +212,7 @@ public class Main extends Application {
      *
      * Assigns open, close, high and low prices to the array.
      */
+
     public void loadSaveData() {
         String oneHourSuffix = ", 60" + rawDataFileType;
         String fourHourSuffix = ", 240" + rawDataFileType;
@@ -162,6 +221,9 @@ public class Main extends Application {
         //Find number of markets
         File directoryP = new File(rawDataLocation);
         String contents[] = directoryP.list();
+        for (int b = 0; b < contents.length; b++) {
+            markets.add(new Market(contents[b], Status.PENDING, MarketTrend.NO_TREND));
+        }
 
         //Loop repeats for number of markets in folder
         for (int i = 0; i < contents.length; i++) {
@@ -174,88 +236,84 @@ public class Main extends Application {
             /** Loop to repeat for three time frames and add values and store them */
             for (int j = 0; j < 3; j++) {
                 String path = null;
-                if (marketsList[j].equals(index + oneHourSuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
+                if (marketsList[j].equals(index + oneHourSuffix)) { path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix; }
+                else if (marketsList[j].equals(index + fourHourSuffix)) { path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix; }
+                else if (marketsList[j].equals(index + oneDaySuffix)) { path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix; }
                     try {
                         BufferedReader br = new BufferedReader(
                                 new FileReader(path));
+                        int a = 0;
+                        float min = 0;
+                        float[] valueArray = new float[5];
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
-                                markets.get(i).addOneHourValues(
-                                        Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]),
-                                        Float.parseFloat(values[2]),
-                                        Float.parseFloat(values[3]));
+
+                                if (marketsList[j].equals(index + oneHourSuffix)) {
+                                    markets.get(i).oneHourAddMarketValue(
+                                            new Market.MarketValues(
+                                                    Float.parseFloat(values[1]),
+                                                    Float.parseFloat(values[4]),
+                                                    Float.parseFloat(values[2]),
+                                                    Float.parseFloat(values[3]))
+                                    );
+                                    if (a == 0) {
+                                        min = Float.parseFloat(values[3]);
+                                    } else if (Float.parseFloat(values[3]) < min) {
+                                        min = Float.parseFloat(values[3]);
+                                    }
+                                    a++;
+                                    if (a == 5) {
+                                        a = 0;
+                                        markets.get(i).getOneHourData().addMinSegment(min);
+                                    }
+                                } else if (marketsList[j].equals(index + fourHourSuffix)) {
+
+                                    markets.get(i).fourHourAddMarketValue(
+                                            new Market.MarketValues(
+                                                    Float.parseFloat(values[1]),
+                                                    Float.parseFloat(values[4]),
+                                                    Float.parseFloat(values[2]),
+                                                    Float.parseFloat(values[3]))
+                                    );
+                                    if (a == 0) {
+                                        min = Float.parseFloat(values[3]);
+                                    } else if (Float.parseFloat(values[3]) < min) {
+                                        min = Float.parseFloat(values[3]);
+                                    }
+                                    a++;
+                                    if (a == 5) {
+                                        a = 0;
+                                        markets.get(i).getFourHourData().addMinSegment(min);
+                                    }
+                                } else if (marketsList[j].equals(index + oneDaySuffix)) {
+                                    markets.get(i).dayAddMarketValue(
+                                            new Market.MarketValues(
+                                                    Float.parseFloat(values[1]),
+                                                    Float.parseFloat(values[4]),
+                                                    Float.parseFloat(values[2]),
+                                                    Float.parseFloat(values[3]))
+                                    );
+                                    if (a == 0) {
+                                        min = Float.parseFloat(values[3]);
+                                    } else if (Float.parseFloat(values[3]) < min) {
+                                        min = Float.parseFloat(values[3]);
+                                    }
+                                    a++;
+                                    if (a == 5) {
+                                        a = 0;
+                                        markets.get(i).getOneDayData().addMinSegment(min);
+                                    }
+                                }
                             }
                         }
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-
-                    //System.out.println(markets.get(i).getOneHourValues().size());
-                    for (int k = 0; k < markets.size(); k++) {
-                        //System.out.println(markets.get(i).getOneHourValues().get(k).getOpen());
-                    }
-                    //Generate Resistance/Support here, use a method
-
-                    if (markets.get(i).getIndex().equals("CADJPY")) {
-                        System.out.println("Working");
-                        markets.get(i).addOneHourSR(87);
-                        markets.get(i).addOneHourSR(88.5);
-                    }
-                    ArrayList<Double> oneHourSRList = criticalLevels.start(markets.get(i));
-                    markets.get(i).setOneHourSR(new ArrayList<Double>());
-
-
-                } else if (marketsList[j].equals(index + fourHourSuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
-                    try {
-                        BufferedReader br = new BufferedReader(
-                                new FileReader(path));
-                        while ((line = br.readLine()) != null) {
-                            if (!line.equals("time,open,high,low,close")) {
-                                String[] values = line.split(",");
-                                markets.get(i).addFourHourValues(
-                                        Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]),
-                                        Float.parseFloat(values[2]),
-                                        Float.parseFloat(values[3]));
-                            }
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (marketsList[j].equals(index + oneDaySuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix;
-                    try {
-                        BufferedReader br = new BufferedReader(
-                                new FileReader(path));
-                        markets.add(new Market(index, Status.PENDING, MarketTrend.NO_TREND));
-                        while ((line = br.readLine()) != null) {
-                            if (!line.equals("time,open,high,low,close")) {
-                                String[] values = line.split(",");
-                                markets.get(i).addOneDayValues(
-                                        Float.parseFloat(values[1]),
-                                        Float.parseFloat(values[4]),
-                                        Float.parseFloat(values[2]),
-                                        Float.parseFloat(values[3]));
-                            }
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
-                findSegmentRange(markets.get(i).getIndex(), i);
             }
         }
-//        System.out.println(markets.get(0).getSegment());
     }
 
     /**
@@ -371,10 +429,10 @@ public class Main extends Application {
         }
 
         /** Add resistance/support here */
-        if (market.getIndex().equals("CADJPY")) {
+        if (market.getIndex().equals("AUDCAD")) {
             System.out.println("Working");
-            for (int s = 0; s < market.getOneHourSR().size(); s++) {
-                XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourSR().get(s));
+            for (int s = 0; s < market.getOneHourData().getCriticalLevels().size(); s++) {
+                XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourData().getCriticalLevels().get(s));
                 bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
 
             }
@@ -464,28 +522,6 @@ public class Main extends Application {
         return xAxisUpperBound;
     }
 
-    public void findSegmentRange(String index, int i) {
-//        File file = new File(marketPreferences);
-//        String line = "";
-//        try {
-//            BufferedReader br = new BufferedReader(
-//                    new FileReader(marketPreferences));
-//            while ((line = br.readLine()) != null) {
-//                if (!line.equals("index,segments,range")) {
-//                    String[] values = line.split(",");
-//                    System.out.println(values[0]);
-//                    if (values[0].equals(index)) {
-//                        markets.get(i).setSegment(Integer.parseInt(values[1]));
-//                        markets.get(i).setRange(Double.parseDouble(values[2]));
-//                    }
-//                }
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-    }
 
     /**
      *

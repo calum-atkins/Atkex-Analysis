@@ -18,27 +18,66 @@ public class Market {
     /**
      * Three candle stick charts for each time frame.
      */
-    private CandleStickChart oneHourCandleStickChart;
-    private CandleStickChart fourHourCandleStickChart;
-    private CandleStickChart dayCandleStickChart;
+    private StoreData oneHourData = new StoreData();
+    private StoreData fourHourData = new StoreData();
+    private StoreData oneDayData = new StoreData();
+
+    public StoreData getOneHourData() {
+        return oneHourData;
+    }
+
+    public void setOneHourData(StoreData oneHourData) {
+        this.oneHourData = oneHourData;
+    }
+
+    public StoreData getFourHourData() {
+        return fourHourData;
+    }
+
+    public void setFourHourData(StoreData fourHourData) {
+        this.fourHourData = fourHourData;
+    }
+
+    public StoreData getOneDayData() {
+        return oneDayData;
+    }
+
+    public void setOneDayData(StoreData oneDayData) {
+        this.oneDayData = oneDayData;
+    }
+
+    public int getSegment() {
+        return segment;
+    }
+
+    public void setSegment(int segment) {
+        this.segment = segment;
+    }
 
     /**
      * Array list to store a list of market values.
      */
-    private ArrayList<MarketValues> oneHourValues = new ArrayList<>();
-    private ArrayList<MarketValues> fourHourValues = new ArrayList<>();
-    private ArrayList<MarketValues> oneDayValues = new ArrayList<>();
 
-    private ArrayList<Double> oneHourSR = new ArrayList<>();
-    private ArrayList<Double> fourHourSR;
-    private ArrayList<Double> oneDaySR;
 
-    private Patterns patternsList;
+    private Patterns patternsList;//do same as store data
+//    public ArrayList<Float> getOneHourMinSegments() {
+//        return data;
+//    }
+//
+//    public void addSegment(float f) {
+//        minSegments.add(f);
+//    }
+//
+//    public void setSegments(ArrayList<Float> segments) {
+//        this.minSegments = segments;
+//    }
 
     /**
      * Data columns for table.
      */
     private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
+
+
 
     public Market(String index, Status status, MarketTrend trend) {
         this.index = index;
@@ -55,24 +94,22 @@ public class Market {
      * Setters and getters for the chart created from the market data.
      */
     public CandleStickChart getOneHourCandleStickChart() {
-        return oneHourCandleStickChart;
+        return oneHourData.getCandleStickChart();
     }
     public void setOneHourCandleStickChart(CandleStickChart oneHourCandleStickChart) {
-        this.oneHourCandleStickChart = oneHourCandleStickChart;
+        oneHourData.setCandleStickChart(oneHourCandleStickChart);
     }
 
     public CandleStickChart getFourHourCandleStickChart() {
-        return fourHourCandleStickChart;
+        return fourHourData.getCandleStickChart();
     }
     public void setFourHourCandleStickChart(CandleStickChart fourHourCandleStickChart) {
-        this.fourHourCandleStickChart = fourHourCandleStickChart;
+        fourHourData.setCandleStickChart(fourHourCandleStickChart);
     }
 
-    public CandleStickChart getDayCandleStickChart() {
-        return dayCandleStickChart;
-    }
+    public CandleStickChart getDayCandleStickChart() { return oneDayData.getCandleStickChart(); }
     public void setDayCandleStickChart(CandleStickChart dayCandleStickChart) {
-        this.dayCandleStickChart = dayCandleStickChart;
+        oneDayData.setCandleStickChart(dayCandleStickChart);
     }
 
     /**
@@ -109,9 +146,9 @@ public class Market {
     /**
      * Getters to retrieve markets values for each timeframe.
      */
-    public ArrayList<MarketValues> getOneHourValues() { return oneHourValues; }
-    public ArrayList<MarketValues> getFourHourValues() { return fourHourValues; }
-    public ArrayList<MarketValues> getOneDayValues() { return oneDayValues; }
+    public ArrayList<MarketValues> getOneHourValues() { return oneHourData.getMarketValues(); }
+    public ArrayList<MarketValues> getFourHourValues() { return fourHourData.getMarketValues(); }
+    public ArrayList<MarketValues> getOneDayValues() { return oneDayData.getMarketValues(); }
 
     /**
      * Adders used to add each value(candle) to the specified array list.
@@ -123,33 +160,40 @@ public class Market {
      * @param low   The lowest the price reaches in a single candle.
      */
     public void addOneHourValues(float open, float close, float high, float low) {
-        oneHourValues.add(new MarketValues(open, close, high, low));
+        oneHourData.addMarketValue(new MarketValues(open, close, high, low));
     }
 
     public void addFourHourValues(float open, float close, float high, float low) {
-        fourHourValues.add(new MarketValues(open, close, high, low));
+        fourHourData.addMarketValue(new MarketValues(open, close, high, low));
     }
 
     public void addOneDayValues(float open, float close, float high, float low) {
-        oneDayValues.add(new MarketValues(open, close, high, low));
+        oneDayData.addMarketValue(new MarketValues(open, close, high, low));
     }
 
-    public void addOneHourSR(double value) {
-        oneHourSR.add(value);
+    public void addOneHourCriticalLevel(double value) {
+        oneHourData.addCriticalLevel(value);
     }
-
     public ArrayList<Double> getOneHourSR() {
-        return oneHourSR;
+        return oneHourData.getCriticalLevels();
     }
     public void setOneHourSR(ArrayList<Double> oneHSR) {
-        this.oneHourSR = oneHSR;
+        oneHourData.setCriticalLevels(oneHSR);
     }
 
     public void addPattern(Pattern p) {
     }
 
-    public int getSegment() { return segment; }
-    public void setSegment(int segment) { this.segment = segment; }
+    public void dayAddMarketValue(MarketValues m) {
+        oneDayData.addMarketValue(m);
+    }
+    public void oneHourAddMarketValue(MarketValues m) {
+        oneHourData.addMarketValue(m);
+    }
+    public void fourHourAddMarketValue(MarketValues m) {
+        fourHourData.addMarketValue(m);
+    }
+
 
     public double getRange() { return range; }
     public void setRange(double range) { this.range = range; }
@@ -176,6 +220,32 @@ public class Market {
         public double getHigh() { return high; }
         public double getLow() { return low; }
 
+    }
+
+    public static class StoreData  {
+        private CandleStickChart candleStickChart;
+        private ArrayList<MarketValues> marketValues = new ArrayList<>();
+        private ArrayList<Double> criticalLevels = new ArrayList<>();
+        private ArrayList<Float> minSegments = new ArrayList<Float>();
+
+        public CandleStickChart getCandleStickChart() { return candleStickChart; }
+        public void setCandleStickChart(CandleStickChart candleStickChart) { this.candleStickChart = candleStickChart; }
+        public ArrayList<MarketValues> getMarketValues() { return marketValues; }
+        public void addMarketValue(MarketValues m) {
+            marketValues.add(m);
+        }
+        public void setMarketValues(ArrayList<MarketValues> marketValues) { this.marketValues = marketValues; }
+        public ArrayList<Double> getCriticalLevels() { return criticalLevels; }
+        public void addCriticalLevel(double c) {
+            criticalLevels.add(c);
+        }
+        public void setCriticalLevels(ArrayList<Double> criticalLevels) { this.criticalLevels = criticalLevels; }
+        public ArrayList<Float> getMinSegments() { return minSegments; }
+        public void addMinSegment(float s) {
+            minSegments.add(s);
+        }
+        public void setMinSegments(ArrayList<Float> minSegments) { this.minSegments = minSegments;
+        }
     }
 
     /**
