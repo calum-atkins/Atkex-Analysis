@@ -15,22 +15,17 @@ public class Market {
     private int segment;
     private double lowerRange, upperRange;
 
+
     /**
      * Three candle stick charts for each time frame.
      */
-    private StoreData oneHourData = new StoreData();
-    private StoreData fourHourData = new StoreData();
-    private StoreData oneDayData = new StoreData();
-
     private ArrayList<StoreData> timeframesDataStore = new ArrayList<StoreData>();
 
 
     public StoreData getTimeframesDataStore(int i) {
         return timeframesDataStore.get(i);
     }
-    public void addTimeframesDataStore(StoreData dataStore) {
-        timeframesDataStore.add(dataStore);
-    }
+    public void addTimeframesDataStore(StoreData dataStore) { timeframesDataStore.add(dataStore); }
 
     public void setTimeframesStoreSize(int i) {
         for (int j = 0; j < i; j++) {
@@ -162,6 +157,10 @@ public class Market {
         private ArrayList<Float> minSegments = new ArrayList<>();
         private String filePath;
         private MarketTimeframe timeframe;
+        private double chartYAxisTickValue;
+
+        public double getChartYAxisTickValue() { return chartYAxisTickValue; }
+        public void setChartYAxisTickValue(double chartYAxisTickValue) { this.chartYAxisTickValue = chartYAxisTickValue; }
 
         public MarketTimeframe getTimeframe() { return timeframe; }
         public void setTimeframe(MarketTimeframe timeframe) { this.timeframe = timeframe; }
@@ -188,33 +187,4 @@ public class Market {
         public void setMinSegments(ArrayList<Float> minSegments) { this.minSegments = minSegments;
         }
     }
-
-    /**
-     * Class to store the support/resistance levels
-     */
-//    public static class SupportResistance {
-//        private double firstResistance;
-//        private double secondResistance;
-//        private double firstSupport;
-//        private double secondSupport;
-//
-//        public SupportResistance(double firstR, double secondR, double firstS, double secondS) {
-//            this.firstResistance = firstR;
-//            this.secondResistance = secondR;
-//            this.firstSupport = firstS;
-//            this.secondSupport = secondS;
-//        }
-//
-//        public double getFirstResistance() { return firstResistance; }
-//        public void setFirstResistance(double firstResistance) { this.firstResistance = firstResistance; }
-//        public double getSecondResistance() { return secondResistance; }
-//        public void setSecondResistance(double secondResistance) { this.secondResistance = secondResistance; }
-//        public double getFirstSupport() { return firstSupport; }
-//        public void setFirstSupport(double firstSupport) { this.firstSupport = firstSupport; }
-//        public double getSecondSupport() { return secondSupport; }
-//        public void setSecondSupport(double secondSupport) { this.secondSupport = secondSupport; }
-//
-//
-//    }
-
 }

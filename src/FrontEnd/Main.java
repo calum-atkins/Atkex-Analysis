@@ -35,6 +35,7 @@ public class Main extends Application {
     /** Array list to store data on all markets. */
     private ArrayList<Market> markets = new ArrayList<>();
 
+    /** Variable declaration to hold the number of markets and number of timeframes used */
     private int marketsSize;
     private final int NUMBER_OF_TIMEFRAMES = 3;
 
@@ -49,6 +50,7 @@ public class Main extends Application {
         stage.setTitle("Atkex");
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
+        //stage.setMaximized(true);
 
         /** Load number of markets and initialise array list */
         File directoryP = new File(rawDataLocation);
@@ -59,7 +61,6 @@ public class Main extends Application {
         }
         marketsSize = contents.length;
 
-        //stage.setMaximized(true);
         /** Load segment and range */
         loadSegmentRange();
 
@@ -86,8 +87,6 @@ public class Main extends Application {
     }
 
     private void generateCriticalLevels() {
-        /**Support/resistance attempt 1*/
-
         for (Market m : markets) {
             for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
 
@@ -133,8 +132,6 @@ public class Main extends Application {
             }
         }
     }
-
-
 
     /**
      * Method to load segment and range preferences for support and resistance.
@@ -233,6 +230,8 @@ public class Main extends Application {
             String marketsList[] = directoryPath.list();
 
             String line = "";
+            float minOverall = 0;
+            float maxOverall = 0;
             /** Loop to repeat for three time frames and add values and store them */
             for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
                 String path = null;
@@ -257,6 +256,8 @@ public class Main extends Application {
                         int a = 0;
                         float min = 0;
                         float[] valueArray = new float[markets.get(i).getSegment()];
+                        minOverall = 0;
+                        maxOverall = 0;
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
@@ -267,6 +268,18 @@ public class Main extends Application {
                                                     Float.parseFloat(values[2]),
                                                     Float.parseFloat(values[3]))
                                     );
+
+                                    if (minOverall == 0) {
+                                        minOverall = Float.parseFloat(values[3]);
+                                    } else if (Float.parseFloat(values[3]) < minOverall) {
+                                        minOverall = Float.parseFloat(values[3]);
+                                    }
+                                    if (maxOverall == 0) {
+                                       maxOverall = Float.parseFloat(values[2]);
+                                    } else if (Float.parseFloat(values[2]) > maxOverall) {
+                                        maxOverall = Float.parseFloat(values[2]);
+                                    }
+
                                     if (a == 0) {
                                         min = Float.parseFloat(values[3]);
                                     } else if (Float.parseFloat(values[3]) < min) {
@@ -279,11 +292,13 @@ public class Main extends Application {
                                     }
                             }
                         }
+                        markets.get(i).getTimeframesDataStore(j).setChartYAxisTickValue((maxOverall - minOverall) /10);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                }
+                    }
+
             }
         }
     }
@@ -307,7 +322,7 @@ public class Main extends Application {
         double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
         final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 1000);
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, market.getTimeframesDataStore(j).getChartYAxisTickValue());
 
         final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
         // setup chart
