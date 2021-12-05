@@ -34,7 +34,7 @@ public class Main extends Application {
     /** Array list to store data on all markets. */
     private ArrayList<Market> markets = new ArrayList<>();
 
-
+    private int marketsSize;
 
     /** Constant variables for convenient use */
     private final String rawDataLocation = "resources/marketsRawData";
@@ -48,16 +48,23 @@ public class Main extends Application {
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
 
+        /** Load number of markets and initialise array list */
+        File directoryP = new File(rawDataLocation);
+        String contents[] = directoryP.list();
+        for (int b = 0; b < contents.length; b++) {
+            markets.add(new Market(contents[b], Status.PENDING, MarketTrend.NO_TREND));
+        }
+        marketsSize = contents.length;
+
         //stage.setMaximized(true);
+        /** Load segment and range */
+        loadSegmentRange();
 
         /** Load market data */
         loadSaveData();
 
-        /** Load segment and range */
-        loadSegmentRange();
-
         /** Generate Resistance/support */
-        //generateCriticalLevels();
+        generateCriticalLevels();
 
         /** Generate Trends */
 
@@ -81,33 +88,34 @@ public class Main extends Application {
         for (Market m : markets) {
             for (int i = 0; i < 3; i++) {
                 if (i == 0) {
-                    //Find the minimum value
-
                     ArrayList<Float> arrayOfMin = m.getOneHourData().getMinSegments();
+                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
+                    //Repeat until array is empty
                     while (!arrayOfMin.isEmpty()) {
-                        //find min
+                        ArrayList<Float> arrayToSet = new ArrayList<>();
+
+                        //Find the minimum value
                         float minOfArray = 0;
-                        ArrayList<Float> supportArray = new ArrayList<Float>();
-                        for (int j = 0; j < m.getOneHourData().getMinSegments().size(); j++) {
+                        ArrayList<Float> supportArray = new ArrayList<>();
+                        for (int j = 0; j < arrayOfMin.size(); j++) {
                             if (j == 0) {
-                                minOfArray = m.getOneHourData().getMinSegments().get(j);
-                            } else if (m.getOneHourData().getMinSegments().get(j) < minOfArray) {
-                                minOfArray = m.getOneHourData().getMinSegments().get(j);
+                                minOfArray = arrayOfMin.get(j);
+                            } else if (arrayOfMin.get(j) < minOfArray) {
+                                minOfArray = arrayOfMin.get(j);
                             }
                         }
-                        System.out.println("min " + minOfArray);
+                        //System.out.println("min " + minOfArray);
                         //Find any in range
-                        for (int j = 0; j < m.getOneHourData().getMinSegments().size(); j++) {
+                        int size = arrayOfMin.size();
+                        for (int j = 0; j < size; j++) {
                             //Remove min value
-                            if (m.getOneHourData().getMinSegments().get(j) == minOfArray) {
-                                arrayOfMin.remove(j);
+                            if (arrayOfMin.get(j) == minOfArray) {
                                 supportArray.add(minOfArray);
-                            }
-                            if ((m.getOneHourData().getMinSegments().get(j) / minOfArray) < 1.015
-                                    && (m.getOneHourData().getMinSegments().get(j) / minOfArray) > 0.985) {
-                                supportArray.add(m.getOneHourData().getMinSegments().get(j));
+                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
+                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
+                                supportArray.add(arrayOfMin.get(j));
                             } else {
-                                arrayOfMin.remove(j);
+                                arrayToSet.add(arrayOfMin.get(j));
                             }
                         }
 
@@ -117,16 +125,107 @@ public class Main extends Application {
                         }
                         supportLevel /= supportArray.size();
                         m.getOneHourData().addCriticalLevel(supportLevel);
-                        System.out.println("Here : " + supportLevel);
-                        supportArray = arrayOfMin;
+                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
+                        //supportArray = arrayOfMin;
 
-                        int strengthSupport = supportArray.size();
-                        m.getOneHourData().setMinSegments(arrayOfMin);
+                        //int strengthSupport = supportArray.size();
+                        //m.getOneHourData().setMinSegments(arrayOfMin);
+                        arrayOfMin = arrayToSet;
                     }
-                }
+                } else if (i == 1) {
+                    ArrayList<Float> arrayOfMin = m.getFourHourData().getMinSegments();
+                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
+                    //Repeat until array is empty
+                    while (!arrayOfMin.isEmpty()) {
+                        ArrayList<Float> arrayToSet = new ArrayList<>();
+
+                        //Find the minimum value
+                        float minOfArray = 0;
+                        ArrayList<Float> supportArray = new ArrayList<>();
+                        for (int j = 0; j < arrayOfMin.size(); j++) {
+                            if (j == 0) {
+                                minOfArray = arrayOfMin.get(j);
+                            } else if (arrayOfMin.get(j) < minOfArray) {
+                                minOfArray = arrayOfMin.get(j);
+                            }
+                        }
+                        //System.out.println("min " + minOfArray);
+                        //Find any in range
+                        int size = arrayOfMin.size();
+                        for (int j = 0; j < size; j++) {
+                            //Remove min value
+                            if (arrayOfMin.get(j) == minOfArray) {
+                                supportArray.add(minOfArray);
+                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
+                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
+                                supportArray.add(arrayOfMin.get(j));
+                            } else {
+                                arrayToSet.add(arrayOfMin.get(j));
+                            }
+                        }
+
+                        float supportLevel = 0;
+                        for (int j = 0; j < supportArray.size(); j++) {
+                            supportLevel += supportArray.get(j);
+                        }
+                        supportLevel /= supportArray.size();
+                        m.getFourHourData().addCriticalLevel(supportLevel);
+                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
+                        //supportArray = arrayOfMin;
+
+                        //int strengthSupport = supportArray.size();
+                        //m.getOneHourData().setMinSegments(arrayOfMin);
+                        arrayOfMin = arrayToSet;
+                    }
+                } else if (i == 2) {
+                    ArrayList<Float> arrayOfMin = m.getOneDayData().getMinSegments();
+                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
+                    //Repeat until array is empty
+                    while (!arrayOfMin.isEmpty()) {
+                        ArrayList<Float> arrayToSet = new ArrayList<>();
+
+                        //Find the minimum value
+                        float minOfArray = 0;
+                        ArrayList<Float> supportArray = new ArrayList<>();
+                        for (int j = 0; j < arrayOfMin.size(); j++) {
+                            if (j == 0) {
+                                minOfArray = arrayOfMin.get(j);
+                            } else if (arrayOfMin.get(j) < minOfArray) {
+                                minOfArray = arrayOfMin.get(j);
+                            }
+                        }
+                        //System.out.println("min " + minOfArray);
+                        //Find any in range
+                        int size = arrayOfMin.size();
+                        for (int j = 0; j < size; j++) {
+                            //Remove min value
+                            if (arrayOfMin.get(j) == minOfArray) {
+                                supportArray.add(minOfArray);
+                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
+                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
+                                supportArray.add(arrayOfMin.get(j));
+                            } else {
+                                arrayToSet.add(arrayOfMin.get(j));
+                            }
+                        }
+
+                        float supportLevel = 0;
+                        for (int j = 0; j < supportArray.size(); j++) {
+                            supportLevel += supportArray.get(j);
+                        }
+                        supportLevel /= supportArray.size();
+                        m.getOneDayData().addCriticalLevel(supportLevel);
+                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
+                        //supportArray = arrayOfMin;
+
+                        //int strengthSupport = supportArray.size();
+                        //m.getOneHourData().setMinSegments(arrayOfMin);
+                        arrayOfMin = arrayToSet;
+                    }
                 }
             }
         }
+    }
 
 
 
@@ -143,12 +242,13 @@ public class Main extends Application {
                 if (!line.equals("index,segments,range")) {
 
                     String[] values = line.split(",");
-                    for (int i = 0; i < markets.size();i++) {
+                    for (int i = 0; i < marketsSize;i++) {
                         if (values[0].equals(markets.get(i).getIndex())) {
                             j++;
                             markets.get(i).setSegment(Integer.parseInt(values[1]));
 
-                            markets.get(i).setRange(Double.parseDouble(values[2]));
+                            markets.get(i).setLowerRange(Double.parseDouble(values[2]));
+                            markets.get(i).setUpperRange(Double.parseDouble(values[2]));
                         }
                     }
                 }
@@ -218,17 +318,10 @@ public class Main extends Application {
         String fourHourSuffix = ", 240" + rawDataFileType;
         String oneDaySuffix = ", 1D" + rawDataFileType;
 
-        //Find number of markets
-        File directoryP = new File(rawDataLocation);
-        String contents[] = directoryP.list();
-        for (int b = 0; b < contents.length; b++) {
-            markets.add(new Market(contents[b], Status.PENDING, MarketTrend.NO_TREND));
-        }
-
         //Loop repeats for number of markets in folder
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 0; i < marketsSize; i++) {
 
-            String index = contents[i];
+            String index = markets.get(i).getIndex();
             File directoryPath = new File(rawDataLocation + "/" + index);
             String marketsList[] = directoryPath.list();
 
@@ -244,7 +337,8 @@ public class Main extends Application {
                                 new FileReader(path));
                         int a = 0;
                         float min = 0;
-                        float[] valueArray = new float[5];
+                        System.out.println(markets.get(i).getSegment());
+                        float[] valueArray = new float[markets.get(i).getSegment()];
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
@@ -263,7 +357,7 @@ public class Main extends Application {
                                         min = Float.parseFloat(values[3]);
                                     }
                                     a++;
-                                    if (a == 5) {
+                                    if (a == markets.get(i).getSegment()) {
                                         a = 0;
                                         markets.get(i).getOneHourData().addMinSegment(min);
                                     }
@@ -282,7 +376,7 @@ public class Main extends Application {
                                         min = Float.parseFloat(values[3]);
                                     }
                                     a++;
-                                    if (a == 5) {
+                                    if (a == markets.get(i).getSegment()) {
                                         a = 0;
                                         markets.get(i).getFourHourData().addMinSegment(min);
                                     }
@@ -300,7 +394,7 @@ public class Main extends Application {
                                         min = Float.parseFloat(values[3]);
                                     }
                                     a++;
-                                    if (a == 5) {
+                                    if (a == markets.get(i).getSegment()) {
                                         a = 0;
                                         markets.get(i).getOneDayData().addMinSegment(min);
                                     }
@@ -381,8 +475,10 @@ public class Main extends Application {
         }
 
         //Add resistance/support here
-        XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, 25);
-        bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
+        for (int s = 0; s < market.getOneDayData().getCriticalLevels().size(); s++) {
+            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneDayData().getCriticalLevels().get(s));
+            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
+        }
 
 
 
@@ -429,13 +525,9 @@ public class Main extends Application {
         }
 
         /** Add resistance/support here */
-        if (market.getIndex().equals("AUDCAD")) {
-            System.out.println("Working");
-            for (int s = 0; s < market.getOneHourData().getCriticalLevels().size(); s++) {
-                XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourData().getCriticalLevels().get(s));
-                bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
-
-            }
+        for (int s = 0; s < market.getOneHourData().getCriticalLevels().size(); s++) {
+            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourData().getCriticalLevels().get(s));
+            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
         }
 
         return bc;
@@ -478,6 +570,12 @@ public class Main extends Application {
             bc.setData(chartData);
         } else {
             bc.getData().add(series);
+        }
+
+        //Add resistance/support here
+        for (int s = 0; s < market.getFourHourData().getCriticalLevels().size(); s++) {
+            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getFourHourData().getCriticalLevels().get(s));
+            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
         }
 
         return bc;
