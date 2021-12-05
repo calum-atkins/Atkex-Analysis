@@ -106,15 +106,15 @@ public class MainController implements Initializable {
                 switch (currentTimeframe) {
                     case FOUR_HOUR:
                         ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getFourHourCandleStickChart());
+                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
                         break;
                     case DAY:
                         ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getDayCandleStickChart());
+                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
                         break;
                     default:
                         ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getOneHourCandleStickChart());
+                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
                         break;
                 }
             }

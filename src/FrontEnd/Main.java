@@ -1,6 +1,7 @@
 package FrontEnd;
 
 import BackEnd.markets.Market;
+import BackEnd.markets.MarketTimeframe;
 import BackEnd.markets.MarketTrend;
 import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
@@ -35,6 +36,7 @@ public class Main extends Application {
     private ArrayList<Market> markets = new ArrayList<>();
 
     private int marketsSize;
+    private final int NUMBER_OF_TIMEFRAMES = 3;
 
     /** Constant variables for convenient use */
     private final String rawDataLocation = "resources/marketsRawData";
@@ -53,6 +55,7 @@ public class Main extends Application {
         String contents[] = directoryP.list();
         for (int b = 0; b < contents.length; b++) {
             markets.add(new Market(contents[b], Status.PENDING, MarketTrend.NO_TREND));
+            markets.get(b).setTimeframesStoreSize(NUMBER_OF_TIMEFRAMES);
         }
         marketsSize = contents.length;
 
@@ -86,9 +89,9 @@ public class Main extends Application {
         /**Support/resistance attempt 1*/
 
         for (Market m : markets) {
-            for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-                    ArrayList<Float> arrayOfMin = m.getOneHourData().getMinSegments();
+            for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
+
+                    ArrayList<Float> arrayOfMin = m.getTimeframesDataStore(i).getMinSegments();
                     int[][] supportLevelStrength = new int[arrayOfMin.size()][];
                     //Repeat until array is empty
                     while (!arrayOfMin.isEmpty()) {
@@ -104,7 +107,6 @@ public class Main extends Application {
                                 minOfArray = arrayOfMin.get(j);
                             }
                         }
-                        //System.out.println("min " + minOfArray);
                         //Find any in range
                         int size = arrayOfMin.size();
                         for (int j = 0; j < size; j++) {
@@ -124,104 +126,9 @@ public class Main extends Application {
                             supportLevel += supportArray.get(j);
                         }
                         supportLevel /= supportArray.size();
-                        m.getOneHourData().addCriticalLevel(supportLevel);
-                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
-                        //supportArray = arrayOfMin;
-
-                        //int strengthSupport = supportArray.size();
-                        //m.getOneHourData().setMinSegments(arrayOfMin);
+                        m.getTimeframesDataStore(i).addCriticalLevel(supportLevel);
                         arrayOfMin = arrayToSet;
-                    }
-                } else if (i == 1) {
-                    ArrayList<Float> arrayOfMin = m.getFourHourData().getMinSegments();
-                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
-                    //Repeat until array is empty
-                    while (!arrayOfMin.isEmpty()) {
-                        ArrayList<Float> arrayToSet = new ArrayList<>();
 
-                        //Find the minimum value
-                        float minOfArray = 0;
-                        ArrayList<Float> supportArray = new ArrayList<>();
-                        for (int j = 0; j < arrayOfMin.size(); j++) {
-                            if (j == 0) {
-                                minOfArray = arrayOfMin.get(j);
-                            } else if (arrayOfMin.get(j) < minOfArray) {
-                                minOfArray = arrayOfMin.get(j);
-                            }
-                        }
-                        //System.out.println("min " + minOfArray);
-                        //Find any in range
-                        int size = arrayOfMin.size();
-                        for (int j = 0; j < size; j++) {
-                            //Remove min value
-                            if (arrayOfMin.get(j) == minOfArray) {
-                                supportArray.add(minOfArray);
-                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
-                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
-                                supportArray.add(arrayOfMin.get(j));
-                            } else {
-                                arrayToSet.add(arrayOfMin.get(j));
-                            }
-                        }
-
-                        float supportLevel = 0;
-                        for (int j = 0; j < supportArray.size(); j++) {
-                            supportLevel += supportArray.get(j);
-                        }
-                        supportLevel /= supportArray.size();
-                        m.getFourHourData().addCriticalLevel(supportLevel);
-                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
-                        //supportArray = arrayOfMin;
-
-                        //int strengthSupport = supportArray.size();
-                        //m.getOneHourData().setMinSegments(arrayOfMin);
-                        arrayOfMin = arrayToSet;
-                    }
-                } else if (i == 2) {
-                    ArrayList<Float> arrayOfMin = m.getOneDayData().getMinSegments();
-                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
-                    //Repeat until array is empty
-                    while (!arrayOfMin.isEmpty()) {
-                        ArrayList<Float> arrayToSet = new ArrayList<>();
-
-                        //Find the minimum value
-                        float minOfArray = 0;
-                        ArrayList<Float> supportArray = new ArrayList<>();
-                        for (int j = 0; j < arrayOfMin.size(); j++) {
-                            if (j == 0) {
-                                minOfArray = arrayOfMin.get(j);
-                            } else if (arrayOfMin.get(j) < minOfArray) {
-                                minOfArray = arrayOfMin.get(j);
-                            }
-                        }
-                        //System.out.println("min " + minOfArray);
-                        //Find any in range
-                        int size = arrayOfMin.size();
-                        for (int j = 0; j < size; j++) {
-                            //Remove min value
-                            if (arrayOfMin.get(j) == minOfArray) {
-                                supportArray.add(minOfArray);
-                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
-                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
-                                supportArray.add(arrayOfMin.get(j));
-                            } else {
-                                arrayToSet.add(arrayOfMin.get(j));
-                            }
-                        }
-
-                        float supportLevel = 0;
-                        for (int j = 0; j < supportArray.size(); j++) {
-                            supportLevel += supportArray.get(j);
-                        }
-                        supportLevel /= supportArray.size();
-                        m.getOneDayData().addCriticalLevel(supportLevel);
-                        //System.out.println("Here : " + supportLevel + " Strength: " + supportArray.size() + m.getIndex());
-                        //supportArray = arrayOfMin;
-
-                        //int strengthSupport = supportArray.size();
-                        //m.getOneHourData().setMinSegments(arrayOfMin);
-                        arrayOfMin = arrayToSet;
-                    }
                 }
             }
         }
@@ -327,24 +234,33 @@ public class Main extends Application {
 
             String line = "";
             /** Loop to repeat for three time frames and add values and store them */
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
                 String path = null;
-                if (marketsList[j].equals(index + oneHourSuffix)) { path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix; }
-                else if (marketsList[j].equals(index + fourHourSuffix)) { path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix; }
-                else if (marketsList[j].equals(index + oneDaySuffix)) { path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix; }
+                //Set the path
+                if (marketsList[j].equals(index + oneHourSuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
+                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.ONE_HOUR);
+                }
+                else if (marketsList[j].equals(index + fourHourSuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
+                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.FOUR_HOUR);
+                }
+                else if (marketsList[j].equals(index + oneDaySuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix;
+                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.DAY);
+                }
+                markets.get(i).getTimeframesDataStore(j).setFilePath(path);
+
                     try {
                         BufferedReader br = new BufferedReader(
-                                new FileReader(path));
+                                new FileReader(markets.get(i).getTimeframesDataStore(j).getFilePath()));
                         int a = 0;
                         float min = 0;
-                        System.out.println(markets.get(i).getSegment());
                         float[] valueArray = new float[markets.get(i).getSegment()];
                         while ((line = br.readLine()) != null) {
                             if (!line.equals("time,open,high,low,close")) {
                                 String[] values = line.split(",");
-
-                                if (marketsList[j].equals(index + oneHourSuffix)) {
-                                    markets.get(i).oneHourAddMarketValue(
+                                    markets.get(i).getTimeframesDataStore(j).addMarketValue(
                                             new Market.MarketValues(
                                                     Float.parseFloat(values[1]),
                                                     Float.parseFloat(values[4]),
@@ -359,46 +275,8 @@ public class Main extends Application {
                                     a++;
                                     if (a == markets.get(i).getSegment()) {
                                         a = 0;
-                                        markets.get(i).getOneHourData().addMinSegment(min);
+                                        markets.get(i).getTimeframesDataStore(j).addMinSegment(min);
                                     }
-                                } else if (marketsList[j].equals(index + fourHourSuffix)) {
-
-                                    markets.get(i).fourHourAddMarketValue(
-                                            new Market.MarketValues(
-                                                    Float.parseFloat(values[1]),
-                                                    Float.parseFloat(values[4]),
-                                                    Float.parseFloat(values[2]),
-                                                    Float.parseFloat(values[3]))
-                                    );
-                                    if (a == 0) {
-                                        min = Float.parseFloat(values[3]);
-                                    } else if (Float.parseFloat(values[3]) < min) {
-                                        min = Float.parseFloat(values[3]);
-                                    }
-                                    a++;
-                                    if (a == markets.get(i).getSegment()) {
-                                        a = 0;
-                                        markets.get(i).getFourHourData().addMinSegment(min);
-                                    }
-                                } else if (marketsList[j].equals(index + oneDaySuffix)) {
-                                    markets.get(i).dayAddMarketValue(
-                                            new Market.MarketValues(
-                                                    Float.parseFloat(values[1]),
-                                                    Float.parseFloat(values[4]),
-                                                    Float.parseFloat(values[2]),
-                                                    Float.parseFloat(values[3]))
-                                    );
-                                    if (a == 0) {
-                                        min = Float.parseFloat(values[3]);
-                                    } else if (Float.parseFloat(values[3]) < min) {
-                                        min = Float.parseFloat(values[3]);
-                                    }
-                                    a++;
-                                    if (a == markets.get(i).getSegment()) {
-                                        a = 0;
-                                        markets.get(i).getOneDayData().addMinSegment(min);
-                                    }
-                                }
                             }
                         }
                     } catch (FileNotFoundException e) {
@@ -417,53 +295,36 @@ public class Main extends Application {
      */
     private void createCharts() {
         for (int m = 0; m < markets.size(); m++) {
-            markets.get(m).setDayCandleStickChart(
-                    createOneDayChart(
-                            markets.get(m)
-                    )
-            );
-            markets.get(m).setOneHourCandleStickChart(
-                    createOneHourChart(
-                            markets.get(m)
-                    )
-            );
-            markets.get(m).setFourHourCandleStickChart(
-                    createFourHourChart(
-                            markets.get(m)
-                    )
-            );
+            for  (int j = 0; j < NUMBER_OF_TIMEFRAMES; j++) {
+                markets.get(m).setCandleStickChart(createChart(markets.get(m), j), j);
+            }
         }
     }
 
-    /**
-     * Method to create a viewable chart for the one day timeframe
-     * @param market The market to base the chart on
-     * @return The created CandleStickChart
-     */
-    public CandleStickChart createOneDayChart(Market market) {
+    public CandleStickChart createChart(Market market, int j) {
 
-        double xAxisLowerBound = getXAxisLowerBound(market.getOneDayValues());
-        double xAxisUpperBound = getXAxisUpperBound(market.getOneDayValues());
+        double xAxisLowerBound = getXAxisLowerBound(market.getTimeframesDataStore(j).getMarketValues());
+        double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
         final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 1000);
 
         final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
         // setup chart
         bc.setTitle(market.getIndex() + " Chart");
-        xAxis.setLabel("Day");
+        xAxis.setLabel(market.getTimeframesDataStore(j).getTimeframe().toString());
         yAxis.setLabel("Price");
         // add starting data
         XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
 
-        for (int i = 0; i < market.getOneDayValues().size(); i++) {
+        for (int i = 0; i < market.getTimeframesDataStore(j).getMarketValues().size(); i++) {
             series.getData().add(
                     new XYChart.Data<Number, Number>(i,
-                            market.getOneDayValues().get(i).getOpen(),
+                            market.getTimeframesDataStore(j).getMarketValues().get(i).getOpen(),
                             new CandleStickChart.CandleStickExtraValues(
-                                    market.getOneDayValues().get(i).getClose(),
-                                    market.getOneDayValues().get(i).getHigh(),
-                                    market.getOneDayValues().get(i).getLow()))
+                                    market.getTimeframesDataStore(j).getMarketValues().get(i).getClose(),
+                                    market.getTimeframesDataStore(j).getMarketValues().get(i).getHigh(),
+                                    market.getTimeframesDataStore(j).getMarketValues().get(i).getLow()))
             );
         }
         ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
@@ -475,109 +336,10 @@ public class Main extends Application {
         }
 
         //Add resistance/support here
-        for (int s = 0; s < market.getOneDayData().getCriticalLevels().size(); s++) {
-            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneDayData().getCriticalLevels().get(s));
+        for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
+            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
             bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
         }
-
-
-
-        return bc;
-    }
-
-    /**
-     * Method to create a viewable chart for the one hour timeframe
-     * @param market The market to base the chart on
-     * @return The created CandleStickChart
-     */
-    public CandleStickChart createOneHourChart(Market market) {
-
-        double xAxisLowerBound = getXAxisLowerBound(market.getOneHourValues());
-        double xAxisUpperBound = getXAxisUpperBound(market.getOneHourValues());
-
-        final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
-
-        final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
-        // setup chart
-        bc.setTitle(market.getIndex() + " Chart");
-        xAxis.setLabel("Hourly");
-        yAxis.setLabel("Price");
-        // add starting data
-        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
-
-        for (int i = 0; i < market.getOneHourValues().size(); i++) {
-            series.getData().add(
-                    new XYChart.Data<Number, Number>(i,
-                            market.getOneHourValues().get(i).getOpen(),
-                            new CandleStickChart.CandleStickExtraValues(
-                                    market.getOneHourValues().get(i).getClose(),
-                                    market.getOneHourValues().get(i).getHigh(),
-                                    market.getOneHourValues().get(i).getLow()))
-            );
-        }
-        ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
-        if (chartData == null) {
-            chartData = FXCollections.observableArrayList(series);
-            bc.setData(chartData);
-        } else {
-            bc.getData().add(series);
-        }
-
-        /** Add resistance/support here */
-        for (int s = 0; s < market.getOneHourData().getCriticalLevels().size(); s++) {
-            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getOneHourData().getCriticalLevels().get(s));
-            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
-        }
-
-        return bc;
-    }
-
-    /**
-     * Method to create a viewable chart for the four hour timeframe
-     * @param market The market to base the chart on
-     * @return The created CandleStickChart
-     */
-    public CandleStickChart createFourHourChart(Market market) {
-
-        double xAxisLowerBound = getXAxisLowerBound(market.getFourHourValues());
-        double xAxisUpperBound = getXAxisUpperBound(market.getFourHourValues());
-
-        final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, 10000);
-
-        final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
-        // setup chart
-        bc.setTitle(market.getIndex() + " Chart");
-        xAxis.setLabel("Four Hourly");
-        yAxis.setLabel("Price");
-        // add starting data
-        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
-
-        for (int i = 0; i < market.getFourHourValues().size(); i++) {
-            series.getData().add(
-                    new XYChart.Data<Number, Number>(i,
-                            market.getFourHourValues().get(i).getOpen(),
-                            new CandleStickChart.CandleStickExtraValues(
-                                    market.getFourHourValues().get(i).getClose(),
-                                    market.getFourHourValues().get(i).getHigh(),
-                                    market.getFourHourValues().get(i).getLow()))
-            );
-        }
-        ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
-        if (chartData == null) {
-            chartData = FXCollections.observableArrayList(series);
-            bc.setData(chartData);
-        } else {
-            bc.getData().add(series);
-        }
-
-        //Add resistance/support here
-        for (int s = 0; s < market.getFourHourData().getCriticalLevels().size(); s++) {
-            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getFourHourData().getCriticalLevels().get(s));
-            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
-        }
-
         return bc;
     }
 

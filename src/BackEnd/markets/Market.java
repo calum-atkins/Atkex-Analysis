@@ -22,56 +22,30 @@ public class Market {
     private StoreData fourHourData = new StoreData();
     private StoreData oneDayData = new StoreData();
 
-    public StoreData getOneHourData() {
-        return oneHourData;
+    private ArrayList<StoreData> timeframesDataStore = new ArrayList<StoreData>();
+
+
+    public StoreData getTimeframesDataStore(int i) {
+        return timeframesDataStore.get(i);
+    }
+    public void addTimeframesDataStore(StoreData dataStore) {
+        timeframesDataStore.add(dataStore);
     }
 
-    public void setOneHourData(StoreData oneHourData) {
-        this.oneHourData = oneHourData;
+    public void setTimeframesStoreSize(int i) {
+        for (int j = 0; j < i; j++) {
+            timeframesDataStore.add(new StoreData());
+        }
     }
 
-    public StoreData getFourHourData() {
-        return fourHourData;
-    }
-
-    public void setFourHourData(StoreData fourHourData) {
-        this.fourHourData = fourHourData;
-    }
-
-    public StoreData getOneDayData() {
-        return oneDayData;
-    }
-
-    public void setOneDayData(StoreData oneDayData) {
-        this.oneDayData = oneDayData;
-    }
-
-    public int getSegment() {
-        return segment;
-    }
-
-    public void setSegment(int segment) {
-        this.segment = segment;
-    }
+    public int getSegment() { return segment; }
+    public void setSegment(int segment) { this.segment = segment; }
 
 
     /**
      * Array list to store a list of market values.
      */
-
-
     private Patterns patternsList;//do same as store data
-//    public ArrayList<Float> getOneHourMinSegments() {
-//        return data;
-//    }
-//
-//    public void addSegment(float f) {
-//        minSegments.add(f);
-//    }
-//
-//    public void setSegments(ArrayList<Float> segments) {
-//        this.minSegments = segments;
-//    }
 
     /**
      * Data columns for table.
@@ -94,23 +68,12 @@ public class Market {
     /**
      * Setters and getters for the chart created from the market data.
      */
-    public CandleStickChart getOneHourCandleStickChart() {
-        return oneHourData.getCandleStickChart();
-    }
-    public void setOneHourCandleStickChart(CandleStickChart oneHourCandleStickChart) {
-        oneHourData.setCandleStickChart(oneHourCandleStickChart);
-    }
 
-    public CandleStickChart getFourHourCandleStickChart() {
-        return fourHourData.getCandleStickChart();
+    public void setCandleStickChart(CandleStickChart candleStickChart, int i) {
+        timeframesDataStore.get(i).setCandleStickChart(candleStickChart);
     }
-    public void setFourHourCandleStickChart(CandleStickChart fourHourCandleStickChart) {
-        fourHourData.setCandleStickChart(fourHourCandleStickChart);
-    }
-
-    public CandleStickChart getDayCandleStickChart() { return oneDayData.getCandleStickChart(); }
-    public void setDayCandleStickChart(CandleStickChart dayCandleStickChart) {
-        oneDayData.setCandleStickChart(dayCandleStickChart);
+    public CandleStickChart getCandleStickChart(int i) {
+        return timeframesDataStore.get(i).getCandleStickChart();
     }
 
     /**
@@ -145,13 +108,6 @@ public class Market {
     public void setCurrentTimeFrame(MarketTimeframe currentTimeFrame) { this.currentTimeFrame = currentTimeFrame; }
 
     /**
-     * Getters to retrieve markets values for each timeframe.
-     */
-    public ArrayList<MarketValues> getOneHourValues() { return oneHourData.getMarketValues(); }
-    public ArrayList<MarketValues> getFourHourValues() { return fourHourData.getMarketValues(); }
-    public ArrayList<MarketValues> getOneDayValues() { return oneDayData.getMarketValues(); }
-
-    /**
      * Adders used to add each value(candle) to the specified array list.
      * Open, close, high and low values added to each new object of market values.
      *
@@ -160,41 +116,9 @@ public class Market {
      * @param high  The highest the price reaches in a single candle.
      * @param low   The lowest the price reaches in a single candle.
      */
-    public void addOneHourValues(float open, float close, float high, float low) {
-        oneHourData.addMarketValue(new MarketValues(open, close, high, low));
-    }
-
-    public void addFourHourValues(float open, float close, float high, float low) {
-        fourHourData.addMarketValue(new MarketValues(open, close, high, low));
-    }
-
-    public void addOneDayValues(float open, float close, float high, float low) {
-        oneDayData.addMarketValue(new MarketValues(open, close, high, low));
-    }
-
-    public void addOneHourCriticalLevel(double value) {
-        oneHourData.addCriticalLevel(value);
-    }
-    public ArrayList<Double> getOneHourSR() {
-        return oneHourData.getCriticalLevels();
-    }
-    public void setOneHourSR(ArrayList<Double> oneHSR) {
-        oneHourData.setCriticalLevels(oneHSR);
-    }
 
     public void addPattern(Pattern p) {
     }
-
-    public void dayAddMarketValue(MarketValues m) {
-        oneDayData.addMarketValue(m);
-    }
-    public void oneHourAddMarketValue(MarketValues m) {
-        oneHourData.addMarketValue(m);
-    }
-    public void fourHourAddMarketValue(MarketValues m) {
-        fourHourData.addMarketValue(m);
-    }
-
 
     public double getLowerRange() { return lowerRange; }
     public void setLowerRange(double range) {
@@ -235,7 +159,15 @@ public class Market {
         private CandleStickChart candleStickChart;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
         private ArrayList<Double> criticalLevels = new ArrayList<>();
-        private ArrayList<Float> minSegments = new ArrayList<Float>();
+        private ArrayList<Float> minSegments = new ArrayList<>();
+        private String filePath;
+        private MarketTimeframe timeframe;
+
+        public MarketTimeframe getTimeframe() { return timeframe; }
+        public void setTimeframe(MarketTimeframe timeframe) { this.timeframe = timeframe; }
+
+        public String getFilePath() { return filePath; }
+        public void setFilePath(String filePath) { this.filePath = filePath; }
 
         public CandleStickChart getCandleStickChart() { return candleStickChart; }
         public void setCandleStickChart(CandleStickChart candleStickChart) { this.candleStickChart = candleStickChart; }
