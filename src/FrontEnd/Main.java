@@ -5,7 +5,6 @@ import BackEnd.markets.MarketTimeframe;
 import BackEnd.markets.MarketTrend;
 import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
-import BackEnd.patternRecognition.algorithms.criticalLevels;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -19,13 +18,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
-import java.awt.*;
 import java.io.*;
 
 //
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -170,6 +167,9 @@ public class Main extends Application {
                     while ((line = br.readLine()) != null) {
                         if (!line.equals("time,open,high,low,close")) {
                             String[] values = line.split(",");
+
+                            markets.get(marketNum).getTimeframesDataStore(j).setCurrentPrice(Float.parseFloat(values[4]));
+
                             markets.get(marketNum).getTimeframesDataStore(j).addMarketValue(
                                     new Market.MarketValues(
                                             Float.parseFloat(values[1]),
@@ -215,6 +215,7 @@ public class Main extends Application {
      * Method to generate critical levels fo support/resistance.
      */
     private void generateCriticalLevels() {
+//        markets =
         for (Market m : markets) {
             for (int marketNum = 0; marketNum < NUMBER_OF_TIMEFRAMES; marketNum++) {
 
@@ -250,7 +251,7 @@ public class Main extends Application {
                         supportLevel += supportArray.get(i);
                     }
                     supportLevel /= supportArray.size();
-                    if (supportArray.size() > 4) {
+                    if (supportArray.size() > 2) {
                         m.getTimeframesDataStore(marketNum).addCriticalLevel(supportLevel);
                     }
                     arrayOfMin = arrayToSet;
@@ -293,7 +294,7 @@ public class Main extends Application {
                         resistanceLevel += resistanceArray.get(j);
                     }
                     resistanceLevel /= resistanceArray.size();
-                    if (resistanceArray.size() > 4) {
+                    if (resistanceArray.size() > 2) {
                         m.getTimeframesDataStore(i).addCriticalLevel(resistanceLevel);
                     }
                     arrayOfMax = arrayToSet;
@@ -405,7 +406,8 @@ public class Main extends Application {
         for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
             XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>
                     (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
-            bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
+            bc.addHorizontalValueMarker(horizontalMarker,
+                    market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
         }
         return bc;
     }

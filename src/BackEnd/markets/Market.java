@@ -46,6 +46,8 @@ public class Market {
         this.tableTrendColumn = new SimpleStringProperty(trend.toString());
     }
 
+
+
     /**
      * Setter, Getter and Adder for the data stored on each timeframe.
      * @param i timeframe index to retrieve.
@@ -165,6 +167,10 @@ public class Market {
         private String filePath;
         private MarketTimeframe timeframe;
         private double chartYAxisTickValue;
+        private float currentPrice;
+
+        public float getCurrentPrice() { return currentPrice; }
+        public void setCurrentPrice(float currentPrice) { this.currentPrice = currentPrice; }
 
         public double getChartYAxisTickValue() { return chartYAxisTickValue; }
         public void setChartYAxisTickValue(double chartYAxisTickValue) { this.chartYAxisTickValue = chartYAxisTickValue; }

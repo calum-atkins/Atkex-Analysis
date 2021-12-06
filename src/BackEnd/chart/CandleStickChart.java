@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
@@ -40,10 +41,15 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         horizontalMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
     }
 
-    public void addHorizontalValueMarker(Data<X, Y> marker) {
+    public void addHorizontalValueMarker(Data<X, Y> marker, float currentPrice) {
         Objects.requireNonNull(marker, "the marker must not be null");
         if (horizontalMarkers.contains(marker)) return;
         Line line = new Line();
+        if (Float.parseFloat(marker.getYValue().toString()) < currentPrice) {
+            line.setStroke(Color.BLUE);
+        } else {
+            line.setStroke(Color.RED);
+        }
         marker.setNode(line );
         getPlotChildren().add(line);
         horizontalMarkers.add(marker);
