@@ -67,8 +67,6 @@ public class MainController implements Initializable {
 
     private MarketTimeframe currentTimeframe;
 
-
-
     public MainController() { }
 
     @FXML void loadData() {

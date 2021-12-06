@@ -1,7 +1,7 @@
 package BackEnd.markets;
 
 /**
- * Market trend of a market.
+ * Trend of the market.
  */
 public enum MarketTrend {
     UP,

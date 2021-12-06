@@ -7,7 +7,13 @@ import javafx.beans.property.SimpleStringProperty;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+/**
+ * This class is used to hold data on each of the markets
+ * on each time frame entered.
+ */
 public class Market {
+
+    /** Variables to declare data on the market */
     private String index;
     private MarketTrend trend;
     private Status status;
@@ -15,39 +21,20 @@ public class Market {
     private int segment;
     private double lowerRange, upperRange;
 
-
     /**
-     * Three candle stick charts for each time frame.
-     */
+     * Array list of StoreData holding information on (x) amount
+     * of timeframes the user has used.
+     * 0 - ONE DAY
+     * 1 - FOUR HOUR
+     * 2 - ONE HOUR
+     * */
     private ArrayList<StoreData> timeframesDataStore = new ArrayList<StoreData>();
 
-
-    public StoreData getTimeframesDataStore(int i) {
-        return timeframesDataStore.get(i);
-    }
-    public void addTimeframesDataStore(StoreData dataStore) { timeframesDataStore.add(dataStore); }
-
-    public void setTimeframesStoreSize(int i) {
-        for (int j = 0; j < i; j++) {
-            timeframesDataStore.add(new StoreData());
-        }
-    }
-
-    public int getSegment() { return segment; }
-    public void setSegment(int segment) { this.segment = segment; }
-
-
-    /**
-     * Array list to store a list of market values.
-     */
+    /** Array list to store a list of market values. */
     private Patterns patternsList;//do same as store data
 
-    /**
-     * Data columns for table.
-     */
+    /** Data columns for table. */
     private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
-
-
 
     public Market(String index, Status status, MarketTrend trend) {
         this.index = index;
@@ -57,38 +44,63 @@ public class Market {
         this.tableIndexColumn = new SimpleStringProperty(index);
         this.tableStatusColumn = new SimpleStringProperty(status.toString());
         this.tableTrendColumn = new SimpleStringProperty(trend.toString());
-
     }
 
     /**
-     * Setters and getters for the chart created from the market data.
+     * Setter, Getter and Adder for the data stored on each timeframe.
+     * @param i timeframe index to retrieve.
+     * @return StoreData of specified time frame.
      */
+    public StoreData getTimeframesDataStore(int i) {
+        return timeframesDataStore.get(i);
+    }
 
+    /**
+     * @param dataStore timeframe of data to add to the array list.
+     */
+    public void addTimeframesDataStore(StoreData dataStore) { timeframesDataStore.add(dataStore); }
+    /**
+     * Setter used to initialise array for number of timeframes
+     */
+    public void setTimeframesStoreSize(int i) {
+        for (int j = 0; j < i; j++) {
+            timeframesDataStore.add(new StoreData());
+        }
+    }
+
+    /** Mehtod to ass a new pattern to the list */
+    public void addPattern(Pattern p) {
+    }
+
+    /**
+     * Setters and getters for the charts created from the market data.
+     * @param i Timeframe index to set chart to
+     */
     public void setCandleStickChart(CandleStickChart candleStickChart, int i) {
         timeframesDataStore.get(i).setCandleStickChart(candleStickChart);
     }
+
     public CandleStickChart getCandleStickChart(int i) {
         return timeframesDataStore.get(i).getCandleStickChart();
     }
-
     /**
      * Setters and getters for table columns.
      */
     public String getTableIndexColumn() { return tableIndexColumn.get(); }
+
     public SimpleStringProperty tableIndexColumnProperty() { return tableIndexColumn; }
     public void setTableIndexColumn(String tableIndexColumn) { this.tableIndexColumn.set(tableIndexColumn); }
-
     public String getTableStatusColumn() { return tableStatusColumn.get(); }
+
     public SimpleStringProperty tableStatusColumnProperty() { return tableStatusColumn; }
     public void setTableStatusColumn(String tableStatusColumn) { this.tableStatusColumn.set(tableStatusColumn); }
-
     public String getTableTrendColumn() { return tableTrendColumn.get(); }
+
     public SimpleStringProperty tableTrendColumnProperty() { return tableTrendColumn; }
     public void setTableTrendColumn(String tableTrendColumn) { this.tableTrendColumn.set(tableTrendColumn); }
 
-
     /**
-     * Setters and getters for market index, status and timeframe.
+     * Setters and getters for market index, status, timeframe and segment.
      */
     public String getIndex() { return index; }
     public void setIndex(String index) { this.index = index; }
@@ -102,19 +114,13 @@ public class Market {
     public MarketTimeframe getCurrentTimeFrame() { return currentTimeFrame; }
     public void setCurrentTimeFrame(MarketTimeframe currentTimeFrame) { this.currentTimeFrame = currentTimeFrame; }
 
+    public int getSegment() { return segment; }
+    public void setSegment(int segment) { this.segment = segment; }
+
     /**
-     * Adders used to add each value(candle) to the specified array list.
-     * Open, close, high and low values added to each new object of market values.
-     *
-     * @param open  The price the candle opens at.
-     * @param close The price the candle closes at.
-     * @param high  The highest the price reaches in a single candle.
-     * @param low   The lowest the price reaches in a single candle.
+     * Setter and getters for lower range and upper range value.
+     * Values must be calculated from the range value in preferences.csv
      */
-
-    public void addPattern(Pattern p) {
-    }
-
     public double getLowerRange() { return lowerRange; }
     public void setLowerRange(double range) {
         range = 1 - (range / 100);
@@ -135,7 +141,6 @@ public class Market {
         private double high;
         private double low;
 
-
         public MarketValues(double open, double close, double high, double low) {
             this.open = open;
             this.close = close;
@@ -147,9 +152,11 @@ public class Market {
         public double getClose() { return close; }
         public double getHigh() { return high; }
         public double getLow() { return low; }
-
     }
 
+    /**
+     * This  class is used to hold data for each individual timeframe.
+     */
     public static class StoreData  {
         private CandleStickChart candleStickChart;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
@@ -170,16 +177,20 @@ public class Market {
 
         public CandleStickChart getCandleStickChart() { return candleStickChart; }
         public void setCandleStickChart(CandleStickChart candleStickChart) { this.candleStickChart = candleStickChart; }
+
         public ArrayList<MarketValues> getMarketValues() { return marketValues; }
         public void addMarketValue(MarketValues m) {
             marketValues.add(m);
         }
+
         public void setMarketValues(ArrayList<MarketValues> marketValues) { this.marketValues = marketValues; }
         public ArrayList<Double> getCriticalLevels() { return criticalLevels; }
+
         public void addCriticalLevel(double c) {
             criticalLevels.add(c);
         }
         public void setCriticalLevels(ArrayList<Double> criticalLevels) { this.criticalLevels = criticalLevels; }
+
         public ArrayList<Float> getMinSegments() { return minSegments; }
         public void addMinSegment(float s) {
             minSegments.add(s);

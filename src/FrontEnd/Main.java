@@ -19,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
+import java.awt.*;
 import java.io.*;
 
 //
@@ -47,6 +48,10 @@ public class Main extends Application {
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
+        /** Loading screen here */
+
+
+        /** Settings  */
         stage.setTitle("Atkex");
         stage.getIcons().add(new Image("img/AtkexLogo.png"));
         stage.setResizable(true);
@@ -73,9 +78,11 @@ public class Main extends Application {
         /** Generate Trends */
 
 
-
         /** Generate Patterns */
 
+
+        /** Create charts */
+        createCharts();
 
         /** Load stage */
         stage.setScene(
@@ -84,53 +91,6 @@ public class Main extends Application {
                 )
         );
         stage.show();
-    }
-
-    private void generateCriticalLevels() {
-        for (Market m : markets) {
-            for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
-
-                    ArrayList<Float> arrayOfMin = m.getTimeframesDataStore(i).getMinSegments();
-                    int[][] supportLevelStrength = new int[arrayOfMin.size()][];
-                    //Repeat until array is empty
-                    while (!arrayOfMin.isEmpty()) {
-                        ArrayList<Float> arrayToSet = new ArrayList<>();
-
-                        //Find the minimum value
-                        float minOfArray = 0;
-                        ArrayList<Float> supportArray = new ArrayList<>();
-                        for (int j = 0; j < arrayOfMin.size(); j++) {
-                            if (j == 0) {
-                                minOfArray = arrayOfMin.get(j);
-                            } else if (arrayOfMin.get(j) < minOfArray) {
-                                minOfArray = arrayOfMin.get(j);
-                            }
-                        }
-                        //Find any in range
-                        int size = arrayOfMin.size();
-                        for (int j = 0; j < size; j++) {
-                            //Remove min value
-                            if (arrayOfMin.get(j) == minOfArray) {
-                                supportArray.add(minOfArray);
-                            } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
-                                    && (arrayOfMin.get(j) / minOfArray) > m.getLowerRange()) {
-                                supportArray.add(arrayOfMin.get(j));
-                            } else {
-                                arrayToSet.add(arrayOfMin.get(j));
-                            }
-                        }
-
-                        float supportLevel = 0;
-                        for (int j = 0; j < supportArray.size(); j++) {
-                            supportLevel += supportArray.get(j);
-                        }
-                        supportLevel /= supportArray.size();
-                        m.getTimeframesDataStore(i).addCriticalLevel(supportLevel);
-                        arrayOfMin = arrayToSet;
-
-                }
-            }
-        }
     }
 
     /**
@@ -144,7 +104,6 @@ public class Main extends Application {
                     new FileReader(marketPreferences));
             while ((line = br.readLine()) != null) {
                 if (!line.equals("index,segments,range")) {
-
                     String[] values = line.split(",");
                     for (int i = 0; i < marketsSize;i++) {
                         if (values[0].equals(markets.get(i).getIndex())) {
@@ -156,13 +115,209 @@ public class Main extends Application {
                         }
                     }
                 }
-
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Loads raw market data into an array list of Market objects.
+     *
+     * Assigns open, close, high and low prices an array.
+     */
+    public void loadSaveData() {
+        String oneHourSuffix = ", 60" + rawDataFileType;
+        String fourHourSuffix = ", 240" + rawDataFileType;
+        String oneDaySuffix = ", 1D" + rawDataFileType;
+
+        //Loop repeats for number of markets in folder
+        for (int marketNum = 0; marketNum < marketsSize; marketNum++) {
+            String index = markets.get(marketNum).getIndex();
+            File directoryPath = new File(rawDataLocation + "/" + index);
+            String marketsList[] = directoryPath.list();
+
+            String line = "";
+            float minOverall;
+            float maxOverall;
+            for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
+                String path = null;
+                //Set the path
+                if (marketsList[j].equals(index + oneHourSuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
+                    markets.get(marketNum).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.ONE_HOUR);
+                }
+                else if (marketsList[j].equals(index + fourHourSuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
+                    markets.get(marketNum).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.FOUR_HOUR);
+                }
+                else if (marketsList[j].equals(index + oneDaySuffix)) {
+                    path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix;
+                    markets.get(marketNum).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.DAY);
+                }
+                markets.get(marketNum).getTimeframesDataStore(j).setFilePath(path);
+
+                try {
+                    BufferedReader br = new BufferedReader(
+                            new FileReader(markets.get(marketNum).getTimeframesDataStore(j).getFilePath()));
+                    int a = 0;
+                    float min = 0;
+                    float[] valueArray = new float[markets.get(marketNum).getSegment()];
+                    minOverall = 0;
+                    maxOverall = 0;
+                    while ((line = br.readLine()) != null) {
+                        if (!line.equals("time,open,high,low,close")) {
+                            String[] values = line.split(",");
+                            markets.get(marketNum).getTimeframesDataStore(j).addMarketValue(
+                                    new Market.MarketValues(
+                                            Float.parseFloat(values[1]),
+                                            Float.parseFloat(values[4]),
+                                            Float.parseFloat(values[2]),
+                                            Float.parseFloat(values[3]))
+                            );
+
+                            if (minOverall == 0) {
+                                minOverall = Float.parseFloat(values[3]);
+                            } else if (Float.parseFloat(values[3]) < minOverall) {
+                                minOverall = Float.parseFloat(values[3]);
+                            }
+                            if (maxOverall == 0) {
+                                maxOverall = Float.parseFloat(values[2]);
+                            } else if (Float.parseFloat(values[2]) > maxOverall) {
+                                maxOverall = Float.parseFloat(values[2]);
+                            }
+
+                            if (a == 0) {
+                                min = Float.parseFloat(values[3]);
+                            } else if (Float.parseFloat(values[3]) < min) {
+                                min = Float.parseFloat(values[3]);
+                            }
+                            a++;
+                            if (a == markets.get(marketNum).getSegment()) {
+                                a = 0;
+                                markets.get(marketNum).getTimeframesDataStore(j).addMinSegment(min);
+                            }
+                        }
+                    }
+                    markets.get(marketNum).getTimeframesDataStore(j).setChartYAxisTickValue((maxOverall - minOverall) /10);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to generate critical levels fo support/resistance.
+     */
+    private void generateCriticalLevels() {
+        for (Market m : markets) {
+            for (int marketNum = 0; marketNum < NUMBER_OF_TIMEFRAMES; marketNum++) {
+
+                ArrayList<Float> arrayOfMin = m.getTimeframesDataStore(marketNum).getMinSegments();
+                //Repeat until array is empty
+                while (!arrayOfMin.isEmpty()) {
+                    ArrayList<Float> arrayToSet = new ArrayList<>();
+                    //Find the minimum value
+                    float minOfArray = 0;
+                    ArrayList<Float> supportArray = new ArrayList<>();
+                    for (int timeframeNum = 0; timeframeNum < arrayOfMin.size(); timeframeNum++) {
+                        if (timeframeNum == 0) {
+                            minOfArray = arrayOfMin.get(timeframeNum);
+                        } else if (arrayOfMin.get(timeframeNum) < minOfArray) {
+                            minOfArray = arrayOfMin.get(timeframeNum);
+                        }
+                    }
+                    //Find any in range
+                    int size = arrayOfMin.size();
+                    for (int i = 0; i < size; i++) {
+                        //Remove min value
+                        if (arrayOfMin.get(i) == minOfArray) {
+                            supportArray.add(minOfArray);
+                        } else if ((arrayOfMin.get(i) / minOfArray) < m.getUpperRange()
+                                && (arrayOfMin.get(i) / minOfArray) > m.getLowerRange()) {
+                            supportArray.add(arrayOfMin.get(i));
+                        } else {
+                            arrayToSet.add(arrayOfMin.get(i));
+                        }
+                    }
+                    float supportLevel = 0;
+                    for (int i = 0; i < supportArray.size(); i++) {
+                        supportLevel += supportArray.get(i);
+                    }
+                    supportLevel /= supportArray.size();
+                    if (supportArray.size() > 4) {
+                        m.getTimeframesDataStore(marketNum).addCriticalLevel(supportLevel);
+                    }
+                    arrayOfMin = arrayToSet;
+                }
+            }
+        }
+        for (Market m : markets) {
+            for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
+                ArrayList<Float> arrayOfMax = m.getTimeframesDataStore(i).getMinSegments();
+                //Repeat until array is empty
+                while (!arrayOfMax.isEmpty()) {
+                    ArrayList<Float> arrayToSet = new ArrayList<>();
+
+                    //Find the minimum value
+                    float maxOfArray = 0;
+                    ArrayList<Float> resistanceArray = new ArrayList<>();
+                    for (int j = 0; j < arrayOfMax.size(); j++) {
+                        if (j == 0) {
+                            maxOfArray = arrayOfMax.get(j);
+                        } else if (arrayOfMax.get(j) > maxOfArray) {
+                            maxOfArray = arrayOfMax.get(j);
+                        }
+                    }
+                    //Find any in range
+                    int size = arrayOfMax.size();
+                    for (int j = 0; j < size; j++) {
+                        //Remove min value
+                        if (arrayOfMax.get(j) == maxOfArray) {
+                            resistanceArray.add(maxOfArray);
+                        } else if ((arrayOfMax.get(j) / maxOfArray) < m.getUpperRange()
+                                && (arrayOfMax.get(j) / maxOfArray) > m.getLowerRange()) {
+                            resistanceArray.add(arrayOfMax.get(j));
+                        } else {
+                            arrayToSet.add(arrayOfMax.get(j));
+                        }
+                    }
+
+                    float resistanceLevel = 0;
+                    for (int j = 0; j < resistanceArray.size(); j++) {
+                        resistanceLevel += resistanceArray.get(j);
+                    }
+                    resistanceLevel /= resistanceArray.size();
+                    if (resistanceArray.size() > 4) {
+                        m.getTimeframesDataStore(i).addCriticalLevel(resistanceLevel);
+                    }
+                    arrayOfMax = arrayToSet;
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates the main application screen.
+     *
+     * @param mainPane the main application layout.
+     * @return the created scene.
+     */
+    private Scene createScene(Pane mainPane) {
+        Scene scene = new Scene(
+                mainPane
+        );
+
+        scene.getStylesheets().setAll(
+                getClass().getResource("styles/MainApplication.css").toExternalForm()
+        );
+
+        return scene;
     }
 
     /**
@@ -187,120 +342,9 @@ public class Main extends Application {
 
         ChartSelector.setMainController(mainController);
 
-        createCharts();
         mainController.setMarkets(markets);
 
         return mainPane;
-    }
-
-    /**
-     * Creates the main application screen.
-     *
-     * @param mainPane the main application layout.
-     * @return the created scene.
-     */
-    private Scene createScene(Pane mainPane) {
-        Scene scene = new Scene(
-                mainPane
-        );
-
-        scene.getStylesheets().setAll(
-                getClass().getResource("styles/MainApplication.css").toExternalForm()
-        );
-
-        return scene;
-    }
-
-    /**
-     * Loads raw market data into an array list of Market objects.
-     *
-     * Assigns open, close, high and low prices to the array.
-     */
-
-    public void loadSaveData() {
-        String oneHourSuffix = ", 60" + rawDataFileType;
-        String fourHourSuffix = ", 240" + rawDataFileType;
-        String oneDaySuffix = ", 1D" + rawDataFileType;
-
-        //Loop repeats for number of markets in folder
-        for (int i = 0; i < marketsSize; i++) {
-
-            String index = markets.get(i).getIndex();
-            File directoryPath = new File(rawDataLocation + "/" + index);
-            String marketsList[] = directoryPath.list();
-
-            String line = "";
-            float minOverall = 0;
-            float maxOverall = 0;
-            /** Loop to repeat for three time frames and add values and store them */
-            for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
-                String path = null;
-                //Set the path
-                if (marketsList[j].equals(index + oneHourSuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
-                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.ONE_HOUR);
-                }
-                else if (marketsList[j].equals(index + fourHourSuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + fourHourSuffix;
-                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.FOUR_HOUR);
-                }
-                else if (marketsList[j].equals(index + oneDaySuffix)) {
-                    path = rawDataLocation + "/" + index + "/" + index + oneDaySuffix;
-                    markets.get(i).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.DAY);
-                }
-                markets.get(i).getTimeframesDataStore(j).setFilePath(path);
-
-                    try {
-                        BufferedReader br = new BufferedReader(
-                                new FileReader(markets.get(i).getTimeframesDataStore(j).getFilePath()));
-                        int a = 0;
-                        float min = 0;
-                        float[] valueArray = new float[markets.get(i).getSegment()];
-                        minOverall = 0;
-                        maxOverall = 0;
-                        while ((line = br.readLine()) != null) {
-                            if (!line.equals("time,open,high,low,close")) {
-                                String[] values = line.split(",");
-                                    markets.get(i).getTimeframesDataStore(j).addMarketValue(
-                                            new Market.MarketValues(
-                                                    Float.parseFloat(values[1]),
-                                                    Float.parseFloat(values[4]),
-                                                    Float.parseFloat(values[2]),
-                                                    Float.parseFloat(values[3]))
-                                    );
-
-                                    if (minOverall == 0) {
-                                        minOverall = Float.parseFloat(values[3]);
-                                    } else if (Float.parseFloat(values[3]) < minOverall) {
-                                        minOverall = Float.parseFloat(values[3]);
-                                    }
-                                    if (maxOverall == 0) {
-                                       maxOverall = Float.parseFloat(values[2]);
-                                    } else if (Float.parseFloat(values[2]) > maxOverall) {
-                                        maxOverall = Float.parseFloat(values[2]);
-                                    }
-
-                                    if (a == 0) {
-                                        min = Float.parseFloat(values[3]);
-                                    } else if (Float.parseFloat(values[3]) < min) {
-                                        min = Float.parseFloat(values[3]);
-                                    }
-                                    a++;
-                                    if (a == markets.get(i).getSegment()) {
-                                        a = 0;
-                                        markets.get(i).getTimeframesDataStore(j).addMinSegment(min);
-                                    }
-                            }
-                        }
-                        markets.get(i).getTimeframesDataStore(j).setChartYAxisTickValue((maxOverall - minOverall) /10);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-            }
-        }
     }
 
     /**
@@ -316,8 +360,13 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Creates a chart to be displayed to the UI.
+     * @param market data containing values to plot
+     * @param j market timeframe to set chart to
+     * @return Viewable candle stick chart
+     */
     public CandleStickChart createChart(Market market, int j) {
-
         double xAxisLowerBound = getXAxisLowerBound(market.getTimeframesDataStore(j).getMarketValues());
         double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
@@ -339,7 +388,9 @@ public class Main extends Application {
                             new CandleStickChart.CandleStickExtraValues(
                                     market.getTimeframesDataStore(j).getMarketValues().get(i).getClose(),
                                     market.getTimeframesDataStore(j).getMarketValues().get(i).getHigh(),
-                                    market.getTimeframesDataStore(j).getMarketValues().get(i).getLow()))
+                                    market.getTimeframesDataStore(j).getMarketValues().get(i).getLow()
+                            )
+                    )
             );
         }
         ObservableList<XYChart.Series<Number, Number>> chartData = bc.getData();
@@ -350,18 +401,19 @@ public class Main extends Application {
             bc.getData().add(series);
         }
 
-        //Add resistance/support here
+        // add horizontal markers
         for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
-            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>(0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
+            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>
+                    (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
             bc.addHorizontalValueMarker(horizontalMarker); //This can be used to resistance and support levels
         }
         return bc;
     }
 
     /**
-     * Method to return the lower bound
-     * @param values Market values from the raw data
-     * @return lowest value (swing low)
+     * Method to return the lower bound.
+     * @param values Market values from the raw data.
+     * @return lowest value (swing low).
      */
     public double getXAxisLowerBound(ArrayList<Market.MarketValues> values) {
         double lowerBound = 0;
@@ -378,9 +430,9 @@ public class Main extends Application {
     }
 
     /**
-     * Method to return the upper bound
-     * @param values Market values from the raw data
-     * @return highest value (swing high)
+     * Method to return the upper bound.
+     * @param values Market values from the raw data.
+     * @return highest value (swing high).
      */
     public double getXAxisUpperBound(ArrayList<Market.MarketValues> values) {
         double xAxisUpperBound = 0;
@@ -399,7 +451,6 @@ public class Main extends Application {
 
 
     /**
-     *
      * @return markets array list.
      */
     public ArrayList<Market> getMarkets() { return markets; }

@@ -17,7 +17,6 @@ public abstract class Patterns {
     public ArrayList<AscendingTriangle> getAscendingTriangleList() {
         return ascendingTriangleList;
     }
-
     public void setAscendingTriangleList(ArrayList<AscendingTriangle> ascendingTriangleList) {
         this.ascendingTriangleList = ascendingTriangleList;
     }
@@ -25,7 +24,6 @@ public abstract class Patterns {
     public ArrayList<DescendingTriangle> getDescendingTriangleList() {
         return descendingTriangleList;
     }
-
     public void setDescendingTriangleList(ArrayList<DescendingTriangle> descendingTriangleList) {
         this.descendingTriangleList = descendingTriangleList;
     }
@@ -33,15 +31,11 @@ public abstract class Patterns {
     public ArrayList<DoubleBottom> getDoubleBottomList() {
         return doubleBottomList;
     }
-
-    public void setDoubleBottomList(ArrayList<DoubleBottom> doubleBottomList) {
-        this.doubleBottomList = doubleBottomList;
-    }
+    public void setDoubleBottomList(ArrayList<DoubleBottom> doubleBottomList) { this.doubleBottomList = doubleBottomList; }
 
     public ArrayList<DoubleTop> getDoubleTopList() {
         return doubleTopList;
     }
-
     public void setDoubleTopList(ArrayList<DoubleTop> doubleTopList) {
         this.doubleTopList = doubleTopList;
     }
@@ -49,7 +43,6 @@ public abstract class Patterns {
     public ArrayList<Pennant> getPennantList() {
         return pennantList;
     }
-
     public void setPennantList(ArrayList<Pennant> pennantList) {
         this.pennantList = pennantList;
     }
@@ -57,7 +50,6 @@ public abstract class Patterns {
     public ArrayList<Wedge> getWedgeList() {
         return wedgeList;
     }
-
     public void setWedgeList(ArrayList<Wedge> wedgeList) {
         this.wedgeList = wedgeList;
     }
