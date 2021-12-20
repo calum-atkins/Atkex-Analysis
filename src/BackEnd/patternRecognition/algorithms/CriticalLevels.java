@@ -123,5 +123,5 @@ public abstract class CriticalLevels {
         }
         return markets;
     }
-    
+
 }
