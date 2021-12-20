@@ -21,7 +21,7 @@
                <graphic>
                   <ImageView fx:id="imageViewLogo" fitHeight="35.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="/img/AtkexLogo.png" />
+                        <Image url="/img/atkex_logo_dark.png" />
                      </image></ImageView>
                </graphic></Menu>
             <Menu mnemonicParsing="false" styleClass="menu-label">

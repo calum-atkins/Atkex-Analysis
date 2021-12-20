@@ -4,7 +4,9 @@ import BackEnd.chart.CandleStickChart;
 import BackEnd.patternRecognition.Patterns;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -138,12 +140,21 @@ public class Market {
      * This class is used to create a single candle with each of its four necessary prices.
      */
     public static class MarketValues {
+        private Date date;
+        private Time time;
         private double open;
         private double close;
         private double high;
         private double low;
 
-        public MarketValues(double open, double close, double high, double low) {
+        public MarketValues(String dateT, double open, double close, double high, double low) {
+            String[] dateTime = dateT.split("T");
+            String[] yearMonthDay = dateTime[0].split("-");
+//            date = new Date(Integer.parseInt(yearMonthDay[0]),
+//                    Integer.parseInt(yearMonthDay[1]),
+//                    Integer.parseInt(yearMonthDay[2]));
+//            System.out.println(date.getMonth());
+            //String[] hourMinute = dateTime[1].split(":");
             this.open = open;
             this.close = close;
             this.high = high;
@@ -163,7 +174,12 @@ public class Market {
         private CandleStickChart candleStickChart;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
         private ArrayList<Double> criticalLevels = new ArrayList<>();
+        private ArrayList<Double> tempSupportLevels = new ArrayList<>();
+        private ArrayList<Double> tempResistanceLevels = new ArrayList<>();
         private ArrayList<Float> minSegments = new ArrayList<>();
+        private ArrayList<Float> maxSegments = new ArrayList<>();
+        private float minimumPrice;
+        private float maximumPrice;
         private String filePath;
         private MarketTimeframe timeframe;
         private double chartYAxisTickValue;
@@ -201,7 +217,22 @@ public class Market {
         public void addMinSegment(float s) {
             minSegments.add(s);
         }
-        public void setMinSegments(ArrayList<Float> minSegments) { this.minSegments = minSegments;
+        public void setMinSegments(ArrayList<Float> minSegments) { this.minSegments = minSegments; }
+
+        public ArrayList<Float> getMaxSegments() { return maxSegments; }
+        public void addMaxSegment(float s) {
+            maxSegments.add(s);
         }
+        public void setMaxSegments(ArrayList<Float> maxSegments) { this.minSegments = maxSegments; }
+
+        public ArrayList<Double> getSupport() { return tempSupportLevels; }
+        public void addSupport(double s) { tempSupportLevels.add(s); }
+        public ArrayList<Double> getResistance() { return tempResistanceLevels; }
+        public void addResistance(double s) { tempResistanceLevels.add(s); }
+
+        public float getMinimumPrice() { return minimumPrice; }
+        public void setMinimumPrice(float minimumPrice) { this.minimumPrice = minimumPrice; }
+        public float getMaximumPrice() { return maximumPrice; }
+        public void setMaximumPrice(float maximumPrice) { this.maximumPrice = maximumPrice; }
     }
 }
