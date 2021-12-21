@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -49,14 +50,20 @@ public class Main extends Application {
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
-        /** Loading screen here */
-
-
-        /** Settings  */
+        System.out.println("Initialising");
         stage.setTitle("Atkex");
         stage.getIcons().add(new Image("/img/atkex_logo_dark.png"));
         stage.setResizable(true);
         //stage.setMaximized(true);
+
+        /** Load loading screen */
+//        stage.setScene(
+//                createScene(
+//                        loadLoadingPane()
+//                )
+//        );
+//        stage.show();
+
 
         /** Load number of markets and initialise array list */
         File directoryP = new File(rawDataLocation);
@@ -66,15 +73,19 @@ public class Main extends Application {
             markets.get(b).setTimeframesStoreSize(NUMBER_OF_TIMEFRAMES);
         }
         marketsSize = contents.length;
+        System.out.println("Array list initialised.");
 
         /** Load segment and range */
         loadSegmentRange();
+        System.out.println("Segments and range loaded successfully.");
 
         /** Load market data */
         loadSaveData();
+        System.out.println("Market data loaded successfully.");
 
         /** Generate Resistance/support */
         generateCriticalLevels();
+        System.out.println("Critical levels generated.");
 
         /** Generate Trends */
 
@@ -84,14 +95,16 @@ public class Main extends Application {
 
         /** Create charts */
         createCharts();
+        System.out.println("Charts created.");
+
 
         /** Load stage */
+        System.out.println("Displaying UI.");
         stage.setScene(
                 createScene(
                         loadMainPane()
                 )
         );
-
         stage.show();
     }
 
@@ -123,6 +136,7 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -301,16 +315,34 @@ public class Main extends Application {
         return mainPane;
     }
 
+    private Pane loadLoadingPane() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        Pane mainPane = (Pane) loader.load(
+                getClass().getResourceAsStream(
+                        "loadingScreen.fxml"
+                )
+        );
+
+        mainPane.setPrefHeight(300);
+        mainPane.setPrefWidth(450);
+        LoadingController loadingController = loader.getController();
+
+        loadingController.test("test");
+
+        return mainPane;
+    }
+
     /**
      * Creates all charts necessary to be displayed.
      * Adds all charts the the array list.
      *
      */
     private void createCharts() {
-        for (int m = 0; m < markets.size(); m++) {
+        for (Market m : markets) {
+            System.out.println("Creating " + m.getIndex() + " chart.");
             for  (int j = 0; j < NUMBER_OF_TIMEFRAMES; j++) {
-                markets.get(m).setCandleStickChart(createChart(markets.get(m), j, false), j);
-                markets.get(m).setCandleStickChartEmpty(createChart(markets.get(m), j, true), j);
+                m.setCandleStickChart(createChart(m, j, false), j);
+                m.setCandleStickChartEmpty(createChart(m, j, true), j);
             }
         }
     }

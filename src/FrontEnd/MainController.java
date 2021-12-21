@@ -202,7 +202,7 @@ public class MainController implements Initializable {
         comboBox.getItems().add("1h");
         comboBox.getItems().add("4h");
         comboBox.getItems().add("D");
-        
+
         getMarkets();
     }
 
