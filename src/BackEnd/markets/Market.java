@@ -83,10 +83,18 @@ public class Market {
     public void setCandleStickChart(CandleStickChart candleStickChart, int i) {
         timeframesDataStore.get(i).setCandleStickChart(candleStickChart);
     }
-
     public CandleStickChart getCandleStickChart(int i) {
         return timeframesDataStore.get(i).getCandleStickChart();
     }
+
+    public void setCandleStickChartEmpty(CandleStickChart candleStickChart, int i) {
+        timeframesDataStore.get(i).setCandleStickChartEmpty(candleStickChart);
+    }
+    public CandleStickChart getCandleStickChartEmpty(int i) {
+        return timeframesDataStore.get(i).getCandleStickChartEmpty();
+    }
+
+
     /**
      * Setters and getters for table columns.
      */
@@ -172,6 +180,7 @@ public class Market {
      */
     public static class StoreData  {
         private CandleStickChart candleStickChart;
+        private CandleStickChart candleStickChartEmpty;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
         private ArrayList<Double> criticalLevels = new ArrayList<>();
         private ArrayList<Double> tempSupportLevels = new ArrayList<>();
@@ -199,6 +208,9 @@ public class Market {
 
         public CandleStickChart getCandleStickChart() { return candleStickChart; }
         public void setCandleStickChart(CandleStickChart candleStickChart) { this.candleStickChart = candleStickChart; }
+
+        public CandleStickChart getCandleStickChartEmpty() { return candleStickChartEmpty; }
+        public void setCandleStickChartEmpty(CandleStickChart candleStickChart) { this.candleStickChartEmpty = candleStickChart; }
 
         public ArrayList<MarketValues> getMarketValues() { return marketValues; }
         public void addMarketValue(MarketValues m) {

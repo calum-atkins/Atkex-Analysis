@@ -44,6 +44,8 @@ public class Main extends Application {
     private final String rawDataFileType = ".csv";
     private final String marketPreferences = "resources/marketPreferences/preferences.csv";
 
+    private boolean criticalLevelsToggle = false;
+
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
@@ -52,7 +54,7 @@ public class Main extends Application {
 
         /** Settings  */
         stage.setTitle("Atkex");
-        stage.getIcons().add(new Image("img/atkex.jpg"));
+        stage.getIcons().add(new Image("/img/atkex_logo_dark.png"));
         stage.setResizable(true);
         //stage.setMaximized(true);
 
@@ -89,6 +91,7 @@ public class Main extends Application {
                         loadMainPane()
                 )
         );
+
         stage.show();
     }
 
@@ -233,17 +236,6 @@ public class Main extends Application {
         markets = CriticalLevels.generateSupportLevels(markets);
         markets = CriticalLevels.generateResistanceLevels(markets);
 
-//        for (Market m : markets) {
-//            for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
-//                for (int j = 0; j < m.getTimeframesDataStore(i).getSupport().size(); j++) {
-//                    m.getTimeframesDataStore(i).addCriticalLevel(m.getTimeframesDataStore(i).getSupport().get(j));
-//                }
-//                for (int j = 0; j < m.getTimeframesDataStore(i).getResistance().size(); j++) {
-//                    m.getTimeframesDataStore(i).addCriticalLevel(m.getTimeframesDataStore(i).getResistance().get(j));
-//                }
-//            }
-//        }
-
         for (Market m : markets) {
             for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
                 for (int j = 0; j < m.getTimeframesDataStore(i).getSupport().size(); j++) {
@@ -252,7 +244,7 @@ public class Main extends Application {
                                 - m.getTimeframesDataStore(i).getMinimumPrice()) / 100;
                         if (((m.getTimeframesDataStore(i).getSupport().get(j) /
                                 m.getTimeframesDataStore(i).getResistance().get(k)) < m.getUpperRange())
-                            && (m.getTimeframesDataStore(i).getSupport().get(j) /
+                                && (m.getTimeframesDataStore(i).getSupport().get(j) /
                                 m.getTimeframesDataStore(i).getResistance().get(k)) > m.getLowerRange()) {
                             m.getTimeframesDataStore(i).addCriticalLevel(
                                     (m.getTimeframesDataStore(i).getSupport().get(j) +
@@ -317,7 +309,8 @@ public class Main extends Application {
     private void createCharts() {
         for (int m = 0; m < markets.size(); m++) {
             for  (int j = 0; j < NUMBER_OF_TIMEFRAMES; j++) {
-                markets.get(m).setCandleStickChart(createChart(markets.get(m), j), j);
+                markets.get(m).setCandleStickChart(createChart(markets.get(m), j, false), j);
+                markets.get(m).setCandleStickChartEmpty(createChart(markets.get(m), j, true), j);
             }
         }
     }
@@ -328,7 +321,7 @@ public class Main extends Application {
      * @param j market timeframe to set chart to
      * @return Viewable candle stick chart
      */
-    public CandleStickChart createChart(Market market, int j) {
+    public CandleStickChart createChart(Market market, int j, boolean empty) {
         double xAxisLowerBound = getXAxisLowerBound(market.getTimeframesDataStore(j).getMarketValues());
         double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
@@ -364,13 +357,18 @@ public class Main extends Application {
         }
 
         // add horizontal markers
-        for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
-            XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>
-                    (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
-            bc.addHorizontalValueMarker(horizontalMarker,
-                    market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
+        if (empty) {
+            return bc;
+        } else {
+            for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
+                XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>
+                        (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
+                bc.addHorizontalValueMarker(horizontalMarker,
+                        market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
+            }
+
+            return bc;
         }
-        return bc;
     }
 
     /**

@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -58,9 +59,13 @@ public class MainController implements Initializable {
 
     @FXML
     private ComboBox comboBox;
+    @FXML
+    private CheckBox checkBoxCriticalLevels;
+
+    private boolean criticalLevelsCheck = false;
 
     /** Array list to store market data. */
-    private static ArrayList<Market> marketsData = new ArrayList<>();
+    private static ArrayList<Market> markets = new ArrayList<>();
 
     /** List to display market data to markets table. */
     ObservableList<Market> marketsList = FXCollections.observableArrayList();
@@ -95,27 +100,86 @@ public class MainController implements Initializable {
             }
         }
         if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
-            System.out.println("test");
-            selectedMarket = marketsData.get(0);
+            selectedMarket = markets.get(0);
         }
         System.out.println(selectedMarket.getIndex() + " Selected || " + currentTimeframe.toString() + " Timeframe");
-        for (int i = 0; i < marketsData.size();i++) {
-            if (marketsData.get(i).getIndex().equals(selectedMarket.getIndex())) {
+        for (int i = 0; i < markets.size();i++) {
+            if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
                 switch (currentTimeframe) {
                     case FOUR_HOUR:
-                        ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
+                        if (criticalLevelsCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
+                        } else {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartEmpty());
+                        }
                         break;
                     case DAY:
-                        ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
+                        if (criticalLevelsCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
+                        } else {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartEmpty());
+                        }
                         break;
                     default:
-                        ChartSelector.loadChart(
-                                ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
+                        if (criticalLevelsCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
+                        } else {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartEmpty());
+                        }
                         break;
                 }
             }
+        }
+    }
+
+    @FXML void toggleCriticalLevels() {
+        Market selectedMarket = marketsTableView.getSelectionModel().getSelectedItem();
+        if (criticalLevelsCheck) {
+            for (int i = 0; i < markets.size(); i++) {
+                if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
+                    switch (currentTimeframe) {
+                        case FOUR_HOUR:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartEmpty());
+                            break;
+                        case DAY:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartEmpty());
+                            break;
+                        default:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartEmpty());
+                            break;
+                    }
+                }
+            }
+            criticalLevelsCheck = false;
+        } else {
+            for (int i = 0; i < markets.size(); i++) {
+                if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
+                    switch (currentTimeframe) {
+                        case FOUR_HOUR:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
+                            break;
+                        case DAY:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
+                            break;
+                        default:
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
+                            break;
+                    }
+                }
+            }
+            criticalLevelsCheck = true;
         }
     }
 
@@ -130,19 +194,21 @@ public class MainController implements Initializable {
         statusColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableStatusColumn"));
         trendColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableTrendColumn"));
 
+        imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
+
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         comboBox.getItems().add("1h");
         comboBox.getItems().add("4h");
         comboBox.getItems().add("D");
-
+        
         getMarkets();
     }
 
-    public void setMarkets(ArrayList<Market> markets) { this.marketsData = markets; }
+    public void setMarkets(ArrayList<Market> markets) { this.markets = markets; }
 
-    public ArrayList<Market> getMarketsData() { return marketsData; }
+    public ArrayList<Market> getMarketsData() { return markets; }
 
     public void setChart(Node node) { chartView.getChildren().setAll(node); }
 
@@ -152,11 +218,11 @@ public class MainController implements Initializable {
      * @return the observable list.
      */
     public ObservableList<Market> getMarkets() {
-        for (int i = 0; i < marketsData.size(); i++) {
+        for (int i = 0; i < markets.size(); i++) {
             marketsList.add(new Market(
-                    marketsData.get(i).getIndex(),
-                    marketsData.get(i).getStatus(),
-                    marketsData.get(i).getTrend()));
+                    markets.get(i).getIndex(),
+                    markets.get(i).getStatus(),
+                    markets.get(i).getTrend()));
         }
         return marketsList;
     }
