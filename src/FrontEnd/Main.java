@@ -7,6 +7,7 @@ import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
 
 import BackEnd.patternRecognition.algorithms.CriticalLevels;
+import BackEnd.patternRecognition.algorithms.MarketTrends;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,7 +89,8 @@ public class Main extends Application {
         System.out.println("Critical levels generated.");
 
         /** Generate Trends */
-
+        generateTrends();
+        System.out.println("Trend lines generated.");
 
         /** Generate Patterns */
 
@@ -267,6 +269,15 @@ public class Main extends Application {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Method to generate trend for each market.
+     */
+    private void generateTrends() {
+        for (Market m : markets) {
+            m.setTrend(MarketTrends.dayTrend(m.getTimeframesDataStore(0)));
         }
     }
 
