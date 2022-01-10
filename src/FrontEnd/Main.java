@@ -51,7 +51,7 @@ public class Main extends Application {
     /** start method to initialise application */
     @Override
     public void start(Stage stage) throws Exception{
-        System.out.println("Initialising");
+        System.out.println("Initialising..");
         stage.setTitle("Atkex");
         stage.getIcons().add(new Image("/img/atkex_logo_dark.png"));
         stage.setResizable(true);

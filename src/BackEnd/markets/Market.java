@@ -162,14 +162,12 @@ public class Market {
 
         public MarketValues(String dateT, double open, double close, double high, double low) {
             String[] dateTime = dateT.split("T");
-            String[] yearMonthDay = dateTime[0].split("-");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
-                this.date = sdf.parse(dateTime[0]);
+                this.date = sdf.parse(dateT);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            //String[] hourMinute = dateTime[1].split(":");
             this.open = open;
             this.close = close;
             this.high = high;

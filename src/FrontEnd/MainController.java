@@ -156,6 +156,12 @@ public class MainController implements Initializable {
 
     @FXML void toggleCriticalLevels() {
         Market selectedMarket = marketsTableView.getSelectionModel().getSelectedItem();
+        if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
+            selectedMarket = markets.get(0);
+        }
+        if (comboBox.getSelectionModel().getSelectedItem() == null) {
+            currentTimeframe = MarketTimeframe.ONE_HOUR;
+        }
         if (criticalLevelsCheck) {
             for (int i = 0; i < markets.size(); i++) {
                 if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
@@ -265,10 +271,20 @@ public class MainController implements Initializable {
             default: timeframeInteger = 2; break;
         }
 
+        int marketNumber = 0;
+        for (int i = 0; i < markets.size(); i++) {
+            if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
+                marketNumber = i;
+            }
+        }
+
+        int numberOfCandles = markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().size();
         textArea.clear();
         textArea.appendText(selectedMarket.getIndex().toString() + "\n");
         /** FIX THIS HERE TOMORROW */
-        textArea.appendText("Start Date: " + selectedMarket.getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
+        textArea.appendText("Start Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
+        textArea.appendText("End Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(numberOfCandles - 1).getDate() + "\n");
+        textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
         textArea.appendText(currentTimeframe.toString());
 
     }
