@@ -5,6 +5,8 @@ import BackEnd.patternRecognition.Patterns;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -22,6 +24,7 @@ public class Market {
     private MarketTimeframe currentTimeFrame = MarketTimeframe.DAY;
     private int segment;
     private double lowerRange, upperRange;
+    private double trendIndicatorPercentage;
 
     /**
      * Array list of StoreData holding information on (x) amount
@@ -94,7 +97,6 @@ public class Market {
         return timeframesDataStore.get(i).getCandleStickChartEmpty();
     }
 
-
     /**
      * Setters and getters for table columns.
      */
@@ -112,7 +114,7 @@ public class Market {
     public void setTableTrendColumn(String tableTrendColumn) { this.tableTrendColumn.set(tableTrendColumn); }
 
     /**
-     * Setters and getters for market index, status, timeframe and segment.
+     * Setters and getters for market index, status, timeframe, segment and trend percentage.
      */
     public String getIndex() { return index; }
     public void setIndex(String index) { this.index = index; }
@@ -128,6 +130,9 @@ public class Market {
 
     public int getSegment() { return segment; }
     public void setSegment(int segment) { this.segment = segment; }
+
+    public double getTrendIndicatorPercentage() { return trendIndicatorPercentage; }
+    public void setTrendIndicatorPercentage(double trendIndicatorPercentage) { this.trendIndicatorPercentage = trendIndicatorPercentage; }
 
     /**
      * Setter and getters for lower range and upper range value.
@@ -158,10 +163,12 @@ public class Market {
         public MarketValues(String dateT, double open, double close, double high, double low) {
             String[] dateTime = dateT.split("T");
             String[] yearMonthDay = dateTime[0].split("-");
-//            date = new Date(Integer.parseInt(yearMonthDay[0]),
-//                    Integer.parseInt(yearMonthDay[1]),
-//                    Integer.parseInt(yearMonthDay[2]));
-//            System.out.println(date.getMonth());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                this.date = sdf.parse(dateTime[0]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             //String[] hourMinute = dateTime[1].split(":");
             this.open = open;
             this.close = close;
@@ -169,6 +176,7 @@ public class Market {
             this.low = low;
         }
 
+        public Date getDate() { return date; }
         public double getOpen() { return open; }
         public double getClose() { return close; }
         public double getHigh() { return high; }

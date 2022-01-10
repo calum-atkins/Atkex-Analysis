@@ -76,9 +76,9 @@ public class Main extends Application {
         marketsSize = contents.length;
         System.out.println("Array list initialised.");
 
-        /** Load segment and range */
-        loadSegmentRange();
-        System.out.println("Segments and range loaded successfully.");
+        /** Load preferences */
+        loadPreferences();
+        System.out.println("Preferences loaded successfully.");
 
         /** Load market data */
         loadSaveData();
@@ -111,16 +111,16 @@ public class Main extends Application {
     }
 
     /**
-     * Method to load segment and range preferences for support and resistance.
+     * Method to load segment, range and zig zag percentage preferences.
      */
-    private void loadSegmentRange() {
+    private void loadPreferences() {
         String line = "";
         try {
             int j = 1;
             BufferedReader br = new BufferedReader(
                     new FileReader(marketPreferences));
             while ((line = br.readLine()) != null) {
-                if (!line.equals("index,segments,range")) {
+                if (!line.equals("index,segments,range,zigzag")) {
                     String[] values = line.split(",");
                     for (int i = 0; i < marketsSize;i++) {
                         if (values[0].equals(markets.get(i).getIndex())) {
@@ -129,6 +129,8 @@ public class Main extends Application {
 
                             markets.get(i).setLowerRange(Double.parseDouble(values[2]));
                             markets.get(i).setUpperRange(Double.parseDouble(values[2]));
+
+                            markets.get(i).setTrendIndicatorPercentage(Double.parseDouble(values[3]));
                         }
                     }
                 }
@@ -162,7 +164,7 @@ public class Main extends Application {
             float maxOverall;
             for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
                 String path = null;
-                //Set the path
+                /** Set the path depending on the file name (determines the timeframe) */
                 if (marketsList[j].equals(index + oneHourSuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
                     markets.get(marketNum).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.ONE_HOUR);
@@ -177,12 +179,11 @@ public class Main extends Application {
                 }
                 markets.get(marketNum).getTimeframesDataStore(j).setFilePath(path);
 
-
-
+                /** This block is used to store all the time and market prices to individual time frames as market values */
                 try {
                     BufferedReader br = new BufferedReader(
                             new FileReader(markets.get(marketNum).getTimeframesDataStore(j).getFilePath()));
-                    int a = 0;
+                    int segmentIncrement = 0;
                     float min = 0;
                     float max = 0;
                     float[] valueArray = new float[markets.get(marketNum).getSegment()];
@@ -193,7 +194,6 @@ public class Main extends Application {
                             String[] values = line.split(",");
 
                             markets.get(marketNum).getTimeframesDataStore(j).setCurrentPrice(Float.parseFloat(values[4]));
-                            //System.out.println(markets.get(marketNum).getIndex());/**verifcation and add time*/
                             markets.get(marketNum).getTimeframesDataStore(j).addMarketValue(
                                     new Market.MarketValues(
                                             values[0],
@@ -214,19 +214,22 @@ public class Main extends Application {
                                 maxOverall = Float.parseFloat(values[2]);
                             }
 
-                            if (a == 0) {
+                            /** This block finds the min and max price for every 'x' amount of bars
+                             * x = number of candles per segment, defined in preferences
+                             */
+                            if (segmentIncrement == 0) {
                                 min = Float.parseFloat(values[3]);
                             } else if (Float.parseFloat(values[3]) < min) {
                                 min = Float.parseFloat(values[3]);
                             }
-                            if (a == 0) {
+                            if (segmentIncrement == 0) {
                                 max = Float.parseFloat(values[2]);
                             } else if (Float.parseFloat(values[2]) > max) {
                                 max = Float.parseFloat(values[2]);
                             }
-                            a++;
-                            if (a == markets.get(marketNum).getSegment()) {
-                                a = 0;
+                            segmentIncrement++;
+                            if (segmentIncrement == markets.get(marketNum).getSegment()) {
+                                segmentIncrement = 0;
                                 markets.get(marketNum).getTimeframesDataStore(j).addMinSegment(min);
                                 markets.get(marketNum).getTimeframesDataStore(j).addMaxSegment(max);
                             }
@@ -245,7 +248,7 @@ public class Main extends Application {
     }
 
     /**
-     * Method to generate critical levels fo support/resistance.
+     * Method to generate critical levels for support and resistance.
      */
     private void generateCriticalLevels() {
         //Horizontal
@@ -277,7 +280,8 @@ public class Main extends Application {
      */
     private void generateTrends() {
         for (Market m : markets) {
-            m.setTrend(MarketTrends.dayTrend(m.getTimeframesDataStore(0)));
+            m.setTrend(MarketTrends.dayTrend(m.getTimeframesDataStore(0),
+                    m.getTrendIndicatorPercentage()));
         }
     }
 
@@ -326,6 +330,11 @@ public class Main extends Application {
         return mainPane;
     }
 
+    /**
+     * Loader to create a pane for loading screen
+     * @return the loading screen pane
+     * @throws IOException if the pane cannot be loaded
+     */
     private Pane loadLoadingPane() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         Pane mainPane = (Pane) loader.load(
@@ -453,7 +462,6 @@ public class Main extends Application {
         return xAxisUpperBound;
     }
 
-
     /**
      * @return markets array list.
      */
@@ -464,9 +472,13 @@ public class Main extends Application {
      */
     public void setMarkets(ArrayList<Market> markets) { this.markets = markets; }
 
+    /**
+     * @return number of timeframes available within the application
+     */
     public static int getNumberOfTimeframes() {
         return NUMBER_OF_TIMEFRAMES;
     }
 
+    /** Main method */
     public static void main(String[] args) { launch(args); }
 }

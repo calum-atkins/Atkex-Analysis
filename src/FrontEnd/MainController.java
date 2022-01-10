@@ -17,8 +17,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -38,6 +40,11 @@ public class MainController implements Initializable {
     private TableColumn<Market, String> statusColumn;
     @FXML
     private TableColumn<Market, String> trendColumn;
+
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private TextArea textArea;
 
     /**
      * Table and column definitions to display pattern recognition.
@@ -71,11 +78,19 @@ public class MainController implements Initializable {
     ObservableList<Market> marketsList = FXCollections.observableArrayList();
 
     private MarketTimeframe currentTimeframe;
+    private boolean marketsLoaded = false;
 
     public MainController() { }
 
+    /**
+     * Method called on load button press on the UI to display
+     * market list in table.
+     */
     @FXML void loadData() {
-        marketsTableView.setItems(getMarkets());
+        if (!marketsLoaded) {
+            marketsTableView.setItems(getMarkets());
+            marketsLoaded = true;
+        }
     }
 
     /**
@@ -102,6 +117,7 @@ public class MainController implements Initializable {
         if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
             selectedMarket = markets.get(0);
         }
+        reloadScrollPane(selectedMarket, currentTimeframe);
         System.out.println(selectedMarket.getIndex() + " Selected || " + currentTimeframe.toString() + " Timeframe");
         for (int i = 0; i < markets.size();i++) {
             if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
@@ -196,6 +212,9 @@ public class MainController implements Initializable {
 
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
+        textArea.setEditable(false);
+        textArea.appendText("test");
+
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -206,10 +225,16 @@ public class MainController implements Initializable {
         getMarkets();
     }
 
+    /**
+     * Setter and getter for markets data.
+     */
     public void setMarkets(ArrayList<Market> markets) { this.markets = markets; }
-
     public ArrayList<Market> getMarketsData() { return markets; }
 
+    /**
+     * Method to set chart to the UI
+     * @param node chart to display
+     */
     public void setChart(Node node) { chartView.getChildren().setAll(node); }
 
     /**
@@ -225,5 +250,26 @@ public class MainController implements Initializable {
                     markets.get(i).getTrend()));
         }
         return marketsList;
+    }
+
+    /**
+     * Method to refresh the text in the scroll pane.
+     * @param selectedMarket current selected market.
+     * @param currentTimeframe current selected timeframe.
+     */
+    public void reloadScrollPane(Market selectedMarket, MarketTimeframe currentTimeframe) {
+        int timeframeInteger;
+        switch (currentTimeframe) {
+            case DAY: timeframeInteger = 0; break;
+            case FOUR_HOUR: timeframeInteger = 1; break;
+            default: timeframeInteger = 2; break;
+        }
+
+        textArea.clear();
+        textArea.appendText(selectedMarket.getIndex().toString() + "\n");
+        /** FIX THIS HERE TOMORROW */
+        textArea.appendText("Start Date: " + selectedMarket.getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
+        textArea.appendText(currentTimeframe.toString());
+
     }
 }
