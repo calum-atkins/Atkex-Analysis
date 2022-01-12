@@ -5,18 +5,14 @@ import BackEnd.markets.MarketTrend;
 
 import java.util.ArrayList;
 
-
 public abstract class MarketTrends {
 
-    private static boolean first = true;
     /**
      * Calculate the current trend of the market form the day data
      * @param timeframesDataStore day timeframe data
      * @return computed market trend
      */
     public static MarketTrend dayTrend(Market.StoreData timeframesDataStore, double percentageChange) {
-        //Repeat for each value, from start to current date
-//        System.out.println(percentageChange);
         int counter = 0;
         double lastSwing = timeframesDataStore.getMarketValues().get(0).getClose();
         double swingLow = 0;
@@ -40,11 +36,9 @@ public abstract class MarketTrends {
                         if (addHigh) {
                             swingsList.add(swingHigh);
                             addHigh = true;
-                            System.out.println("Here " + swingHigh);
                         }
                     }
                 } else if ((((lastSwing / values.getLow()) - 1) * 100) > percentageChange) {
-                    //System.out.println("here" + values.getLow() + " " + counter);
                     potentialSwingLow = values.getLow();
                     counter = 0;
                     addLow = true;
@@ -61,11 +55,9 @@ public abstract class MarketTrends {
                         if (addLow) {
                             swingsList.add(swingLow);
                             addLow = false;
-                            System.out.println("Here 2 " + swingLow);
                         }
                     }
                 } else if (100 - ((lastSwing / values.getHigh()) * 100) > percentageChange) {
-                    //System.out.println("here 2 " + values.getHigh() + " "  + counter);
                     potentialSwingHigh = values.getHigh();
                     counter = 0;
                     addHigh = true;
@@ -74,7 +66,6 @@ public abstract class MarketTrends {
         }
 
         int size = swingsList.size() - 1;
-        System.out.println(size);
         if (size > 3) {
             if (swingsList.get(size) < swingsList.get(size - 1)) {
                 if (swingsList.get(size - 2) < swingsList.get(size - 3)
@@ -112,7 +103,6 @@ public abstract class MarketTrends {
          *          potentialSwingHigh = high
          *
          */
-
 
         /**
          * Chose start point - Swing Low[0]
