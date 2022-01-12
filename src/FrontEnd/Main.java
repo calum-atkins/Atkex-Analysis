@@ -93,7 +93,8 @@ public class Main extends Application {
         System.out.println("Trend lines generated.");
 
         /** Generate Patterns */
-
+        generatePatterns();
+        System.out.println("Patterns Generated.");
 
         /** Create charts */
         createCharts();
@@ -251,7 +252,6 @@ public class Main extends Application {
      * Method to generate critical levels for support and resistance.
      */
     private void generateCriticalLevels() {
-        //Horizontal
         markets = CriticalLevels.generateSupportLevels(markets);
         markets = CriticalLevels.generateResistanceLevels(markets);
 
@@ -283,6 +283,13 @@ public class Main extends Application {
             m.setTrend(MarketTrends.dayTrend(m.getTimeframesDataStore(0),
                     m.getTrendIndicatorPercentage()));
         }
+    }
+
+    /**
+     * Method to generate patterns for each chart.
+     */
+    private void generatePatterns() {
+
     }
 
     /**
