@@ -25,7 +25,6 @@ public abstract class CriticalLevels {
                 while (!arrayOfMin.isEmpty()) {
                     ArrayList<Float> arrayToSetMin = new ArrayList<>();
 
-
                     //Find the minimum value in array
                     float minOfArray = 0;
                     ArrayList<Float> supportArray = new ArrayList<>();
@@ -38,10 +37,10 @@ public abstract class CriticalLevels {
                         }
                     }
 
-                    //Find any in range
+                    //Find any within range
                     int size = arrayOfMin.size();
                     for (int j = 0; j < size; j++) {
-                        //Remove min value
+                        //Remove minimum value
                         if (arrayOfMin.get(j) == minOfArray) {
                             supportArray.add(minOfArray);
                         } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()

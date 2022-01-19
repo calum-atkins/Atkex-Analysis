@@ -85,3 +85,19 @@
 .anchor-pane {
     -fx-background-color:#B2B2B2;
 }
+
+check-box:selected > .box {
+    /* background color for selected checkbox */
+    -fx-background-color: white;
+}
+
+.check-box > .box {
+    /* background color of unselected checkbox */
+    -fx-background-color: white;
+}
+
+.check-box:selected > .box > .mark,
+.check-box:indeterminate  > .box > .mark {
+    /* modify mark color */
+    -fx-background-color: black;
+}

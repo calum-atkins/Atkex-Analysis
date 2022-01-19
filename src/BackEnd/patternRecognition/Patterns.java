@@ -4,6 +4,7 @@ import BackEnd.markets.Market;
 import BackEnd.markets.MarketTimeframe;
 import BackEnd.markets.Status;
 import BackEnd.patternRecognition.availablePatterns.*;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.lang.reflect.Array;
@@ -11,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Patterns {
+    private String timeframe;
     private Status type;
-    private int profit;
+    private int profitLoss;
+    private int startCandle;
+    private int entryCandle;
+    private String duartion;
     private Date start;
     private Double end;
-    private String timeframe;
 
     private static ArrayList<AscendingTriangle> ascendingTriangleList;
     private ArrayList<DescendingTriangle> descendingTriangleList;
@@ -26,78 +30,81 @@ public class Patterns {
 
     private ArrayList<Patterns> patternsList;
 
-    public Patterns(int tf, Status status, int profit, Date start, Double end) {
+    public Patterns(int tf, Status status, Integer profit, Integer startCandle, Integer entryCandle, String duration) {
         switch (tf) {
             case 2: this.timeframe = "1h"; break;
             case 1: this.timeframe = "4h"; break;
             case 0: this.timeframe = "1d"; break;
         }
         this.type = status;
-        this.profit = profit;
-        this.start = start;
-        this.end = end;
+        this.profitLoss = profit;
+        this.startCandle = startCandle;
+        this.entryCandle = entryCandle;
+        this.duartion = duration;
 
-        this.timeframeColumn = new SimpleStringProperty(getTimeframe());
-        this.patternNumberColumn = new SimpleStringProperty(type.toString());
-        this.profitColumn = new SimpleStringProperty(String.valueOf(profit));
-        this.startColumn = new SimpleStringProperty(String.valueOf(start));
-        this.endColumn = new SimpleStringProperty(String.valueOf(end));
+        this.tableTimeframeColumn = new SimpleStringProperty(timeframe);
+        this.tablePatternNumberColumn = new SimpleStringProperty(type.toString());
+        this.tableProfitLossColumn = new SimpleIntegerProperty(profit);
+        this.tableStartCandleColumn = new SimpleIntegerProperty(startCandle);
+        this.tableEntryCandleColumn = new SimpleIntegerProperty(entryCandle);
+        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(100));
     }
-    public Patterns(String tf, Status status, int profit, Date start, Double end) {
+
+    public Patterns(String tf, Status status, Integer profit, Integer startC, Integer entryC, String duration) {
         this.timeframe = tf;
         this.type = status;
-        this.profit = profit;
-        this.start = start;
-        this.end = end;
+        this.profitLoss = profit;
+        this.startCandle = startCandle;
+        this.entryCandle = entryCandle;
+        this.duartion = duration;
 
-        this.timeframeColumn = new SimpleStringProperty(tf.toString());
-        this.patternNumberColumn = new SimpleStringProperty(type.toString());
-        this.profitColumn = new SimpleStringProperty(String.valueOf(profit));
-        this.startColumn = new SimpleStringProperty(String.valueOf(start));
-        this.endColumn = new SimpleStringProperty(String.valueOf(end));
+        this.tableTimeframeColumn = new SimpleStringProperty(tf.toString());
+        this.tablePatternNumberColumn = new SimpleStringProperty(type.toString());
+        this.tableProfitLossColumn = new SimpleIntegerProperty(profit);
+        this.tableStartCandleColumn = new SimpleIntegerProperty(startC);
+        this.tableEntryCandleColumn = new SimpleIntegerProperty(entryC);
+        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(100));
     }
 
     /** Data columns for table. */
-    private SimpleStringProperty timeframeColumn, patternNumberColumn, profitColumn, startColumn, endColumn;
+    private SimpleStringProperty tableTimeframeColumn, tablePatternNumberColumn,  tableDurationColumn;
+    private SimpleIntegerProperty tableProfitLossColumn, tableStartCandleColumn, tableEntryCandleColumn;
 
-    public String getTimeframeColumn() { return timeframeColumn.get(); }
-    public SimpleStringProperty timeframeColumnProperty() { return timeframeColumn; }
-    public void setTimeframeColumn(String timeframeColumn) { this.timeframeColumn.set(timeframeColumn); }
+    public String getTableTimeframeColumn() { return tableTimeframeColumn.get(); }
+    public SimpleStringProperty tableTimeframeColumnProperty() { return tableTimeframeColumn; }
+    public void setTableTimeframeColumn(String tableTimeframeColumn) { this.tableTimeframeColumn.set(tableTimeframeColumn); }
 
-    public String getPatternNumberColumn() { return patternNumberColumn.get(); }
-    public SimpleStringProperty patternNumberColumnProperty() { return patternNumberColumn; }
-    public void setPatternNumberColumn(String patternNumberColumn) { this.patternNumberColumn.set(patternNumberColumn); }
+    public String getTablePatternNumberColumn() { return tablePatternNumberColumn.get(); }
+    public SimpleStringProperty tablePatternNumberColumnProperty() { return tablePatternNumberColumn; }
+    public void setTablePatternNumberColumn(String tablePatternNumberColumn) { this.tablePatternNumberColumn.set(tablePatternNumberColumn); }
 
-    public String getProfitColumn() { return profitColumn.get(); }
-    public SimpleStringProperty profitColumnProperty() { return profitColumn; }
-    public void setProfitColumn(String profitColumn) { this.profitColumn.set(profitColumn); }
+    public Integer getTableProfitLossColumn() { return tableProfitLossColumn.get(); }
+    public SimpleIntegerProperty tableProfitLossColumnProperty() { return tableProfitLossColumn; }
+    public void setTableProfitLossColumn(Integer tableProfitLossColumn) { this.tableProfitLossColumn.set(tableProfitLossColumn); }
 
-    public String getStartColumn() { return startColumn.get(); }
-    public SimpleStringProperty startColumnProperty() { return startColumn; }
-    public void setStartColumn(String startColumn) { this.startColumn.set(startColumn); }
+    public Integer getTableStartCandleColumn() { return tableStartCandleColumn.get(); }
+    public SimpleIntegerProperty tableStartCandleColumnProperty() { return tableStartCandleColumn; }
+    public void setTableStartColumn(Integer tableStartCandleColumn) { this.tableStartCandleColumn.set(tableStartCandleColumn); }
 
-    public String getEndColumn() { return endColumn.get(); }
-    public SimpleStringProperty endColumnProperty() { return endColumn; }
-    public void setEndColumn(String endColumn) { this.endColumn.set(endColumn); }
+    public Integer getTableEntryCandleColumn() { return tableEntryCandleColumn.get(); }
+    public SimpleIntegerProperty tableEntryCandleColumnProperty() { return tableEntryCandleColumn; }
+    public void setTableEntryCandleColumn(Integer tableEntryCandleColumn) { this.tableEntryCandleColumn.set(tableEntryCandleColumn); }
 
-//    public ArrayList<Patterns> findAllPatterns(ArrayList<Market> markets) {
-//        /**
-//         * Algorithm Here
-//         * Do something to find triangle if found then
-//         */
-//        patternsList.add(new Patterns(Status.ASCENDING_TRIANGLE, 100, 1, 1));
-//
-//        return null;
-//    }
-
+    public String getTableDurationColumn() { return tableDurationColumn.get(); }
+    public SimpleStringProperty tableDurationColumnProperty() { return tableDurationColumn; }
+    public void setTableDurationColumn(String tableDurationColumn) { this.tableDurationColumn.set(tableDurationColumn); }
 
     public String getTimeframe() {return timeframe; }
     public Status getType() {
         return type;
     }
-    public int getProfit() {
-        return profit;
+    public int getProfitLoss() {
+        return profitLoss;
     }
+    public int getStartCandle() { return startCandle; }
+    public int getEntryCandle() { return entryCandle; }
+    public String getDuration() { return duartion; }
+
     public Date getStart() {
         return start;
     }
@@ -105,46 +112,4 @@ public class Patterns {
         return end;
     }
 
-
-
-    public void addAscendingTriangle(AscendingTriangle ascendingTriangle) { ascendingTriangleList.add(ascendingTriangle); }
-    public ArrayList<AscendingTriangle> getAscendingTriangleList() {
-        return ascendingTriangleList;
-    }
-    public void setAscendingTriangleList(ArrayList<AscendingTriangle> ascendingTriangleList) {
-        this.ascendingTriangleList = ascendingTriangleList;
-    }
-
-    public ArrayList<DescendingTriangle> getDescendingTriangleList() {
-        return descendingTriangleList;
-    }
-    public void setDescendingTriangleList(ArrayList<DescendingTriangle> descendingTriangleList) {
-        this.descendingTriangleList = descendingTriangleList;
-    }
-
-    public ArrayList<DoubleBottom> getDoubleBottomList() {
-        return doubleBottomList;
-    }
-    public void setDoubleBottomList(ArrayList<DoubleBottom> doubleBottomList) { this.doubleBottomList = doubleBottomList; }
-
-    public ArrayList<DoubleTop> getDoubleTopList() {
-        return doubleTopList;
-    }
-    public void setDoubleTopList(ArrayList<DoubleTop> doubleTopList) {
-        this.doubleTopList = doubleTopList;
-    }
-
-    public ArrayList<Pennant> getPennantList() {
-        return pennantList;
-    }
-    public void setPennantList(ArrayList<Pennant> pennantList) {
-        this.pennantList = pennantList;
-    }
-
-    public ArrayList<Wedge> getWedgeList() {
-        return wedgeList;
-    }
-    public void setWedgeList(ArrayList<Wedge> wedgeList) {
-        this.wedgeList = wedgeList;
-    }
 }

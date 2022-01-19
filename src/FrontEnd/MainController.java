@@ -57,9 +57,11 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Patterns, String> profitLossColumn;
     @FXML
-    private TableColumn<Patterns, String> startColumn;
+    private TableColumn<Patterns, String> startCandleColumn;
     @FXML
-    private TableColumn<Patterns, String> endColumn;
+    private TableColumn<Patterns, String> entryCandleColumn;
+    @FXML
+    private TableColumn<Patterns, String> durationColumn;
 
     @FXML
     private ImageView imageViewLogo;
@@ -91,7 +93,9 @@ public class MainController implements Initializable {
     private MarketTimeframe currentTimeframe;
     private boolean marketsLoaded = false;
 
-    public MainController() { }
+    public MainController() {
+
+    }
 
     /**
      * Method called on load button press on the UI to display
@@ -228,12 +232,12 @@ public class MainController implements Initializable {
         statusColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableStatusColumn"));
         trendColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableTrendColumn"));
 
-        timeframeColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("timeframeColumn"));
-        patternNumberColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("patternNumberColumn"));
-        profitLossColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("profitLossColumn"));
-        startColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("startColumn"));
-        endColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("endColumn"));
-
+        timeframeColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tableTimeframeColumn"));
+        patternNumberColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tablePatternNumberColumn"));
+        profitLossColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tableProfitLossColumn"));
+        startCandleColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tableStartCandleColumn"));
+        entryCandleColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tableEntryCandleColumn"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("tableDurationColumn"));
 
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
@@ -246,9 +250,6 @@ public class MainController implements Initializable {
         comboBox.getItems().add("1h");
         comboBox.getItems().add("4h");
         comboBox.getItems().add("D");
-
-        //
-        // getMarkets();
 
     }
 
@@ -283,12 +284,13 @@ public class MainController implements Initializable {
         for (Market m : markets) {
             if (selected.getIndex().equals(m.getIndex())) {
                 for (int i = 0; i < m.getPatternsList().size(); i++) {
-                    System.out.println(m.getPatternsList().get(i).getTimeframe());
+                    System.out.println(m.getPatternsList().get(i).getStartCandle());
                     patternsList.add(new Patterns(m.getPatternsList().get(i).getTimeframe(),
                             m.getPatternsList().get(i).getType(),
-                            m.getPatternsList().get(i).getProfit(),
-                            m.getPatternsList().get(i).getStart(),
-                            m.getPatternsList().get(i).getEnd()));
+                            m.getPatternsList().get(i).getProfitLoss(),
+                            m.getPatternsList().get(i).getStartCandle(),
+                            m.getPatternsList().get(i).getEntryCandle(),
+                            m.getPatternsList().get(i).getDuration()));
                 }
             }
 
