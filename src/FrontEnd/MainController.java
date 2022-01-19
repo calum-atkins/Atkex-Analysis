@@ -3,8 +3,9 @@ package FrontEnd;
 
 import BackEnd.markets.Market;
 import BackEnd.markets.MarketTimeframe;
-import BackEnd.patternRecognition.Patterns;
 
+
+import BackEnd.patternRecognition.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,10 +18,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 
 
-import javax.swing.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -51,6 +50,16 @@ public class MainController implements Initializable {
      */
     @FXML
     private TableView<Patterns> patternsTableView;
+    @FXML
+    private TableColumn<Patterns, String> timeframeColumn;
+    @FXML
+    private TableColumn<Patterns, String> patternNumberColumn;
+    @FXML
+    private TableColumn<Patterns, String> profitLossColumn;
+    @FXML
+    private TableColumn<Patterns, String> startColumn;
+    @FXML
+    private TableColumn<Patterns, String> endColumn;
 
     @FXML
     private ImageView imageViewLogo;
@@ -76,6 +85,8 @@ public class MainController implements Initializable {
 
     /** List to display market data to markets table. */
     ObservableList<Market> marketsList = FXCollections.observableArrayList();
+    ObservableList<Patterns> patternsList = FXCollections.observableArrayList();
+
 
     private MarketTimeframe currentTimeframe;
     private boolean marketsLoaded = false;
@@ -118,6 +129,7 @@ public class MainController implements Initializable {
             selectedMarket = markets.get(0);
         }
         reloadScrollPane(selectedMarket, currentTimeframe);
+        reloadPatternTable(selectedMarket);
         System.out.println(selectedMarket.getIndex() + " Selected || " + currentTimeframe.toString() + " Timeframe");
         for (int i = 0; i < markets.size();i++) {
             if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
@@ -216,6 +228,13 @@ public class MainController implements Initializable {
         statusColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableStatusColumn"));
         trendColumn.setCellValueFactory(new PropertyValueFactory<Market, String>("tableTrendColumn"));
 
+        timeframeColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("timeframeColumn"));
+        patternNumberColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("patternNumberColumn"));
+        profitLossColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("profitLossColumn"));
+        startColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("startColumn"));
+        endColumn.setCellValueFactory(new PropertyValueFactory<Patterns, String>("endColumn"));
+
+
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
         textArea.setEditable(false);
@@ -228,7 +247,9 @@ public class MainController implements Initializable {
         comboBox.getItems().add("4h");
         comboBox.getItems().add("D");
 
-        getMarkets();
+        //
+        // getMarkets();
+
     }
 
     /**
@@ -256,6 +277,23 @@ public class MainController implements Initializable {
                     markets.get(i).getTrend()));
         }
         return marketsList;
+    }
+
+    public ObservableList<Patterns> getPatterns(Market selected) {
+        for (Market m : markets) {
+            if (selected.getIndex().equals(m.getIndex())) {
+                for (int i = 0; i < m.getPatternsList().size(); i++) {
+                    System.out.println(m.getPatternsList().get(i).getTimeframe());
+                    patternsList.add(new Patterns(m.getPatternsList().get(i).getTimeframe(),
+                            m.getPatternsList().get(i).getType(),
+                            m.getPatternsList().get(i).getProfit(),
+                            m.getPatternsList().get(i).getStart(),
+                            m.getPatternsList().get(i).getEnd()));
+                }
+            }
+
+        }
+        return patternsList;
     }
 
     /**
@@ -286,5 +324,13 @@ public class MainController implements Initializable {
         textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
         textArea.appendText(currentTimeframe.toString());
 
+    }
+    public void reloadPatternTable(Market selectedMarket) {
+        for (Market m : markets) {
+            if (m.getIndex().equals(selectedMarket.getIndex())) {
+                patternsTableView.getItems().clear();
+                patternsTableView.setItems(getPatterns(selectedMarket));
+            }
+        }
     }
 }

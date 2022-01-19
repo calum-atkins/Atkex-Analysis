@@ -2,6 +2,7 @@ package BackEnd.markets;
 
 import BackEnd.chart.CandleStickChart;
 import BackEnd.patternRecognition.Patterns;
+import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.sql.Time;
@@ -25,6 +26,19 @@ public class Market {
     private int segment;
     private double lowerRange, upperRange;
     private double trendIndicatorPercentage;
+    private ArrayList<Double> supportResistanceLevels = new ArrayList<>();
+
+    public ArrayList<Double> getSupportResistanceLevels() {
+        return supportResistanceLevels;
+    }
+
+    public void setSupportResistanceLevels(ArrayList<Double> supportResistanceLevels) {
+        this.supportResistanceLevels = supportResistanceLevels;
+    }
+
+    public void addSupportResistanceLevels(Double supportResistanceLevel) {
+        supportResistanceLevels.add(supportResistanceLevel);
+    }
 
     /**
      * Array list of StoreData holding information on (x) amount
@@ -36,7 +50,7 @@ public class Market {
     private ArrayList<StoreData> timeframesDataStore = new ArrayList<StoreData>();
 
     /** Array list to store a list of market values. */
-    private Patterns patternsList;//do same as store data
+    private ArrayList<Patterns> patternsList = new ArrayList<Patterns>();//do same as store data
 
     /** Data columns for table. */
     private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
@@ -101,15 +115,14 @@ public class Market {
      * Setters and getters for table columns.
      */
     public String getTableIndexColumn() { return tableIndexColumn.get(); }
-
     public SimpleStringProperty tableIndexColumnProperty() { return tableIndexColumn; }
     public void setTableIndexColumn(String tableIndexColumn) { this.tableIndexColumn.set(tableIndexColumn); }
-    public String getTableStatusColumn() { return tableStatusColumn.get(); }
 
+    public String getTableStatusColumn() { return tableStatusColumn.get(); }
     public SimpleStringProperty tableStatusColumnProperty() { return tableStatusColumn; }
     public void setTableStatusColumn(String tableStatusColumn) { this.tableStatusColumn.set(tableStatusColumn); }
-    public String getTableTrendColumn() { return tableTrendColumn.get(); }
 
+    public String getTableTrendColumn() { return tableTrendColumn.get(); }
     public SimpleStringProperty tableTrendColumnProperty() { return tableTrendColumn; }
     public void setTableTrendColumn(String tableTrendColumn) { this.tableTrendColumn.set(tableTrendColumn); }
 
@@ -148,6 +161,15 @@ public class Market {
         range = (range / 100) + 1;
         this.upperRange = range;
     }
+
+    /**
+     * Added and getter for patterns identified
+     */
+    public ArrayList<Patterns> getPatternsList() { return patternsList; }
+    public void setPatternsList(ArrayList<Patterns> patternsList) { this.patternsList = patternsList; }
+
+    //public void addPatternAT(AscendingTriangle pattern) { patternsList.add(pattern); }
+
 
     /**
      * This class is used to create a single candle with each of its four necessary prices.
@@ -189,6 +211,8 @@ public class Market {
         private CandleStickChart candleStickChartEmpty;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
         private ArrayList<Double> criticalLevels = new ArrayList<>();
+        private ArrayList<Double> resistanceLevels = new ArrayList<>();
+        private ArrayList<Double> supportLevels = new ArrayList<>();
         private ArrayList<Double> tempSupportLevels = new ArrayList<>();
         private ArrayList<Double> tempResistanceLevels = new ArrayList<>();
         private ArrayList<Float> minSegments = new ArrayList<>();
@@ -199,6 +223,13 @@ public class Market {
         private MarketTimeframe timeframe;
         private double chartYAxisTickValue;
         private float currentPrice;
+
+        private ArrayList<AscendingTriangle> atList = new ArrayList<AscendingTriangle>();
+
+        public void addAT(AscendingTriangle at) { atList.add(at); }
+        public ArrayList<AscendingTriangle> getAtList() {
+            return atList;
+        }
 
         public float getCurrentPrice() { return currentPrice; }
         public void setCurrentPrice(float currentPrice) { this.currentPrice = currentPrice; }
@@ -224,8 +255,14 @@ public class Market {
         }
 
         public void setMarketValues(ArrayList<MarketValues> marketValues) { this.marketValues = marketValues; }
-        public ArrayList<Double> getCriticalLevels() { return criticalLevels; }
 
+        public ArrayList<Double> getResistanceLevels() { return resistanceLevels; }
+        public void addResistanceLevel(double r) {
+            resistanceLevels.add(r);
+        }
+        public void setResistanceLevels(ArrayList<Double> resistanceLevels) { this.resistanceLevels = resistanceLevels; }
+
+        public ArrayList<Double> getCriticalLevels() { return criticalLevels; }
         public void addCriticalLevel(double c) {
             criticalLevels.add(c);
         }

@@ -6,8 +6,10 @@ import BackEnd.markets.MarketTrend;
 import BackEnd.markets.Status;
 import BackEnd.chart.CandleStickChart;
 
+import BackEnd.patternRecognition.Patterns;
 import BackEnd.patternRecognition.algorithms.CriticalLevels;
 import BackEnd.patternRecognition.algorithms.MarketTrends;
+import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -268,11 +270,22 @@ public class Main extends Application {
                             m.getTimeframesDataStore(i).addCriticalLevel(
                                     (m.getTimeframesDataStore(i).getSupport().get(j) +
                                             m.getTimeframesDataStore(i).getResistance().get(k)) / 2);
+                            m.getTimeframesDataStore(i).addResistanceLevel(
+                                    (m.getTimeframesDataStore(i).getSupport().get(j) +
+                                            m.getTimeframesDataStore(i).getResistance().get(k)) / 2);
                         }
+                        //Adding level to array
+                        //System.out.println(m.getTimeframesDataStore(i).getResistance().get(k));
                     }
+                    //Adding level to array
+                    //m.addSupportResistanceLevels(m.getTimeframesDataStore(i).getSupport().get(j));
                 }
+
             }
         }
+
+
+
     }
 
     /**
@@ -289,7 +302,10 @@ public class Main extends Application {
      * Method to generate patterns for each chart.
      */
     private void generatePatterns() {
-
+        for (Market m : markets) {
+            //markets = AscendingTriangle.findAscendingTriangles(markets);
+            m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
+        }
     }
 
     /**
@@ -326,8 +342,8 @@ public class Main extends Application {
                 )
         );
 
-        mainPane.setPrefHeight(600);
-        mainPane.setPrefWidth(900);
+        mainPane.setPrefHeight(800);
+        mainPane.setPrefWidth(1200);
         MainController mainController = loader.getController();
 
         ChartSelector.setMainController(mainController);
