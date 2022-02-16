@@ -404,11 +404,11 @@ public class Main extends Application {
         final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, market.getTimeframesDataStore(j).getChartYAxisTickValue());
 
         final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
-        // setup chart
+        /** Setup chart. */
         bc.setTitle(market.getIndex() + " Chart");
         xAxis.setLabel(market.getTimeframesDataStore(j).getTimeframe().toString());
         yAxis.setLabel("Price");
-        // add starting data
+        /** Add starting data. */
         XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
 
         for (int i = 0; i < market.getTimeframesDataStore(j).getMarketValues().size(); i++) {
@@ -431,7 +431,7 @@ public class Main extends Application {
             bc.getData().add(series);
         }
 
-        // add horizontal markers
+        /** Add critical levels to the chart. */
         if (empty) {
             return bc;
         } else {
@@ -441,7 +441,6 @@ public class Main extends Application {
                 bc.addHorizontalValueMarker(horizontalMarker,
                         market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
             }
-
             return bc;
         }
     }

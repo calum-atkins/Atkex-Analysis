@@ -11,13 +11,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class is used to store all the patterns detected on each market.
+ */
 public class Patterns {
     private String timeframe;
     private Status type;
     private int profitLoss;
     private int startCandle;
     private int entryCandle;
-    private String duartion;
+    private String duration;
     private Date start;
     private Double end;
 
@@ -40,14 +43,14 @@ public class Patterns {
         this.profitLoss = profit;
         this.startCandle = startCandle;
         this.entryCandle = entryCandle;
-        this.duartion = duration;
+        this.duration = duration;
 
         this.tableTimeframeColumn = new SimpleStringProperty(timeframe);
         this.tablePatternNumberColumn = new SimpleStringProperty(type.toString());
         this.tableProfitLossColumn = new SimpleIntegerProperty(profit);
         this.tableStartCandleColumn = new SimpleIntegerProperty(startCandle);
         this.tableEntryCandleColumn = new SimpleIntegerProperty(entryCandle);
-        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(100));
+        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(duration));
     }
 
     public Patterns(String tf, Status status, Integer profit, Integer startC, Integer entryC, String duration) {
@@ -56,14 +59,14 @@ public class Patterns {
         this.profitLoss = profit;
         this.startCandle = startCandle;
         this.entryCandle = entryCandle;
-        this.duartion = duration;
+        this.duration = duration;
 
         this.tableTimeframeColumn = new SimpleStringProperty(tf.toString());
         this.tablePatternNumberColumn = new SimpleStringProperty(type.toString());
         this.tableProfitLossColumn = new SimpleIntegerProperty(profit);
         this.tableStartCandleColumn = new SimpleIntegerProperty(startC);
         this.tableEntryCandleColumn = new SimpleIntegerProperty(entryC);
-        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(100));
+        this.tableDurationColumn = new SimpleStringProperty(String.valueOf(duration));
     }
 
     /** Data columns for table. */
@@ -103,7 +106,7 @@ public class Patterns {
     }
     public int getStartCandle() { return startCandle; }
     public int getEntryCandle() { return entryCandle; }
-    public String getDuration() { return duartion; }
+    public String getDuration() { return duration; }
 
     public Date getStart() {
         return start;

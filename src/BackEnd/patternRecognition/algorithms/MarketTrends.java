@@ -87,37 +87,5 @@ public abstract class MarketTrends {
         }
         /** If there is no current trend */
         return MarketTrend.NO_TREND;
-
-        /**
-         * Get first close price = lastSwing
-         *
-         * lastSwing = close
-         *
-         * for i
-         * { if (low < lastSwing)
-         *      if (low >  swingLow)
-         *          swingLow = potentialSwingLow
-         *          lastSwing = swingLow
-         *      if (lastSwing/low)-1)*100) > percentageChange }
-         *          potentialSwingLow = low
-         *
-         * { if (high > lastSwing)
-         *      if (high < swingHigh)
-         *          swingHigh = potentialSwingHigh
-         *          lastSwing = swingHigh
-         *      if (100-((swingLow/high)*100) > percentageChange }
-         *          potentialSwingHigh = high
-         *
-         */
-
-        /**
-         * Chose start point - Swing Low[0]
-         * Use percentage movement - percentageChange
-         * identify next swing high[0] that has >% difference from swing Low[0]
-         * Identify next swing low[1] that has >% difference from swing high[0]
-         * Repeat until at most recent swing low/high
-         */
-
-
     }
 }

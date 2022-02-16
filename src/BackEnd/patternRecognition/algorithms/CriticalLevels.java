@@ -5,27 +5,29 @@ import FrontEnd.Main;
 
 import java.util.ArrayList;
 
+/**
+ * Class is used to declare and define functions that are used to find critical price levels
+ * Two methods are used to find all levels of Support and one for Resistance
+ *
+ * To find the levels, The model separates the candles into 'segments' that can be used to find
+ * the price action that is passed through the most, and repeat until there is 'strong' prices (a lot of price action)
+ */
 public abstract class CriticalLevels {
 
-
-    public static ArrayList<Double> start(Market market) {
-        return null;
-    }
-
-    public ArrayList<Market> getHorizontalSupportResistance() {
-        return null;
-    }
-
+    /**
+     * @param markets array list of all the market data
+     * @return the market array list is edited to add support levels and returned
+     */
     public static ArrayList<Market> generateSupportLevels(ArrayList<Market> markets) {
         for (Market m : markets) {
             for (int i = 0; i < Main.getNumberOfTimeframes(); i++) {
-                //Segments
+                /** Define an array to store the segments */
                 ArrayList<Float> arrayOfMin = m.getTimeframesDataStore(i).getMinSegments();
-                //Repeat until array is empty
+                /** Repeat until array is empty */
                 while (!arrayOfMin.isEmpty()) {
                     ArrayList<Float> arrayToSetMin = new ArrayList<>();
 
-                    //Find the minimum value in array
+                    /** Find the minimum value in array */
                     float minOfArray = 0;
                     ArrayList<Float> supportArray = new ArrayList<>();
 
@@ -37,10 +39,10 @@ public abstract class CriticalLevels {
                         }
                     }
 
-                    //Find any within range
+                    /** Find any within range */
                     int size = arrayOfMin.size();
                     for (int j = 0; j < size; j++) {
-                        //Remove minimum value
+                        /** Remove minimum value */
                         if (arrayOfMin.get(j) == minOfArray) {
                             supportArray.add(minOfArray);
                         } else if ((arrayOfMin.get(j) / minOfArray) < m.getUpperRange()
@@ -52,14 +54,14 @@ public abstract class CriticalLevels {
 
                     }
 
-                    //Find level avg and strength
+                    /** Find level average and strength */
                     float supportLevel = 0;
                     for (int j = 0; j < supportArray.size(); j++) {
                         supportLevel += supportArray.get(j);
                     }
                     supportLevel /= supportArray.size();
 
-                    //Check strength, anything over 2 is acceptable
+                    /** Check strength, anything over 2 is  */
                     if (supportArray.size() > 2) {
                         m.getTimeframesDataStore(i).addSupport(supportLevel);
                     }
@@ -71,16 +73,20 @@ public abstract class CriticalLevels {
         return markets;
     }
 
+    /**
+     * @param markets array list of all the market data
+     * @return the market array list is edited to add resistance levels and returned
+     */
     public static ArrayList<Market> generateResistanceLevels(ArrayList<Market> markets) {
         for (Market m : markets) {
             for (int i = 0; i < Main.getNumberOfTimeframes(); i++) {
-                //Segments
+                /** Define an array to store the segments */
                 ArrayList<Float> arrayOfMax = m.getTimeframesDataStore(i).getMaxSegments();
-                //Repeat until array is empty
+                /** Repeat until array is empty */
                 while (!arrayOfMax.isEmpty()) {
                     ArrayList<Float> arrayToSetMax = new ArrayList<>();
 
-                    //Find max value
+                    /** Find max value */
                     float maxOfArray = 0;
                     ArrayList<Float> resistanceArray = new ArrayList<>();
                     for (int j = 0; j < arrayOfMax.size(); j++) {
@@ -103,8 +109,7 @@ public abstract class CriticalLevels {
                         }
                     }
 
-                    //Find level avg and strength
-
+                    /** Find level average and strength */
                     float resistanceLevel = 0;
                     for (int j = 0; j < resistanceArray.size(); j++) {
                         resistanceLevel += resistanceArray.get(j);
@@ -112,7 +117,7 @@ public abstract class CriticalLevels {
                     resistanceLevel /= resistanceArray.size();
 
 
-                    //Check strength, anything over 2 is acceptable
+                    /** Check strength, anything over 2 is acceptable */
                     if (resistanceArray.size() > 2) {
                         m.getTimeframesDataStore(i).addResistance(resistanceLevel);
                     }

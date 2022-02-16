@@ -65,8 +65,6 @@ public class Market {
         this.tableTrendColumn = new SimpleStringProperty(trend.toString());
     }
 
-
-
     /**
      * Setter, Getter and Adder for the data stored on each timeframe.
      * @param i timeframe index to retrieve.
