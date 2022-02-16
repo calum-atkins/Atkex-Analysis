@@ -26,16 +26,16 @@ public class AscendingTriangle {
 
     public static ArrayList<Patterns> findAscendingTriangles(Market market) {
         ArrayList<Patterns> ascendingTriangles = new ArrayList<Patterns>();
-        for (int i = 0; i < Main.getNumberOfTimeframes(); i++) {
+        for (int tf = 0; tf < Main.getNumberOfTimeframes(); tf++) {
             int counter = 0;
-            for (Market.MarketValues values : market.getTimeframesDataStore(i).getMarketValues()) {
+            for (Market.MarketValues values : market.getTimeframesDataStore(tf).getMarketValues()) {
                 counter++;
                 /** If resistance/support line is in between the open and the close then start price = close. */
-                for (Double d : market.getTimeframesDataStore(i).getResistanceLevels()) {
+                for (Double d : market.getTimeframesDataStore(tf).getResistanceLevels()) {
                     if (d < values.getOpen() && d > values.getClose()) {
                         /** Go to method send start price, candle number, market values and timeframe. */
-                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(i).getMarketValues(), i) != null) {
-                            ascendingTriangles.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(i).getMarketValues(), i));
+                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()) != null) {
+                            ascendingTriangles.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()));
                         }
                     }
                 }
@@ -44,7 +44,7 @@ public class AscendingTriangle {
         return ascendingTriangles;
     }
 
-    public static Patterns checkCandleForPattern(double startPrice, int candleNumber, ArrayList<Market.MarketValues> valuesList, int tf) {
+    public static Patterns checkCandleForPattern(double startPrice, int candleNumber, ArrayList<Market.MarketValues> valuesList, int tf, int pipMultiply) {
         /**
          * Checks that occur:
          *  - If the candle has closed above price (check for failed or successful pattern).
@@ -86,10 +86,10 @@ public class AscendingTriangle {
 
                             if (value > lowerBound && value < upperBound) {
                                 double stopLossTarget = swingLowList.get(2);
-                                double stopLossPips = (startPrice - stopLossTarget) * 10000; /** Change these dependent of preferences */
+                                double stopLossPips = (startPrice - stopLossTarget) * pipMultiply;
                                 double takeProfitDifference = (startPrice - stopLossTarget) * 2;
                                 double takeProfitTarget = takeProfitDifference + startPrice;
-                                double takeProfitPips = (takeProfitTarget - startPrice) * 10000;
+                                double takeProfitPips = (takeProfitTarget - startPrice) * pipMultiply;
 
                                 /** Check for if the stop loss or take profit has been reached. */
                                 int candleCounter = entryCandle;

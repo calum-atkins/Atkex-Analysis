@@ -123,7 +123,7 @@ public class Main extends Application {
             BufferedReader br = new BufferedReader(
                     new FileReader(marketPreferences));
             while ((line = br.readLine()) != null) {
-                if (!line.equals("index,segments,range,zigzag")) {
+                if (!line.equals("index,segments,range,zigzag,pip_multiply")) {
                     String[] values = line.split(",");
                     for (int i = 0; i < marketsSize;i++) {
                         if (values[0].equals(markets.get(i).getIndex())) {
@@ -134,6 +134,8 @@ public class Main extends Application {
                             markets.get(i).setUpperRange(Double.parseDouble(values[2]));
 
                             markets.get(i).setTrendIndicatorPercentage(Double.parseDouble(values[3]));
+
+                            markets.get(i).setPipMultiply(Integer.parseInt(values[4]));
                         }
                     }
                 }

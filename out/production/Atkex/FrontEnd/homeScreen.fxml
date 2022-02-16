@@ -69,10 +69,10 @@
                                             <columns>
                                                 <TableColumn fx:id="timeframeColumn" minWidth="30.0" prefWidth="30.0" text="TF" />
                                                 <TableColumn fx:id="patternNumberColumn" minWidth="75.0" prefWidth="75.0" text="Pattern #" />
-                                                <TableColumn fx:id="profitLossColumn" minWidth="30.0" prefWidth="30.0" text="P/L (Pips)" />
-                                                <TableColumn fx:id="startCandleColumn" minWidth="134.0" prefWidth="75.0" text="Start Candle #" />
-                                                <TableColumn fx:id="entryCandleColumn" minWidth="134.0" prefWidth="75.0" text="Entry Candle #" />
-                                                <TableColumn fx:id="durationColumn" minWidth="30.0" prefWidth="30.0" text="Duration" />
+                                                <TableColumn fx:id="profitLossColumn" minWidth="60.0" prefWidth="60.0" text="P/L (Pips)" />
+                                                <TableColumn fx:id="startCandleColumn" minWidth="75.0" prefWidth="75.0" text="Start Candle #" />
+                                                <TableColumn fx:id="entryCandleColumn" minWidth="75.0" prefWidth="75.0" text="Entry Candle #" />
+                                                <TableColumn fx:id="durationColumn" minWidth="60.0" prefWidth="60.0" text="Duration" />
                                             </columns>
                                           </TableView>
                                        </children>

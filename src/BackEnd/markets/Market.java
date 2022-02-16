@@ -26,19 +26,18 @@ public class Market {
     private int segment;
     private double lowerRange, upperRange;
     private double trendIndicatorPercentage;
-    private ArrayList<Double> supportResistanceLevels = new ArrayList<>();
-
-    public ArrayList<Double> getSupportResistanceLevels() {
-        return supportResistanceLevels;
-    }
-
-    public void setSupportResistanceLevels(ArrayList<Double> supportResistanceLevels) {
-        this.supportResistanceLevels = supportResistanceLevels;
-    }
-
-    public void addSupportResistanceLevels(Double supportResistanceLevel) {
-        supportResistanceLevels.add(supportResistanceLevel);
-    }
+    private int pipMultiply;
+//    private ArrayList<Double> supportResistanceLevels = new ArrayList<>();
+//
+////    public ArrayList<Double> getSupportResistanceLevels() {
+////        return supportResistanceLevels;
+////    }
+////    public void setSupportResistanceLevels(ArrayList<Double> supportResistanceLevels) {
+////        this.supportResistanceLevels = supportResistanceLevels;
+////    }
+////    public void addSupportResistanceLevels(Double supportResistanceLevel) {
+////        supportResistanceLevels.add(supportResistanceLevel);
+////    }
 
     /**
      * Array list of StoreData holding information on (x) amount
@@ -144,6 +143,9 @@ public class Market {
 
     public double getTrendIndicatorPercentage() { return trendIndicatorPercentage; }
     public void setTrendIndicatorPercentage(double trendIndicatorPercentage) { this.trendIndicatorPercentage = trendIndicatorPercentage; }
+
+    public int getPipMultiply() {return pipMultiply;}
+    public void setPipMultiply(int pipMultiply) {this.pipMultiply = pipMultiply;}
 
     /**
      * Setter and getters for lower range and upper range value.

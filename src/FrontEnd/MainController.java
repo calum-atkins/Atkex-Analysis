@@ -89,12 +89,10 @@ public class MainController implements Initializable {
     ObservableList<Market> marketsList = FXCollections.observableArrayList();
     ObservableList<Patterns> patternsList = FXCollections.observableArrayList();
 
-
     private MarketTimeframe currentTimeframe;
     private boolean marketsLoaded = false;
 
     public MainController() {
-
     }
 
     /**
@@ -242,7 +240,7 @@ public class MainController implements Initializable {
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
         textArea.setEditable(false);
-        textArea.appendText("test");
+        textArea.appendText("Welcome to Atkex Analysis!");
 
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -250,7 +248,6 @@ public class MainController implements Initializable {
         comboBox.getItems().add("1h");
         comboBox.getItems().add("4h");
         comboBox.getItems().add("D");
-
     }
 
     /**
