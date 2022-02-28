@@ -8,6 +8,7 @@ import BackEnd.markets.MarketTimeframe;
 import BackEnd.patternRecognition.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -81,6 +82,7 @@ public class MainController implements Initializable {
     private CheckBox checkBoxCriticalLevels;
 
     private boolean criticalLevelsCheck = false;
+    private boolean patternIdentifierCheck = false;
 
     /** Array list to store market data. */
     private static ArrayList<Market> markets = new ArrayList<>();
@@ -130,7 +132,7 @@ public class MainController implements Initializable {
         if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
             selectedMarket = markets.get(0);
         }
-        reloadScrollPane(selectedMarket, currentTimeframe);
+        reloadScrollPaneMarket(selectedMarket, currentTimeframe);
         reloadPatternTable(selectedMarket);
         System.out.println(selectedMarket.getIndex() + " Selected || " + currentTimeframe.toString() + " Timeframe");
         for (int i = 0; i < markets.size();i++) {
@@ -139,7 +141,10 @@ public class MainController implements Initializable {
                     case FOUR_HOUR:
                         if (criticalLevelsCheck) {
                             ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartCriticalLevels());
+                        } else if (patternIdentifierCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartPatternIdentifiers());
                         } else {
                             ChartSelector.loadChart(
                                     ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartEmpty());
@@ -148,7 +153,10 @@ public class MainController implements Initializable {
                     case DAY:
                         if (criticalLevelsCheck) {
                             ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartCriticalLevels());
+                        } else if (patternIdentifierCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartPatternIdentifiers());
                         } else {
                             ChartSelector.loadChart(
                                     ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartEmpty());
@@ -157,7 +165,10 @@ public class MainController implements Initializable {
                     default:
                         if (criticalLevelsCheck) {
                             ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartCriticalLevels());
+                        } else if (patternIdentifierCheck) {
+                            ChartSelector.loadChart(
+                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartPatternIdentifiers());
                         } else {
                             ChartSelector.loadChart(
                                     ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartEmpty());
@@ -168,57 +179,45 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Method used to identify when a pattern in the table is selected to display relevant information to the user.
+     */
+    @FXML void onPatternClick() {
+        Patterns patternSelected = patternsTableView.getSelectionModel().getSelectedItem();
+        reloadScrollPanePattern(patternSelected);
+
+        /**
+         *
+         */
+    }
+
     @FXML void toggleCriticalLevels() {
-        Market selectedMarket = marketsTableView.getSelectionModel().getSelectedItem();
-        if (marketsTableView.getSelectionModel().getSelectedItem() == null) {
-            selectedMarket = markets.get(0);
-        }
-        if (comboBox.getSelectionModel().getSelectedItem() == null) {
-            currentTimeframe = MarketTimeframe.ONE_HOUR;
-        }
-        if (criticalLevelsCheck) {
-            for (int i = 0; i < markets.size(); i++) {
-                if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
-                    switch (currentTimeframe) {
-                        case FOUR_HOUR:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChartEmpty());
-                            break;
-                        case DAY:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChartEmpty());
-                            break;
-                        default:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChartEmpty());
-                            break;
-                    }
-                }
-            }
-            criticalLevelsCheck = false;
+        if (patternIdentifierCheck) {
+            System.out.println("Please deselect the patterns identifier first");
         } else {
-            for (int i = 0; i < markets.size(); i++) {
-                if (markets.get(i).getIndex().equals(selectedMarket.getIndex())) {
-                    switch (currentTimeframe) {
-                        case FOUR_HOUR:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(1).getCandleStickChart());
-                            break;
-                        case DAY:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(0).getCandleStickChart());
-                            break;
-                        default:
-                            ChartSelector.loadChart(
-                                    ChartSelector.getMarkets().get(i).getTimeframesDataStore(2).getCandleStickChart());
-                            break;
-                    }
-                }
+            if (criticalLevelsCheck) {
+                criticalLevelsCheck = false;
+                showChart();
+            } else {
+                criticalLevelsCheck = true;
+                showChart();
             }
-            criticalLevelsCheck = true;
         }
     }
 
+    @FXML void togglePatternIdentifiers() {
+        if (criticalLevelsCheck) {
+            System.out.println("Please deselect the critical levels first");
+        } else {
+            if (patternIdentifierCheck) {
+                patternIdentifierCheck = false;
+                showChart();
+            } else {
+                patternIdentifierCheck = true;
+                showChart();
+            }
+        }
+    }
     /**
      * Initialise the columns within table.
      * @param location
@@ -281,7 +280,6 @@ public class MainController implements Initializable {
         for (Market m : markets) {
             if (selected.getIndex().equals(m.getIndex())) {
                 for (int i = 0; i < m.getPatternsList().size(); i++) {
-                    System.out.println(m.getPatternsList().get(i).getStartCandle());
                     patternsList.add(new Patterns(m.getPatternsList().get(i).getTimeframe(),
                             m.getPatternsList().get(i).getType(),
                             m.getPatternsList().get(i).getProfitLoss(),
@@ -300,7 +298,7 @@ public class MainController implements Initializable {
      * @param selectedMarket current selected market.
      * @param currentTimeframe current selected timeframe.
      */
-    public void reloadScrollPane(Market selectedMarket, MarketTimeframe currentTimeframe) {
+    public void reloadScrollPaneMarket(Market selectedMarket, MarketTimeframe currentTimeframe) {
         int timeframeInteger;
         switch (currentTimeframe) {
             case DAY: timeframeInteger = 0; break;
@@ -321,9 +319,25 @@ public class MainController implements Initializable {
         textArea.appendText("Start Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
         textArea.appendText("End Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(numberOfCandles - 1).getDate() + "\n");
         textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
+        textArea.appendText("Profit Loss (Pips): " + markets.get(marketNumber).getReturnsPips() + "\n");
         textArea.appendText(currentTimeframe.toString());
 
     }
+
+    /**
+     * Method used to refresh the scroll pane to display information to the user.
+     * @param pattern the pattern selected in the patterns table.
+     */
+    public void reloadScrollPanePattern(Patterns pattern) {
+        textArea.clear();
+        textArea.appendText(pattern.getProfitLoss() + "\n");
+//        textArea.appendText("Start Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
+//        textArea.appendText("End Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(numberOfCandles - 1).getDate() + "\n");
+//        textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
+//        textArea.appendText(currentTimeframe.toString());
+
+    }
+
     public void reloadPatternTable(Market selectedMarket) {
         for (Market m : markets) {
             if (m.getIndex().equals(selectedMarket.getIndex())) {
@@ -332,4 +346,6 @@ public class MainController implements Initializable {
             }
         }
     }
+
+
 }

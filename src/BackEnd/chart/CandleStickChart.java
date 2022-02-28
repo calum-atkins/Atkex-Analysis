@@ -32,6 +32,7 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
     private static final double DEFAULT_CANDLE_WIDTH = 5d;
     private double candleWidth;
     private ObservableList<Data<X, Y>> horizontalMarkers;
+    private ObservableList<Data<X, Y>> verticalMarkers;
 
     public CandleStickChart(Axis<X> xAxis, Axis<Y> yAxis) {
         super(xAxis, yAxis);
@@ -39,6 +40,8 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         candleWidth = DEFAULT_CANDLE_WIDTH;
         horizontalMarkers = FXCollections.observableArrayList();
         horizontalMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
+        verticalMarkers = FXCollections.observableArrayList();
+        verticalMarkers.addListener((InvalidationListener) observable -> layoutPlotChildren());
     }
 
     public void addHorizontalValueMarker(Data<X, Y> marker, float currentPrice) {
@@ -53,6 +56,21 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         marker.setNode(line );
         getPlotChildren().add(line);
         horizontalMarkers.add(marker);
+    }
+
+    public void addVerticalValueMarker(Data<X, Y> marker, float currentCandle) {
+        Objects.requireNonNull(marker, "the marker must not be null");
+        if (verticalMarkers.contains(marker)) return;
+        Line line = new Line();
+        if (Float.parseFloat(marker.getXValue().toString()) < currentCandle) {
+            line.setStroke(Color.BLACK);
+        } else {
+            line.setStroke(Color.BLACK);
+        }
+        marker.setNode(line );
+
+        getPlotChildren().add(line);
+        verticalMarkers.add(marker);
     }
 
     public void removeHorizontalValueMarker(Data<X, Y> marker) {
@@ -196,11 +214,21 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
             line.setStartY(getYAxis().getDisplayPosition(horizontalMarker.getYValue()) + 0.5); // 0.5 for crispness
             line.setEndY(line.getStartY());
             line.toFront();
+        }
+
+        for (Data<X, Y> verticalMarker : verticalMarkers) {
+            Line line = (Line) verticalMarker.getNode();
+            line.setStartX(getXAxis().getDisplayPosition(verticalMarker.getXValue()) + 0.5);
+            line.setEndX(line.getStartX());
+            line.setStartY(0); // 0.5 for crispness
+            line.setEndY(getBoundsInLocal().getWidth());
+            line.toFront();
+        }
 /*            Path path = new Path();
             path.getElements().addAll(new MoveTo(getBoundsInLocal().getWidth() / 2, line.getLayoutY()), new VLineTo(line.getStartY() + 25));
             PathTransition pathTransition = new PathTransition(Duration.millis(1000), path, line);
             pathTransition.play();*/
-        }
+
     }
 
     /**

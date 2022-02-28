@@ -102,7 +102,6 @@ public class Main extends Application {
         createCharts();
         System.out.println("Charts created.");
 
-
         /** Load stage */
         System.out.println("Displaying UI.");
         stage.setScene(
@@ -119,7 +118,6 @@ public class Main extends Application {
     private void loadPreferences() {
         String line = "";
         try {
-            int j = 1;
             BufferedReader br = new BufferedReader(
                     new FileReader(marketPreferences));
             while ((line = br.readLine()) != null) {
@@ -127,7 +125,6 @@ public class Main extends Application {
                     String[] values = line.split(",");
                     for (int i = 0; i < marketsSize;i++) {
                         if (values[0].equals(markets.get(i).getIndex())) {
-                            j++;
                             markets.get(i).setSegment(Integer.parseInt(values[1]));
 
                             markets.get(i).setLowerRange(Double.parseDouble(values[2]));
@@ -145,7 +142,6 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -305,9 +301,14 @@ public class Main extends Application {
      */
     private void generatePatterns() {
         for (Market m : markets) {
-            //markets = AscendingTriangle.findAscendingTriangles(markets);
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
+            for (Patterns p : m.getPatternsList()) {
+                m.modifyPips(p.getProfitLoss());
+            }
+
         }
+        /** Compute final pip returned value */
+
     }
 
     /**
@@ -386,8 +387,9 @@ public class Main extends Application {
         for (Market m : markets) {
             System.out.println("Creating " + m.getIndex() + " chart.");
             for  (int j = 0; j < NUMBER_OF_TIMEFRAMES; j++) {
-                m.setCandleStickChart(createChart(m, j, false), j);
-                m.setCandleStickChartEmpty(createChart(m, j, true), j);
+                m.setCandleStickChartCriticalLevels(createChart(m, j, 1), j);
+                m.setCandleStickChartPatternIdentifiers(createChart(m, j, 2), j);
+                m.setCandleStickChartEmpty(createChart(m, j, 0), j);
             }
         }
     }
@@ -396,9 +398,13 @@ public class Main extends Application {
      * Creates a chart to be displayed to the UI.
      * @param market data containing values to plot
      * @param j market timeframe to set chart to
+     * @param {0, 1, 2} Chart view to create
+     *     0 = Empty chart
+     *     1 = Critical Levels
+     *     2 = Pattern identifiers
      * @return Viewable candle stick chart
      */
-    public CandleStickChart createChart(Market market, int j, boolean empty) {
+    public CandleStickChart createChart(Market market, int j, int chartIndicator) {
         double xAxisLowerBound = getXAxisLowerBound(market.getTimeframesDataStore(j).getMarketValues());
         double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
@@ -407,9 +413,17 @@ public class Main extends Application {
 
         final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
         /** Setup chart. */
-        bc.setTitle(market.getIndex() + " Chart");
-        xAxis.setLabel(market.getTimeframesDataStore(j).getTimeframe().toString());
-        yAxis.setLabel("Price");
+        bc.setTitle(market.getIndex());
+        String tf = "";
+        if (market.getTimeframesDataStore(j).getTimeframe() == MarketTimeframe.DAY) {
+            tf = "(One day)";
+        } else if (market.getTimeframesDataStore(j).getTimeframe() == MarketTimeframe.FOUR_HOUR) {
+            tf = "(Four hours)";
+        } else if (market.getTimeframesDataStore(j).getTimeframe() == MarketTimeframe.ONE_HOUR) {
+            tf = "(One hour)";
+        }
+        xAxis.setLabel("Number of candles " + tf);
+        yAxis.setLabel("Price ratio");
         /** Add starting data. */
         XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
 
@@ -434,17 +448,51 @@ public class Main extends Application {
         }
 
         /** Add critical levels to the chart. */
-        if (empty) {
+        if (chartIndicator == 0) {
             return bc;
-        } else {
+        } else if (chartIndicator == 1) {
             for (int s = 0; s < market.getTimeframesDataStore(j).getCriticalLevels().size(); s++) {
                 XYChart.Data<Number, Number> horizontalMarker = new XYChart.Data<>
                         (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
+
                 bc.addHorizontalValueMarker(horizontalMarker,
                         market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
             }
             return bc;
+        } else if (chartIndicator == 2) {
+
+            /** Add vertical lines */
+            for (Patterns pattern : market.getPatternsList()) {
+                XYChart.Data<Number, Number> verticalMarker = new XYChart.Data<>
+                        (pattern.getEntryCandle(), 0);
+                bc.addVerticalValueMarker(verticalMarker,
+                        pattern.getEntryCandle());
+            }
+
+//            for (int i = 0; i < 10; i++) {
+//                XYChart.Data<Number, Number> verticalMarker = new XYChart.Data<>
+//                        (, 0);
+//                bc.addVerticalValueMarker(verticalMarker,
+//                        100);
+//            }
+            return bc;
         }
+        return null;
+    }
+
+    private double getYAxisUpperBound(ArrayList<Market.MarketValues> values) {
+        double yAxisUpperBound = 0;
+        for (int a = 0; a < values.size(); a++) {
+
+            if (yAxisUpperBound == 0) {
+                yAxisUpperBound = values.get(a).getHigh();
+            } else {
+                if (values.get(a).getHigh() > yAxisUpperBound) {
+                    yAxisUpperBound = values.get(a).getHigh();
+                }
+            }
+        }
+        return yAxisUpperBound + 50;
     }
 
     /**

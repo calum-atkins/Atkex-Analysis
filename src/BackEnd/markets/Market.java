@@ -27,6 +27,7 @@ public class Market {
     private double lowerRange, upperRange;
     private double trendIndicatorPercentage;
     private int pipMultiply;
+    private float returnedPips;
 //    private ArrayList<Double> supportResistanceLevels = new ArrayList<>();
 //
 ////    public ArrayList<Double> getSupportResistanceLevels() {
@@ -86,7 +87,7 @@ public class Market {
         }
     }
 
-    /** Mehtod to ass a new pattern to the list */
+    /** Mehtod to add a new pattern to the list */
     public void addPattern(Pattern p) {
     }
 
@@ -94,11 +95,18 @@ public class Market {
      * Setters and getters for the charts created from the market data.
      * @param i Timeframe index to set chart to
      */
-    public void setCandleStickChart(CandleStickChart candleStickChart, int i) {
-        timeframesDataStore.get(i).setCandleStickChart(candleStickChart);
+    public void setCandleStickChartCriticalLevels(CandleStickChart candleStickChart, int i) {
+        timeframesDataStore.get(i).setCandleStickChartCriticalLevels(candleStickChart);
     }
-    public CandleStickChart getCandleStickChart(int i) {
-        return timeframesDataStore.get(i).getCandleStickChart();
+    public CandleStickChart getCandleStickChartCriticalLevels(int i) {
+        return timeframesDataStore.get(i).getCandleStickChartCriticalLevels();
+    }
+
+    public void setCandleStickChartPatternIdentifiers(CandleStickChart candleStickChart, int i) {
+        timeframesDataStore.get(i).setCandleStickChartPatternIdentifiers(candleStickChart);
+    }
+    public CandleStickChart getCandleStickChartPatternIdentifiers(int i) {
+        return timeframesDataStore.get(i).getCandleStickChartPatternIdentifiers();
     }
 
     public void setCandleStickChartEmpty(CandleStickChart candleStickChart, int i) {
@@ -146,6 +154,9 @@ public class Market {
 
     public int getPipMultiply() {return pipMultiply;}
     public void setPipMultiply(int pipMultiply) {this.pipMultiply = pipMultiply;}
+
+    public Float getReturnsPips() { return this.returnedPips; }
+    public void modifyPips(float pips) { this.returnedPips = this.returnedPips + pips; }
 
     /**
      * Setter and getters for lower range and upper range value.
@@ -207,8 +218,9 @@ public class Market {
      * This  class is used to hold data for each individual timeframe.
      */
     public static class StoreData  {
-        private CandleStickChart candleStickChart;
         private CandleStickChart candleStickChartEmpty;
+        private CandleStickChart candleStickChartCriticalLevels;
+        private CandleStickChart candleStickChartPatternIdentifiers;
         private ArrayList<MarketValues> marketValues = new ArrayList<>();
         private ArrayList<Double> criticalLevels = new ArrayList<>();
         private ArrayList<Double> resistanceLevels = new ArrayList<>();
@@ -223,6 +235,7 @@ public class Market {
         private MarketTimeframe timeframe;
         private double chartYAxisTickValue;
         private float currentPrice;
+        private float returnedPips;
 
         private ArrayList<AscendingTriangle> atList = new ArrayList<AscendingTriangle>();
 
@@ -243,8 +256,11 @@ public class Market {
         public String getFilePath() { return filePath; }
         public void setFilePath(String filePath) { this.filePath = filePath; }
 
-        public CandleStickChart getCandleStickChart() { return candleStickChart; }
-        public void setCandleStickChart(CandleStickChart candleStickChart) { this.candleStickChart = candleStickChart; }
+        public CandleStickChart getCandleStickChartCriticalLevels() { return candleStickChartCriticalLevels; }
+        public void setCandleStickChartCriticalLevels(CandleStickChart candleStickChart) { this.candleStickChartCriticalLevels = candleStickChart; }
+
+        public CandleStickChart getCandleStickChartPatternIdentifiers() { return candleStickChartPatternIdentifiers; }
+        public void setCandleStickChartPatternIdentifiers(CandleStickChart candleStickChart) { this.candleStickChartPatternIdentifiers = candleStickChart; }
 
         public CandleStickChart getCandleStickChartEmpty() { return candleStickChartEmpty; }
         public void setCandleStickChartEmpty(CandleStickChart candleStickChart) { this.candleStickChartEmpty = candleStickChart; }
@@ -289,5 +305,8 @@ public class Market {
         public void setMinimumPrice(float minimumPrice) { this.minimumPrice = minimumPrice; }
         public float getMaximumPrice() { return maximumPrice; }
         public void setMaximumPrice(float maximumPrice) { this.maximumPrice = maximumPrice; }
+
+        public Float getReturnsPips() { return this.returnedPips; }
+        public void modifyPips(float pips) { this.returnedPips =+ pips; }
     }
 }

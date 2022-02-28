@@ -28,6 +28,7 @@ public class AscendingTriangle {
         ArrayList<Patterns> ascendingTriangles = new ArrayList<Patterns>();
         for (int tf = 0; tf < Main.getNumberOfTimeframes(); tf++) {
             int counter = 0;
+            /** Run check for each candle.  */
             for (Market.MarketValues values : market.getTimeframesDataStore(tf).getMarketValues()) {
                 counter++;
                 /** If resistance/support line is in between the open and the close then start price = close. */

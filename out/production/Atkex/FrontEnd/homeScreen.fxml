@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" styleClass="anchor-pane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FrontEnd.MainController">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" styleClass="anchor-pane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FrontEnd.MainController">
    <children>
       <MenuBar layoutX="7.0" layoutY="8.0" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="900.0" styleClass="menu-bar" AnchorPane.bottomAnchor="550.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -35,6 +26,11 @@
             <Menu mnemonicParsing="false">
                <graphic>
                   <CheckBox fx:id="checkBoxCriticalLevels" mnemonicParsing="false" onAction="#toggleCriticalLevels" styleClass="button" text="Critical Levels" />
+               </graphic>
+            </Menu>
+            <Menu mnemonicParsing="false">
+               <graphic>
+                  <CheckBox fx:id="checkBoxPatternIdentifiers" mnemonicParsing="false" onAction="#togglePatternIdentifiers" styleClass="button" text="Pattern Identifiers" />
                </graphic>
             </Menu>
         </menus>
@@ -65,7 +61,7 @@
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
-                                          <TableView fx:id="patternsTableView" fixedCellSize="0.0" layoutY="-2.0" prefHeight="178.0" prefWidth="416.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                                          <TableView fx:id="patternsTableView" fixedCellSize="0.0" layoutY="-2.0" onMouseClicked="#onPatternClick" prefHeight="178.0" prefWidth="416.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                                             <columns>
                                                 <TableColumn fx:id="timeframeColumn" minWidth="30.0" prefWidth="30.0" text="TF" />
                                                 <TableColumn fx:id="patternNumberColumn" minWidth="75.0" prefWidth="75.0" text="Pattern #" />
@@ -79,7 +75,7 @@
                                     </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
-                                          <TextArea fx:id="textArea" styleClass="text-area" prefHeight="172.0" prefWidth="176.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TextArea fx:id="textArea" prefHeight="172.0" prefWidth="176.0" styleClass="text-area" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                 </items>
