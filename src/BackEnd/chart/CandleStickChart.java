@@ -73,14 +73,51 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         verticalMarkers.add(marker);
     }
 
-    public void removeHorizontalValueMarker(Data<X, Y> marker) {
+    public void addStartCandleMarker(Data<X, Y> marker, float currentCandle) {
         Objects.requireNonNull(marker, "the marker must not be null");
-        if (marker.getNode() != null) {
-            getPlotChildren().remove(marker.getNode());
-            marker.setNode(null);
-        }
-        horizontalMarkers.remove(marker);
+        if (verticalMarkers.contains(marker)) return;
+        Line line = new Line();
+        line.setStroke(Color.BLACK);
+        marker.setNode(line );
+
+        getPlotChildren().add(line);
+        verticalMarkers.add(marker);
     }
+
+    public void addEntryCandleMarker(Data<X, Y> marker, float currentCandle) {
+        Objects.requireNonNull(marker, "the marker must not be null");
+        if (verticalMarkers.contains(marker)) return;
+        Line line = new Line();
+        line.setStroke(Color.BLUE);
+        marker.setNode(line );
+
+        getPlotChildren().add(line);
+        verticalMarkers.add(marker);
+    }
+
+    public void addExitCandleMarker(Data<X, Y> marker, float currentCandle, float profitLoss) {
+        Objects.requireNonNull(marker, "the marker must not be null");
+        if (verticalMarkers.contains(marker)) return;
+        Line line = new Line();
+        if (profitLoss >= 0) {
+            line.setStroke(Color.GREEN);
+        } else {
+            line.setStroke(Color.RED);
+        }
+        marker.setNode(line );
+
+        getPlotChildren().add(line);
+        verticalMarkers.add(marker);
+    }
+
+//    public void removeHorizontalValueMarker(Data<X, Y> marker) {
+//        Objects.requireNonNull(marker, "the marker must not be null");
+//        if (marker.getNode() != null) {
+//            getPlotChildren().remove(marker.getNode());
+//            marker.setNode(null);
+//        }
+//        horizontalMarkers.remove(marker);
+//    }
 
     @Override
     protected void dataItemAdded(Series<X, Y> series, int itemIndex, Data<X, Y> item) {
