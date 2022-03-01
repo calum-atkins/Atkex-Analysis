@@ -20,6 +20,9 @@ public class Patterns {
     private int profitLoss;
     private int startCandle;
     private int entryCandle;
+    private int exitCandle;
+    private float entryCandlePrice;
+    private float exitCandlePrice;
     private String duration;
     private Date start;
     private Double end;
@@ -107,6 +110,15 @@ public class Patterns {
     public int getStartCandle() { return startCandle; }
     public int getEntryCandle() { return entryCandle; }
     public String getDuration() { return duration; }
+
+    public float getEntryCandlePrice() {return entryCandlePrice; }
+    public void setEntryCandlePrice(float entryCandlePrice) {this.entryCandlePrice = entryCandlePrice; }
+
+    public float getExitCandlePrice() { return exitCandlePrice; }
+    public void setExitCandlePrice(float exitCandlePrice) { this.exitCandlePrice = exitCandlePrice; }
+
+    public int getExitCandle() {return exitCandle;}
+    public void setExitCandle(int exitCandle) {this.exitCandle = exitCandle;}
 
     public Date getStart() {
         return start;

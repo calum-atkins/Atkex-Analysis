@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Class is used to find any ascending triangles on the specified market.
@@ -101,11 +102,19 @@ public class AscendingTriangle {
                                      */
                                     int duration = candleCounter - candleNumber;
                                     if (valuesList.get(candleCounter) == null) {
-                                        return new Patterns(tf, Status.ASCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
+                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
+                                        return toAdd;
                                     } else if ((takeProfitTarget - valuesList.get(candleCounter).getHigh()) < 0) {
-                                        return new Patterns(tf, Status.ASCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        toAdd.setExitCandlePrice((float) takeProfitTarget);
+
+                                        toAdd.setExitCandle(candleCounter);
+                                        return toAdd;
                                     } else if ((valuesList.get(candleCounter).getLow() - stopLossTarget) < 0) {
-                                        return new Patterns(tf, Status.ASCENDING_TRIANGLE, -(int) stopLossPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, -(int) stopLossPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        toAdd.setExitCandlePrice((float) stopLossTarget);
+                                        toAdd.setExitCandle(candleCounter);
+                                        return toAdd;
                                     }
                                     candleCounter++;
                                 }

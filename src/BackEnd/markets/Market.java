@@ -52,6 +52,8 @@ public class Market {
     /** Array list to store a list of market values. */
     private ArrayList<Patterns> patternsList = new ArrayList<Patterns>();//do same as store data
 
+
+
     /** Data columns for table. */
     private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
 

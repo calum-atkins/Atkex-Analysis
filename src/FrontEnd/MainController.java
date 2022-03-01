@@ -187,7 +187,9 @@ public class MainController implements Initializable {
         reloadScrollPanePattern(patternSelected);
 
         /**
-         *
+         *  get bc chart to show
+         *  add lines for the pattern selected
+         *  display chart to the UI
          */
     }
 

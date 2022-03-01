@@ -456,17 +456,29 @@ public class Main extends Application {
                         (0, market.getTimeframesDataStore(j).getCriticalLevels().get(s));
 
                 bc.addHorizontalValueMarker(horizontalMarker,
-                        market.getTimeframesDataStore(j).getCurrentPrice()); //This can be used to resistance and support levels
+                        market.getTimeframesDataStore(j).getCurrentPrice());
             }
             return bc;
         } else if (chartIndicator == 2) {
 
             /** Add vertical lines */
-            for (Patterns pattern : market.getPatternsList()) {
-                XYChart.Data<Number, Number> verticalMarker = new XYChart.Data<>
-                        (pattern.getEntryCandle(), 0);
-                bc.addVerticalValueMarker(verticalMarker,
-                        pattern.getEntryCandle());
+            for (int s = 0; s < market.getTimeframesDataStore(j).getAtList().size(); s++) {
+                for (Patterns pattern : market.getPatternsList()) {
+                    XYChart.Data<Number, Number> startMarker = new XYChart.Data<>
+                            (pattern.getStartCandle(), 0);
+                    bc.addStartCandleMarker(startMarker,
+                            pattern.getStartCandle());
+
+                    XYChart.Data<Number, Number> entryMarker = new XYChart.Data<>
+                            (pattern.getEntryCandle(), 0);
+                    bc.addEntryCandleMarker(entryMarker,
+                            pattern.getEntryCandle());
+
+                    XYChart.Data<Number, Number> exitMarker = new XYChart.Data<>
+                            (pattern.getExitCandle(), 0);
+                    bc.addExitCandleMarker(exitMarker,
+                            pattern.getExitCandle(), pattern.getProfitLoss());
+                }
             }
 
 //            for (int i = 0; i < 10; i++) {
