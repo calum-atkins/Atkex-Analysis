@@ -240,6 +240,10 @@ public class Market {
         private float returnedPips;
 
         private ArrayList<AscendingTriangle> atList = new ArrayList<AscendingTriangle>();
+        private ArrayList<Patterns> patternsList = new ArrayList<>();
+
+        public void addPattern(Patterns p) { patternsList.add(p); }
+        public ArrayList<Patterns> getPatternsList() { return patternsList; }
 
         public void addAT(AscendingTriangle at) { atList.add(at); }
         public ArrayList<AscendingTriangle> getAtList() {

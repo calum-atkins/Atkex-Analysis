@@ -304,7 +304,16 @@ public class Main extends Application {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             for (Patterns p : m.getPatternsList()) {
                 m.modifyPips(p.getProfitLoss());
+
+                if (p.getTimeframe().equals("1h")) {
+                    m.getTimeframesDataStore(2).addPattern(p);
+                } else if (p.getTimeframe().equals("4h")) {
+                    m.getTimeframesDataStore(1).addPattern(p);
+                } else if (p.getTimeframe().equals("1d")) {
+                    m.getTimeframesDataStore(0).addPattern(p);
+                }
             }
+
 
         }
         /** Compute final pip returned value */
@@ -462,7 +471,7 @@ public class Main extends Application {
         } else if (chartIndicator == 2) {
 
             /** Add vertical lines */
-            for (int s = 0; s < market.getTimeframesDataStore(j).getAtList().size(); s++) {
+            for (int s = 0; s < market.getTimeframesDataStore(j).getPatternsList().size(); s++) {
                 for (Patterns pattern : market.getPatternsList()) {
                     XYChart.Data<Number, Number> startMarker = new XYChart.Data<>
                             (pattern.getStartCandle(), 0);
