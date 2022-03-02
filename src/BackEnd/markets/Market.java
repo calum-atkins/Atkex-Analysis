@@ -180,6 +180,11 @@ public class Market {
      */
     public ArrayList<Patterns> getPatternsList() { return patternsList; }
     public void setPatternsList(ArrayList<Patterns> patternsList) { this.patternsList = patternsList; }
+    public void addPatternsList(ArrayList<Patterns> patternsList) {
+        for (Patterns p : patternsList) {
+            this.patternsList.add(p);
+        }
+    }
 
     //public void addPatternAT(AscendingTriangle pattern) { patternsList.add(pattern); }
 
@@ -239,16 +244,10 @@ public class Market {
         private float currentPrice;
         private float returnedPips;
 
-        private ArrayList<AscendingTriangle> atList = new ArrayList<AscendingTriangle>();
         private ArrayList<Patterns> patternsList = new ArrayList<>();
 
         public void addPattern(Patterns p) { patternsList.add(p); }
         public ArrayList<Patterns> getPatternsList() { return patternsList; }
-
-        public void addAT(AscendingTriangle at) { atList.add(at); }
-        public ArrayList<AscendingTriangle> getAtList() {
-            return atList;
-        }
 
         public float getCurrentPrice() { return currentPrice; }
         public void setCurrentPrice(float currentPrice) { this.currentPrice = currentPrice; }
@@ -283,6 +282,12 @@ public class Market {
             resistanceLevels.add(r);
         }
         public void setResistanceLevels(ArrayList<Double> resistanceLevels) { this.resistanceLevels = resistanceLevels; }
+
+        public ArrayList<Double> getSupportLevels() { return supportLevels; }
+        public void addSupportLevel(double r) {
+            supportLevels.add(r);
+        }
+        public void setSupportLevels(ArrayList<Double> resistanceLevels) { this.supportLevels = resistanceLevels; }
 
         public ArrayList<Double> getCriticalLevels() { return criticalLevels; }
         public void addCriticalLevel(double c) {

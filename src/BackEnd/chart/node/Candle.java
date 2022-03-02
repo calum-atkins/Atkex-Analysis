@@ -15,6 +15,11 @@ public class Candle extends Group {
     private String dataStyleClass;
     private boolean openAboveClose = true;
 
+    /**
+     * Constructor for the candle.
+     * @param seriesStyleClass style of the candle to add.
+     * @param dataStyleClass data of the candle to add.
+     */
     public Candle(String seriesStyleClass, String dataStyleClass) {
         setAutoSizeChildren(false);
         getChildren().addAll(highLowLine, bar);
@@ -23,12 +28,24 @@ public class Candle extends Group {
         updateStyleClasses();
     }
 
+    /**
+     * Method to set the styles and update the colour of the candle.
+     * @param seriesStyleClass
+     * @param dataStyleClass
+     */
     public void setSeriesAndDataStyleClasses(String seriesStyleClass, String dataStyleClass) {
         this.seriesStyleClass = seriesStyleClass;
         this.dataStyleClass = dataStyleClass;
         updateStyleClasses();
     }
 
+    /**
+     * Method to update the candle data.
+     * @param closeOffset
+     * @param highOffset
+     * @param lowOffset
+     * @param candleWidth
+     */
     public void update(double closeOffset, double highOffset, double lowOffset, double candleWidth) {
         openAboveClose = closeOffset > 0;
         updateStyleClasses();
@@ -44,6 +61,9 @@ public class Candle extends Group {
         }
     }
 
+    /**
+     * Method to update the style of the candle depending on if it is a bullish or bearish candle
+     */
     private void updateStyleClasses() {
         getStyleClass().setAll("candlestick-candle", seriesStyleClass, dataStyleClass);
         highLowLine.getStyleClass().setAll("candlestick-line", seriesStyleClass, dataStyleClass,

@@ -32,8 +32,8 @@ public class AscendingTriangle {
             /** Run check for each candle.  */
             for (Market.MarketValues values : market.getTimeframesDataStore(tf).getMarketValues()) {
                 counter++;
-                /** If resistance/support line is in between the open and the close then start price = close. */
-                for (Double d : market.getTimeframesDataStore(tf).getResistanceLevels()) {
+                /** If resistance line is in between the open and the close then start price = close. */
+                for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
                     if (d < values.getOpen() && d > values.getClose()) {
                         /** Go to method send start price, candle number, market values and timeframe. */
                         if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()) != null) {
@@ -100,14 +100,14 @@ public class AscendingTriangle {
                                      * Calculate if the stop loss, take profit has been reached.
                                      * If not then the candle is returned as pending (still being formed).
                                      */
+
                                     int duration = candleCounter - candleNumber;
                                     if (valuesList.get(candleCounter) == null) {
-                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
+                                        Patterns toAdd = new Patterns(tf, Status.PENDING, 0, candleNumber, entryCandle, "Pending");
                                         return toAdd;
                                     } else if ((takeProfitTarget - valuesList.get(candleCounter).getHigh()) < 0) {
                                         Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));
                                         toAdd.setExitCandlePrice((float) takeProfitTarget);
-
                                         toAdd.setExitCandle(candleCounter);
                                         return toAdd;
                                     } else if ((valuesList.get(candleCounter).getLow() - stopLossTarget) < 0) {

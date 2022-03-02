@@ -10,6 +10,7 @@ import BackEnd.patternRecognition.Patterns;
 import BackEnd.patternRecognition.algorithms.CriticalLevels;
 import BackEnd.patternRecognition.algorithms.MarketTrends;
 import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
+import BackEnd.patternRecognition.availablePatterns.DescendingTriangle;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -302,6 +303,8 @@ public class Main extends Application {
     private void generatePatterns() {
         for (Market m : markets) {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
+            m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
+            //m.setPatternsList(DescendingTriangle.findDescendingTriangles(m));
             for (Patterns p : m.getPatternsList()) {
                 m.modifyPips(p.getProfitLoss());
 
@@ -471,31 +474,22 @@ public class Main extends Application {
         } else if (chartIndicator == 2) {
 
             /** Add vertical lines */
-            for (int s = 0; s < market.getTimeframesDataStore(j).getPatternsList().size(); s++) {
-                for (Patterns pattern : market.getPatternsList()) {
-                    XYChart.Data<Number, Number> startMarker = new XYChart.Data<>
-                            (pattern.getStartCandle(), 0);
-                    bc.addStartCandleMarker(startMarker,
-                            pattern.getStartCandle());
+            for (Patterns pattern : market.getTimeframesDataStore(j).getPatternsList()) {
+                XYChart.Data<Number, Number> startMarker = new XYChart.Data<>
+                        (pattern.getStartCandle(), 0);
+                bc.addStartCandleMarker(startMarker,
+                        pattern.getStartCandle());
 
-                    XYChart.Data<Number, Number> entryMarker = new XYChart.Data<>
-                            (pattern.getEntryCandle(), 0);
-                    bc.addEntryCandleMarker(entryMarker,
-                            pattern.getEntryCandle());
+                XYChart.Data<Number, Number> entryMarker = new XYChart.Data<>
+                        (pattern.getEntryCandle(), 0);
+                bc.addEntryCandleMarker(entryMarker,
+                        pattern.getEntryCandle());
 
-                    XYChart.Data<Number, Number> exitMarker = new XYChart.Data<>
-                            (pattern.getExitCandle(), 0);
-                    bc.addExitCandleMarker(exitMarker,
-                            pattern.getExitCandle(), pattern.getProfitLoss());
-                }
+                XYChart.Data<Number, Number> exitMarker = new XYChart.Data<>
+                        (pattern.getExitCandle(), 0);
+                bc.addExitCandleMarker(exitMarker,
+                        pattern.getExitCandle(), pattern.getProfitLoss());
             }
-
-//            for (int i = 0; i < 10; i++) {
-//                XYChart.Data<Number, Number> verticalMarker = new XYChart.Data<>
-//                        (, 0);
-//                bc.addVerticalValueMarker(verticalMarker,
-//                        100);
-//            }
             return bc;
         }
         return null;

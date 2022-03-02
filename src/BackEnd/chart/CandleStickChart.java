@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * These classes store the data to be displayed to the UI
+ * These classes store the candlestick chart to be displayed to the UI.
  */
 
 public class CandleStickChart<X, Y> extends XYChart<X, Y> {
@@ -56,21 +56,6 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         marker.setNode(line );
         getPlotChildren().add(line);
         horizontalMarkers.add(marker);
-    }
-
-    public void addVerticalValueMarker(Data<X, Y> marker, float currentCandle) {
-        Objects.requireNonNull(marker, "the marker must not be null");
-        if (verticalMarkers.contains(marker)) return;
-        Line line = new Line();
-        if (Float.parseFloat(marker.getXValue().toString()) < currentCandle) {
-            line.setStroke(Color.BLACK);
-        } else {
-            line.setStroke(Color.BLACK);
-        }
-        marker.setNode(line );
-
-        getPlotChildren().add(line);
-        verticalMarkers.add(marker);
     }
 
     public void addStartCandleMarker(Data<X, Y> marker, float currentCandle) {

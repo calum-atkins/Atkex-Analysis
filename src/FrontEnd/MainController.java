@@ -333,6 +333,8 @@ public class MainController implements Initializable {
     public void reloadScrollPanePattern(Patterns pattern) {
         textArea.clear();
         textArea.appendText(pattern.getProfitLoss() + "\n");
+//        textArea.appendText(pattern.getStartDate() + "\n");
+
 //        textArea.appendText("Start Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
 //        textArea.appendText("End Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(numberOfCandles - 1).getDate() + "\n");
 //        textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
