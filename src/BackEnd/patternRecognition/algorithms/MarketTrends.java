@@ -24,9 +24,9 @@ public abstract class MarketTrends {
         ArrayList<Double> swingsList = new ArrayList<Double>();
         MarketTrend currentTrend = MarketTrend.NO_TREND;
 
-        /** Repeat for each value (candle) to find where the turning (swing) points are */
+        /* Repeat for each value (candle) to find where the turning (swing) points are */
         for (Market.MarketValues values : timeframesDataStore.getMarketValues()) {
-            /** Checking for next swing low */
+            /* Checking for next swing low */
             if (values.getLow() < lastSwing) {
                 if (values.getLow() > potentialSwingLow) {
                     counter++;
@@ -46,7 +46,7 @@ public abstract class MarketTrends {
                     addLow = true;
                 }
             }
-            /** Checking for next swing high */
+            /* Checking for next swing high */
             if (values.getHigh() > lastSwing) {
                 if (values.getHigh() < potentialSwingHigh) {
                     counter++;
@@ -70,14 +70,14 @@ public abstract class MarketTrends {
 
         int size = swingsList.size() - 1;
         if (size > 3) {
-            /** If the past 3 swings cause a down trend */
+            /* If the past 3 swings cause a down trend */
             if (swingsList.get(size) < swingsList.get(size - 1)) {
                 if (swingsList.get(size - 2) < swingsList.get(size - 3)
                         && swingsList.get(size - 1) > swingsList.get(size - 2)) {
                     return MarketTrend.DOWN;
                 }
             }
-            /** If the past 3 swings cause an up trend */
+            /* If the past 3 swings cause an up trend */
             if (swingsList.get(size) > swingsList.get(size - 1)) {
                 if (swingsList.get(size - 2) > swingsList.get(size - 3)
                         && swingsList.get(size - 1) < swingsList.get(size - 2)) {
@@ -85,7 +85,7 @@ public abstract class MarketTrends {
                 }
             }
         }
-        /** If there is no current trend */
+        /* If there is no current trend */
         return MarketTrend.NO_TREND;
     }
 }

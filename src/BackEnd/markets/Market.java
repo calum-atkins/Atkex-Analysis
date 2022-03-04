@@ -2,7 +2,6 @@ package BackEnd.markets;
 
 import BackEnd.chart.CandleStickChart;
 import BackEnd.patternRecognition.Patterns;
-import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.sql.Time;
@@ -10,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Pattern;
 
 /**
  * This class is used to hold data on each of the markets
@@ -28,17 +26,6 @@ public class Market {
     private double trendIndicatorPercentage;
     private int pipMultiply;
     private float returnedPips;
-//    private ArrayList<Double> supportResistanceLevels = new ArrayList<>();
-//
-////    public ArrayList<Double> getSupportResistanceLevels() {
-////        return supportResistanceLevels;
-////    }
-////    public void setSupportResistanceLevels(ArrayList<Double> supportResistanceLevels) {
-////        this.supportResistanceLevels = supportResistanceLevels;
-////    }
-////    public void addSupportResistanceLevels(Double supportResistanceLevel) {
-////        supportResistanceLevels.add(supportResistanceLevel);
-////    }
 
     /**
      * Array list of StoreData holding information on (x) amount
@@ -47,15 +34,16 @@ public class Market {
      * 1 - FOUR HOUR
      * 2 - ONE HOUR
      * */
-    private ArrayList<StoreData> timeframesDataStore = new ArrayList<StoreData>();
+    private final ArrayList<StoreData> timeframesDataStore = new ArrayList<>();
 
     /** Array list to store a list of market values. */
-    private ArrayList<Patterns> patternsList = new ArrayList<Patterns>();//do same as store data
+    private ArrayList<Patterns> patternsList = new ArrayList<>();//do same as store data
 
 
 
     /** Data columns for table. */
-    private SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
+    private final SimpleStringProperty tableIndexColumn, tableStatusColumn, tableTrendColumn;
+
 
     public Market(String index, Status status, MarketTrend trend) {
         this.index = index;
@@ -77,20 +65,12 @@ public class Market {
     }
 
     /**
-     * @param dataStore timeframe of data to add to the array list.
-     */
-    public void addTimeframesDataStore(StoreData dataStore) { timeframesDataStore.add(dataStore); }
-    /**
      * Setter used to initialise array for number of timeframes
      */
     public void setTimeframesStoreSize(int i) {
         for (int j = 0; j < i; j++) {
             timeframesDataStore.add(new StoreData());
         }
-    }
-
-    /** Mehtod to add a new pattern to the list */
-    public void addPattern(Pattern p) {
     }
 
     /**
@@ -100,22 +80,13 @@ public class Market {
     public void setCandleStickChartCriticalLevels(CandleStickChart candleStickChart, int i) {
         timeframesDataStore.get(i).setCandleStickChartCriticalLevels(candleStickChart);
     }
-    public CandleStickChart getCandleStickChartCriticalLevels(int i) {
-        return timeframesDataStore.get(i).getCandleStickChartCriticalLevels();
-    }
 
     public void setCandleStickChartPatternIdentifiers(CandleStickChart candleStickChart, int i) {
         timeframesDataStore.get(i).setCandleStickChartPatternIdentifiers(candleStickChart);
     }
-    public CandleStickChart getCandleStickChartPatternIdentifiers(int i) {
-        return timeframesDataStore.get(i).getCandleStickChartPatternIdentifiers();
-    }
 
     public void setCandleStickChartEmpty(CandleStickChart candleStickChart, int i) {
         timeframesDataStore.get(i).setCandleStickChartEmpty(candleStickChart);
-    }
-    public CandleStickChart getCandleStickChartEmpty(int i) {
-        return timeframesDataStore.get(i).getCandleStickChartEmpty();
     }
 
     /**
@@ -185,9 +156,6 @@ public class Market {
             this.patternsList.add(p);
         }
     }
-
-    //public void addPatternAT(AscendingTriangle pattern) { patternsList.add(pattern); }
-
 
     /**
      * This class is used to create a single candle with each of its four necessary prices.

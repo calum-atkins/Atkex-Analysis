@@ -9,16 +9,16 @@ import javafx.scene.shape.Line;
  * a chart to be displayed to the UI.
  */
 public class Candle extends Group {
-    private Line highLowLine = new Line();
-    private Region bar = new Region();
+    private final Line highLowLine = new Line();
+    private final Region bar = new Region();
     private String seriesStyleClass;
     private String dataStyleClass;
     private boolean openAboveClose = true;
 
     /**
      * Constructor for the candle.
-     * @param seriesStyleClass style of the candle to add.
-     * @param dataStyleClass data of the candle to add.
+     * @param seriesStyleClass  style of the candle to add.
+     * @param dataStyleClass    data of the candle to add.
      */
     public Candle(String seriesStyleClass, String dataStyleClass) {
         setAutoSizeChildren(false);
@@ -30,8 +30,6 @@ public class Candle extends Group {
 
     /**
      * Method to set the styles and update the colour of the candle.
-     * @param seriesStyleClass
-     * @param dataStyleClass
      */
     public void setSeriesAndDataStyleClasses(String seriesStyleClass, String dataStyleClass) {
         this.seriesStyleClass = seriesStyleClass;
@@ -41,10 +39,10 @@ public class Candle extends Group {
 
     /**
      * Method to update the candle data.
-     * @param closeOffset
-     * @param highOffset
-     * @param lowOffset
-     * @param candleWidth
+     * @param closeOffset close offset.
+     * @param highOffset  high offset.
+     * @param lowOffset   low offset.
+     * @param candleWidth width of the candle.
      */
     public void update(double closeOffset, double highOffset, double lowOffset, double candleWidth) {
         openAboveClose = closeOffset > 0;
@@ -62,7 +60,7 @@ public class Candle extends Group {
     }
 
     /**
-     * Method to update the style of the candle depending on if it is a bullish or bearish candle
+     * Method to update the style of the candle depending on if it is a bullish or bearish candle.
      */
     private void updateStyleClasses() {
         getStyleClass().setAll("candlestick-candle", seriesStyleClass, dataStyleClass);

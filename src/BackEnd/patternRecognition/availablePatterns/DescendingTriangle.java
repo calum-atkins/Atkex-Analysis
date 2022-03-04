@@ -12,15 +12,14 @@ public class DescendingTriangle {
     public static ArrayList<Patterns> findDescendingTriangles(Market market) {
         ArrayList<Patterns> descendingTriangles = new ArrayList<Patterns>();
         for (int tf = 0; tf < Main.getNumberOfTimeframes(); tf++) {
-
             int counter = 0;
-            /** Run a check for each candle. */
+            /* Run a check for each candle. */
             for (Market.MarketValues values : market.getTimeframesDataStore(tf).getMarketValues()) {
                 counter++;
-                /** If support line is in between the open and the close then start price = close. */
+                /* If support line is in between the open and the close then start price = close. */
                 for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
                     if (d > values.getOpen() && d < values.getClose()) {
-                        /** Go to method send start price, candle number, market values and timeframe. */
+                        /* Go to method send start price, candle number, market values and timeframe. */
                         if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()) != null) {
                             descendingTriangles.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()));
                         }
@@ -50,10 +49,10 @@ public class DescendingTriangle {
             int remainingCandles = valuesList.size() - candleNumber;
             int entryCandle = candleNumber;
 
-            /** Repeat for number of candles left to current date/time. */
+            /* Repeat for number of candles left to current date/time. */
             for (int i = candleNumber; i < remainingCandles; i++) {
 
-                /** If the close is below the start price, check for possible candle */
+                /* If the close is below the start price, check for possible candle */
                 if (valuesList.get(i).getClose() < startPrice && swingHighList.size() >= 3) {
 
                     double percentageHighest = startPrice + swingHighList.get(0);
@@ -63,7 +62,7 @@ public class DescendingTriangle {
                     for (int a = 0; a < swingHighList.size(); a++) {
                         if (a != 0) {
 
-                            /** Calculate the upper and lower bound the next swing high has to be for possible triangle. */
+                            /* Calculate the upper and lower bound the next swing high has to be for possible triangle. */
                             double percentageToCompute = swingHighList.get(a) - startPrice;
                             double value = ((percentageToCompute / percentageHighest) * 100);
                             if (a == 1) {
@@ -79,7 +78,7 @@ public class DescendingTriangle {
                                 double takeProfitTarget = startPrice - takeProfitDifference;
                                 double takeProfitPips = (startPrice - takeProfitTarget) * pipMultiply;
 
-                                /** Check for if the stop loss or take profit has been reached. */
+                                /* Check for if the stop loss or take profit has been reached. */
                                 int candleCounter = entryCandle;
                                 while (true) {
                                     /**
@@ -109,13 +108,13 @@ public class DescendingTriangle {
                     }
                     swingHighList.clear();
                     return null;
-                } /** If the pattern has closed out with 1 or less swing highs */
+                } /* If the pattern has closed out with 1 or less swing highs */
                 else if (valuesList.get(i).getClose() < startPrice && swingHighList.size() <= 1) {
                     swingHighList.clear();
                     return null;
                 }
 
-                /** If another high is formed, replace temp swing high with new high. */
+                /* If another high is formed, replace temp swing high with new high. */
                 if (valuesList.get(i).getClose() >= startPrice && valuesList.get(i).getClose() >= possibleSwingHigh && rise == true) {
                     possibleSwingHigh = valuesList.get(i).getClose();
                     rise = true;
@@ -124,7 +123,7 @@ public class DescendingTriangle {
                     rise = false;
                 }
 
-                /** If values reach horizontal line, add recent swing high to array and search for next swing high. */
+                /* If values reach horizontal line, add recent swing high to array and search for next swing high. */
                 if (valuesList.get(i).getLow() < startPrice && valuesList.get(i).getClose() > startPrice) {
                     if (first) {
                         possibleSwingHigh = startPrice;

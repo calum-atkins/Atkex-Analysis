@@ -100,8 +100,9 @@ public class Main extends Application {
         System.out.println("Patterns Generated.");
 
         /** Create charts */
+        System.out.println("Creating charts...");
         createCharts();
-        System.out.println("Charts created.");
+        System.out.println(markets.size() + " charts created.");
 
         /** Load stage */
         System.out.println("Displaying UI.");
@@ -155,7 +156,7 @@ public class Main extends Application {
         String fourHourSuffix = ", 240" + rawDataFileType;
         String oneDaySuffix = ", 1D" + rawDataFileType;
 
-        //Loop repeats for number of markets in folder
+        /* Loop repeats for number of markets in folder */
         for (int marketNum = 0; marketNum < marketsSize; marketNum++) {
             String index = markets.get(marketNum).getIndex();
             File directoryPath = new File(rawDataLocation + "/" + index);
@@ -166,7 +167,7 @@ public class Main extends Application {
             float maxOverall;
             for (int j = 0; j <  NUMBER_OF_TIMEFRAMES; j++) {
                 String path = null;
-                /** Set the path depending on the file name (determines the timeframe) */
+                /* Set the path depending on the file name (determines the timeframe) */
                 if (marketsList[j].equals(index + oneHourSuffix)) {
                     path = rawDataLocation + "/" + index + "/" + index + oneHourSuffix;
                     markets.get(marketNum).getTimeframesDataStore(j).setTimeframe(MarketTimeframe.ONE_HOUR);
@@ -181,7 +182,7 @@ public class Main extends Application {
                 }
                 markets.get(marketNum).getTimeframesDataStore(j).setFilePath(path);
 
-                /** This block is used to store all the time and market prices to individual time frames as market values */
+                /* This block is used to store all the time and market prices to individual time frames as market values */
                 try {
                     BufferedReader br = new BufferedReader(
                             new FileReader(markets.get(marketNum).getTimeframesDataStore(j).getFilePath()));
@@ -216,7 +217,8 @@ public class Main extends Application {
                                 maxOverall = Float.parseFloat(values[2]);
                             }
 
-                            /** This block finds the min and max price for every 'x' amount of bars
+                            /**
+                             * This block finds the min and max price for every 'x' amount of bars
                              * x = number of candles per segment, defined in preferences
                              */
                             if (segmentIncrement == 0) {
@@ -273,18 +275,10 @@ public class Main extends Application {
                                     (m.getTimeframesDataStore(i).getSupport().get(j) +
                                             m.getTimeframesDataStore(i).getResistance().get(k)) / 2);
                         }
-                        //Adding level to array
-                        //System.out.println(m.getTimeframesDataStore(i).getResistance().get(k));
                     }
-                    //Adding level to array
-                    //m.addSupportResistanceLevels(m.getTimeframesDataStore(i).getSupport().get(j));
                 }
-
             }
         }
-
-
-
     }
 
     /**
@@ -304,7 +298,7 @@ public class Main extends Application {
         for (Market m : markets) {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
-            //m.setPatternsList(DescendingTriangle.findDescendingTriangles(m));
+
             for (Patterns p : m.getPatternsList()) {
                 m.modifyPips(p.getProfitLoss());
 
@@ -319,7 +313,7 @@ public class Main extends Application {
 
 
         }
-        /** Compute final pip returned value */
+        /* Compute final pip returned value */
 
     }
 
@@ -397,7 +391,6 @@ public class Main extends Application {
      */
     private void createCharts() {
         for (Market m : markets) {
-            System.out.println("Creating " + m.getIndex() + " chart.");
             for  (int j = 0; j < NUMBER_OF_TIMEFRAMES; j++) {
                 m.setCandleStickChartCriticalLevels(createChart(m, j, 1), j);
                 m.setCandleStickChartPatternIdentifiers(createChart(m, j, 2), j);
@@ -477,18 +470,15 @@ public class Main extends Application {
             for (Patterns pattern : market.getTimeframesDataStore(j).getPatternsList()) {
                 XYChart.Data<Number, Number> startMarker = new XYChart.Data<>
                         (pattern.getStartCandle(), 0);
-                bc.addStartCandleMarker(startMarker,
-                        pattern.getStartCandle());
+                bc.addStartCandleMarker(startMarker);
 
                 XYChart.Data<Number, Number> entryMarker = new XYChart.Data<>
                         (pattern.getEntryCandle(), 0);
-                bc.addEntryCandleMarker(entryMarker,
-                        pattern.getEntryCandle());
+                bc.addEntryCandleMarker(entryMarker);
 
                 XYChart.Data<Number, Number> exitMarker = new XYChart.Data<>
                         (pattern.getExitCandle(), 0);
-                bc.addExitCandleMarker(exitMarker,
-                        pattern.getExitCandle(), pattern.getProfitLoss());
+                bc.addExitCandleMarker(exitMarker, pattern.getProfitLoss());
             }
             return bc;
         }
