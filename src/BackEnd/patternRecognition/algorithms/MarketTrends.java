@@ -10,6 +10,7 @@ public abstract class MarketTrends {
     /**
      * Calculate the current trend of the market form the day data
      * @param timeframesDataStore day timeframe data
+     * @param percentageChange
      * @return computed market trend
      */
     public static MarketTrend dayTrend(Market.StoreData timeframesDataStore, double percentageChange) {

@@ -1,13 +1,10 @@
 package BackEnd.patternRecognition;
 
-import BackEnd.markets.Market;
-import BackEnd.markets.MarketTimeframe;
 import BackEnd.markets.Status;
 import BackEnd.patternRecognition.availablePatterns.*;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -29,8 +26,8 @@ public class Patterns {
 
     private static ArrayList<AscendingTriangle> ascendingTriangleList;
     private ArrayList<DescendingTriangle> descendingTriangleList;
-    private ArrayList<DoubleBottom> doubleBottomList;
-    private ArrayList<DoubleTop> doubleTopList;
+    private ArrayList<DoubleTop> doubleBottomList;
+    private ArrayList<DoubleBottom> doubleTopList;
     private ArrayList<Pennant> pennantList;
     private ArrayList<Wedge> wedgeList;
 
