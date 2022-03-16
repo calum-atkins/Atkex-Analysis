@@ -26,7 +26,17 @@ public class DoubleBottom {
 
                         /* Go to method start price, candle number, market values and timeframe. */
                         if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()) != null) {
-                            doubleBottoms.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()));
+                            Patterns newDoubleBottom = checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage());
+                            boolean duplicatePattern = true;
+                            for (Patterns p : doubleBottoms) {
+                                if (/*newDoubleBottom.getStartCandle() < p.getStartCandle() - 10 &&*/
+                                    newDoubleBottom.getEntryCandle() == p.getEntryCandle()) {
+                                    duplicatePattern = false;
+                                }
+                            }
+                            if (duplicatePattern) {
+                                doubleBottoms.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()));
+                            }
                         }
                     }
                 }
@@ -209,7 +219,6 @@ public class DoubleBottom {
                 return toAdd;
             } else {
                 pendingPattern = true;
-
             }
         }
         if (pendingPattern) {
