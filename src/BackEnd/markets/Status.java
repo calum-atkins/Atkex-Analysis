@@ -11,7 +11,8 @@ public enum Status {
     DOUBLE_TOP,
     DOUBLE_BOTTOM,
     WEDGE,
-    PENDING;
+    PENDING,
+    SIGNAL;
 
     private Status() {
     }

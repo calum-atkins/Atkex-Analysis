@@ -223,7 +223,7 @@ public class DoubleBottom {
             }
         }
         if (pendingPattern) {
-            Patterns toAdd = new Patterns(tf, Status.PENDING, 0, startCandle, entryCandle, "Pending");
+            Patterns toAdd = new Patterns(tf, Status.DOUBLE_BOTTOM, 0, startCandle, entryCandle, "Pending");
             return toAdd;
         }
         return null;

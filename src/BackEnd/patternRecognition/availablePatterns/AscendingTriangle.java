@@ -103,7 +103,7 @@ public class AscendingTriangle {
 
                                     int duration = candleCounter - candleNumber;
                                     if (valuesList.get(candleCounter) == null) {
-                                        Patterns toAdd = new Patterns(tf, Status.PENDING, 0, candleNumber, entryCandle, "Pending");
+                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
                                         return toAdd;
                                     } else if ((takeProfitTarget - valuesList.get(candleCounter).getHigh()) < 0) {
                                         Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));

@@ -6,6 +6,7 @@ import BackEnd.markets.MarketTimeframe;
 
 
 import BackEnd.markets.MarketTrend;
+import BackEnd.markets.Status;
 import BackEnd.patternRecognition.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -273,6 +274,11 @@ public class MainController implements Initializable {
      */
     public ObservableList<Market> getMarkets() {
         for (int i = 0; i < markets.size(); i++) {
+            for (Patterns p : markets.get(i).getPatternsList()) {
+                if (p.getDuration().equals("Pending")) {
+                    markets.get(i).setStatus(Status.SIGNAL);
+                }
+            }
             marketsList.add(new Market(
                     markets.get(i).getIndex(),
                     markets.get(i).getStatus(),
