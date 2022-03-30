@@ -5,6 +5,7 @@ import BackEnd.markets.Market;
 import BackEnd.markets.MarketTimeframe;
 
 
+import BackEnd.markets.MarketTrend;
 import BackEnd.patternRecognition.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,6 +67,8 @@ public class MainController implements Initializable {
 
     @FXML
     private ImageView imageViewLogo;
+    @FXML
+    private ImageView imageViewTrend;
 
     /** Holder for chart views to switch in. */
     @FXML
@@ -323,6 +326,15 @@ public class MainController implements Initializable {
         textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
         textArea.appendText("Profit Loss (Pips): " + markets.get(marketNumber).getReturnsPips() + "\n");
         textArea.appendText(currentTimeframe.toString());
+
+        if (selectedMarket.getTrend() == MarketTrend.UP) {
+            imageViewTrend.setImage(new Image("/img/uptrend_logo.png"));
+        } else if (selectedMarket.getTrend() == MarketTrend.DOWN) {
+            imageViewTrend.setImage(new Image("/img/downtrend_logo.png"));
+        } else {
+            imageViewTrend.setImage(null);
+        }
+
 
     }
 

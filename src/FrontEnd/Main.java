@@ -12,6 +12,7 @@ import BackEnd.patternRecognition.algorithms.MarketTrends;
 import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
 import BackEnd.patternRecognition.availablePatterns.DescendingTriangle;
 import BackEnd.patternRecognition.availablePatterns.DoubleBottom;
+import BackEnd.patternRecognition.availablePatterns.Pennant;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -300,6 +301,9 @@ public class Main extends Application {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
             m.addPatternsList(DoubleBottom.findDoubleTop(m));
+//            m.addPatternsList(DoubleTop.findDoubleTops(m));
+//            m.addPatternsList(Pennant.findPennants(m));
+//            m.addPatternsList(Wedge.findWedges(m));
 
             for (Patterns p : m.getPatternsList()) {
                 m.modifyPips(p.getProfitLoss());

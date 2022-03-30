@@ -33,6 +33,11 @@
                   <CheckBox fx:id="checkBoxPatternIdentifiers" mnemonicParsing="false" onAction="#togglePatternIdentifiers" styleClass="button" text="Pattern Identifiers" />
                </graphic>
             </Menu>
+            <Menu mnemonicParsing="false">
+               <graphic>
+                  <ImageView fx:id="imageViewTrend" fitHeight="45.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </Menu>
         </menus>
       </MenuBar>
       <SplitPane dividerPositions="0.33" layoutY="45.0" prefHeight="555.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
