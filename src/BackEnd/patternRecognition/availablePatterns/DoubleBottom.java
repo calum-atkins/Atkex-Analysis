@@ -29,8 +29,9 @@ public class DoubleBottom {
                             Patterns newDoubleBottom = checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage());
                             boolean duplicatePattern = true;
                             for (Patterns p : doubleBottoms) {
-                                if (/*newDoubleBottom.getStartCandle() < p.getStartCandle() - 10 &&*/
-                                    newDoubleBottom.getEntryCandle() == p.getEntryCandle()) {
+                                if (newDoubleBottom.getStartCandle() - 10 < p.getStartCandle() &&
+                                    newDoubleBottom.getEntryCandle() == p.getEntryCandle() ||
+                                        newDoubleBottom.getEntryCandle() == p.getEntryCandle()) {
                                     duplicatePattern = false;
                                 }
                             }
@@ -55,7 +56,7 @@ public class DoubleBottom {
         //Get an array list of all swing's
         ArrayList<Double> swingsList = new ArrayList<>();
         ArrayList<Integer> swingsListCandles = new ArrayList<>();
-        double lastSwing = marketValues.get(0).getClose();//CHANGE THE -1
+        double lastSwing = marketValues.get(0).getClose();
         double swingLow = 0;
         double potentialSwingLow = 100;
         double swingHigh = 0;

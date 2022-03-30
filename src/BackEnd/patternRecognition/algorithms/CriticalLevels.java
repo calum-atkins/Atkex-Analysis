@@ -61,7 +61,7 @@ public abstract class CriticalLevels {
                     }
                     supportLevel /= supportArray.size();
 
-                    /* Check strength, anything over 2 is  */
+                    /* Check strength, anything over 2 is valid */
                     if (supportArray.size() > 2) {
                         m.getTimeframesDataStore(i).addSupport(supportLevel);
                     }
@@ -117,7 +117,7 @@ public abstract class CriticalLevels {
                     resistanceLevel /= resistanceArray.size();
 
 
-                    /* Check strength, anything over 2 is acceptable */
+                    /* Check strength, anything over 2 is valid */
                     if (resistanceArray.size() > 2) {
                         m.getTimeframesDataStore(i).addResistance(resistanceLevel);
                     }

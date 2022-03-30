@@ -68,7 +68,7 @@ public class AscendingTriangle {
             /* Repeat for number of candles left to current date/time. */
             for (int i = candleNumber; i < remainingCandles; i++) {
 
-                /* If the close is above the start price, check for possible candle */
+                /* If the close is above the start price, check for possible pattern */
                 if (valuesList.get(i).getClose() > startPrice && swingLowList.size() >= 3) {
 
                     double percentageHighest = startPrice - swingLowList.get(0);
