@@ -79,6 +79,8 @@ public class MainController implements Initializable {
     private AnchorPane mainAnchorPane;
     @FXML
     private Button loadDataButton;
+    @FXML
+    private TextField txtProfitPips;
 
     @FXML
     private ComboBox comboBox;
@@ -273,8 +275,10 @@ public class MainController implements Initializable {
      * @return the observable list.
      */
     public ObservableList<Market> getMarkets() {
+        float totalPips = 0;
         for (int i = 0; i < markets.size(); i++) {
             for (Patterns p : markets.get(i).getPatternsList()) {
+                totalPips += p.getProfitLoss();
                 if (p.getDuration().equals("Pending")) {
                     markets.get(i).setStatus(Status.SIGNAL);
                 }
@@ -284,6 +288,7 @@ public class MainController implements Initializable {
                     markets.get(i).getStatus(),
                     markets.get(i).getTrend()));
         }
+        txtProfitPips.setText("Total Pips : " + totalPips);
         return marketsList;
     }
 

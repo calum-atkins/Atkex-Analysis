@@ -38,6 +38,11 @@
                   <ImageView fx:id="imageViewTrend" fitHeight="45.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </Menu>
+            <Menu mnemonicParsing="false">
+               <graphic>
+                  <TextField fx:id="txtProfitPips" prefHeight="25.0" prefWidth="195.0" text="Total Pips : " />
+               </graphic>
+            </Menu>
         </menus>
       </MenuBar>
       <SplitPane dividerPositions="0.33" layoutY="45.0" prefHeight="555.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">

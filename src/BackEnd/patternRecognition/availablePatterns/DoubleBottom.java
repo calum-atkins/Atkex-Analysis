@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DoubleBottom {
 
-    public static ArrayList<Patterns> findDoubleTop(Market market) {
+    public static ArrayList<Patterns> findDoubleBottoms(Market market) {
         ArrayList<Patterns> doubleBottoms = new ArrayList<>();
         for (int tf = 0; tf < Main.getNumberOfTimeframes(); tf++) {
             int counter = 0;
@@ -27,15 +27,15 @@ public class DoubleBottom {
                         /* Go to method start price, candle number, market values and timeframe. */
                         if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()) != null) {
                             Patterns newDoubleBottom = checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage());
-                            boolean duplicatePattern = true;
+                            boolean duplicatePattern = false;
                             for (Patterns p : doubleBottoms) {
                                 if (newDoubleBottom.getStartCandle() - 10 < p.getStartCandle() &&
                                     newDoubleBottom.getEntryCandle() == p.getEntryCandle() ||
                                         newDoubleBottom.getEntryCandle() == p.getEntryCandle()) {
-                                    duplicatePattern = false;
+                                    duplicatePattern = true;
                                 }
                             }
-                            if (duplicatePattern) {
+                            if (!duplicatePattern) {
                                 doubleBottoms.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()));
                             }
                         }

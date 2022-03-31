@@ -9,10 +9,7 @@ import BackEnd.chart.CandleStickChart;
 import BackEnd.patternRecognition.Patterns;
 import BackEnd.patternRecognition.algorithms.CriticalLevels;
 import BackEnd.patternRecognition.algorithms.MarketTrends;
-import BackEnd.patternRecognition.availablePatterns.AscendingTriangle;
-import BackEnd.patternRecognition.availablePatterns.DescendingTriangle;
-import BackEnd.patternRecognition.availablePatterns.DoubleBottom;
-import BackEnd.patternRecognition.availablePatterns.Pennant;
+import BackEnd.patternRecognition.availablePatterns.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -300,8 +297,8 @@ public class Main extends Application {
         for (Market m : markets) {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
-            m.addPatternsList(DoubleBottom.findDoubleTop(m));
-//            m.addPatternsList(DoubleTop.findDoubleTops(m));
+            m.addPatternsList(DoubleBottom.findDoubleBottoms(m));
+            //m.addPatternsList(DoubleTop.findDoubleTops(m));
 //            m.addPatternsList(Pennant.findPennants(m));
 //            m.addPatternsList(Wedge.findWedges(m));
 
