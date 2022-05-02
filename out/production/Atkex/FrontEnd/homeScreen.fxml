@@ -10,7 +10,7 @@
         <menus>
             <Menu mnemonicParsing="false">
                <graphic>
-                  <ImageView fx:id="imageViewLogo" fitHeight="45.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imageViewLogo" fitHeight="45.0" fitWidth="110.0" onMouseClicked="#reloadScrollMain" pickOnBounds="true" preserveRatio="true">
                   </ImageView>
                </graphic></Menu>
             <Menu mnemonicParsing="false" styleClass="menu-label">
@@ -36,11 +36,6 @@
             <Menu mnemonicParsing="false">
                <graphic>
                   <ImageView fx:id="imageViewTrend" fitHeight="45.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true" />
-               </graphic>
-            </Menu>
-            <Menu mnemonicParsing="false">
-               <graphic>
-                  <TextField fx:id="txtProfitPips" prefHeight="25.0" prefWidth="195.0" text="Total Pips : " />
                </graphic>
             </Menu>
         </menus>

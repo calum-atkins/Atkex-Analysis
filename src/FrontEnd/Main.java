@@ -22,17 +22,20 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-
 import java.io.*;
 
-//
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * The main application class
+ * The main application class for Atkex
+ * This system is desiegn to complete technical analysis using models and algorithms for users
+ * trading on the forex market
+ *
+ * @Author Calum Atkins
+ * @version v1.0
  */
 public class Main extends Application {
 

@@ -11,6 +11,7 @@ import BackEnd.patternRecognition.Patterns;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -79,8 +81,6 @@ public class MainController implements Initializable {
     private AnchorPane mainAnchorPane;
     @FXML
     private Button loadDataButton;
-    @FXML
-    private TextField txtProfitPips;
 
     @FXML
     private ComboBox comboBox;
@@ -111,6 +111,7 @@ public class MainController implements Initializable {
         if (!marketsLoaded) {
             marketsTableView.setItems(getMarkets());
             marketsLoaded = true;
+            reloadScrollMain();
         }
     }
 
@@ -247,7 +248,7 @@ public class MainController implements Initializable {
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
         textArea.setEditable(false);
-        textArea.appendText("Welcome to Atkex Analysis!");
+        textArea.appendText("Welcome to Atkex, A technical \nanalysis tool for the forex Market");
 
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -269,6 +270,33 @@ public class MainController implements Initializable {
      */
     public void setChart(Node node) { chartView.getChildren().setAll(node); }
 
+
+    /**
+     * Method to show overall system results on image click
+     */
+    public void reloadScrollMain() {
+        textArea.clear();
+
+        int patterns = 0;
+        int signals = 0;
+        float profitLoss = 0;
+        for (Market m : markets) {
+            for (Patterns p : m.getPatternsList()) {
+                patterns += 1;
+                profitLoss += p.getProfitLoss();
+            }
+            if (m.getStatus() == Status.SIGNAL) {
+                signals += 1;
+            }
+        }
+
+        textArea.appendText("Welcome to Atkex, A technical \nanalysis tool for the forex Market");
+        textArea.appendText("\nPatterns Detected: " + patterns);
+        textArea.appendText("\nSignals Detected: " + signals);
+        textArea.appendText("\nBack-tested P/L: " + profitLoss);
+
+    }
+
     /**
      * Method to create observable list to display to UI.
      *
@@ -288,7 +316,6 @@ public class MainController implements Initializable {
                     markets.get(i).getStatus(),
                     markets.get(i).getTrend()));
         }
-        txtProfitPips.setText("Total Pips : " + totalPips);
         return marketsList;
     }
 
