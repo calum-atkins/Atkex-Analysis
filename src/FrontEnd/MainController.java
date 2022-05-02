@@ -86,6 +86,8 @@ public class MainController implements Initializable {
     private ComboBox comboBox;
     @FXML
     private CheckBox checkBoxCriticalLevels;
+    @FXML
+    private CheckBox checkBoxPatternIdentifiers;
 
     private boolean criticalLevelsCheck = false;
     private boolean patternIdentifierCheck = false;
@@ -112,7 +114,15 @@ public class MainController implements Initializable {
             marketsTableView.setItems(getMarkets());
             marketsLoaded = true;
             reloadScrollMain();
+            removeFocus();
         }
+    }
+
+    public void removeFocus() {
+        loadDataButton.setFocusTraversable(false);
+        comboBox.setFocusTraversable(false);
+        checkBoxPatternIdentifiers.setFocusTraversable(false);
+        checkBoxCriticalLevels.setFocusTraversable(false);
     }
 
     /**
@@ -248,7 +258,7 @@ public class MainController implements Initializable {
         imageViewLogo.setImage(new Image("/img/atkex_logo_dark.png"));
 
         textArea.setEditable(false);
-        textArea.appendText("Welcome to Atkex, A technical \nanalysis tool for the forex Market");
+        textArea.appendText("Welcome to Atkex, A technical \nanalysis tool for the forex Market\nClick on 'Load Markets' to get started.");
 
         marketsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         patternsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

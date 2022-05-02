@@ -21,6 +21,8 @@
     -fx-font-color: black;
     -fx-font-size: 10pt;
     -fx-font-family: "Proxima Nova";
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .text-area {
@@ -58,10 +60,6 @@
    -fx-font-color: black;
    -fx-font-size: 10pt;
    -fx-font-family: "Proxima Nova";
-
-}
-
-.check-box {
 
 }
 

@@ -340,7 +340,7 @@ public class Main extends Application {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
             m.addPatternsList(DoubleBottom.findDoubleBottoms(m));
-            m.addPatternsList(DoubleTop.findDoubleTops(m));
+//            m.addPatternsList(DoubleTop.findDoubleTops(m));
 //            m.addPatternsList(Pennant.findPennants(m));
 //            m.addPatternsList(Wedge.findWedges(m));
 
