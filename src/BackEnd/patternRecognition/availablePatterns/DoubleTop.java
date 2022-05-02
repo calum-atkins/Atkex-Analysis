@@ -19,21 +19,28 @@ public class DoubleTop {
 
                 /* If resistance or support line is in between the open and close of the candle */
                 for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
-                    if (d < values.getOpen() && d > values.getClose()) {
+                    if (d < values.getOpen() &&
+                            d > values.getClose()) {
 
                         /* Go to method start price, candle number, market values and timeframe. */
-                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()) != null) {
-                            Patterns newDoubleTop = checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage());
+                        if (checkCandleForPattern(d,
+                                counter, market.getTimeframesDataStore(tf).getMarketValues(),
+                                tf, market.getPipMultiply(),
+                                market.getTrendIndicatorPercentage()) != null) {
+                            Patterns newDoubleTop = checkCandleForPattern(d, counter,
+                                    market.getTimeframesDataStore(tf).getMarketValues(), tf,
+                                    market.getPipMultiply(), market.getTrendIndicatorPercentage());
                             boolean duplicatePattern = false;
                             for (Patterns p : doubleTops) {
-                                if (newDoubleTop.getStartCandle() - 10 < p.getStartCandle() &&
-                                        newDoubleTop.getEntryCandle() == p.getEntryCandle() ||
-                                        newDoubleTop.getEntryCandle() == p.getEntryCandle()) {
+                                assert newDoubleTop != null;
+                                if (newDoubleTop.getEntryCandle() == p.getEntryCandle()) {
                                     duplicatePattern = true;
                                 }
                             }
                             if (!duplicatePattern) {
-                                doubleTops.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()));
+                                doubleTops.add(checkCandleForPattern(d, counter,
+                                        market.getTimeframesDataStore(tf).getMarketValues(), tf,
+                                        market.getPipMultiply(), market.getTrendIndicatorPercentage()));
                             }
                         }
                     }
@@ -43,7 +50,10 @@ public class DoubleTop {
         return doubleTops;
     }
 
-    private static Patterns checkCandleForPattern(Double d, int startCounter, ArrayList<Market.MarketValues> marketValues, int tf, int pipMultiply, double percentageChange) {
+    private static Patterns checkCandleForPattern(Double d, int startCounter,
+                                                  ArrayList<Market.MarketValues> marketValues,
+                                                  int tf, int pipMultiply,
+                                                  double percentageChange) {
         /**
          * Checks occur: Find the swings
          *  - if swing[4] > swing[3] && swing[4] < swing[1] Then move onto next
@@ -144,7 +154,6 @@ public class DoubleTop {
                                 firstTop = true;
                                 latestSwingCandlePosition = i;
                                 topPrice = marketValues.get(i).getClose();
-                                topPriceLower = marketValues.get(i).getLow();
                                 topPriceUpper = marketValues.get(i).getHigh();
                                 first = false;
                                 i = i + 5;
@@ -173,7 +182,8 @@ public class DoubleTop {
                 }
                 if (secondTop) { // Search for entry position
                     if (marketValues.get(i).getClose() < startPrice) {
-                        Patterns newDoubleBottom = searchStopLossTakeProfit(i, marketValues, stopLossSwingPrice, startPrice, pipMultiply, tf, latestSwingCandlePosition);
+                        Patterns newDoubleBottom = searchStopLossTakeProfit(i, marketValues,
+                                stopLossSwingPrice, startPrice, pipMultiply, tf, latestSwingCandlePosition);
                         return newDoubleBottom;
                     } else if (marketValues.get(i).getClose() > topPrice) {
                         return null;
@@ -195,7 +205,9 @@ public class DoubleTop {
         return null;
     }
 
-    public static Patterns searchStopLossTakeProfit(int entryCandle, ArrayList<Market.MarketValues> marketValues, double stopLossSwingPrice, double startPrice, int pipMultiply, int tf, int startCandle) {
+    public static Patterns searchStopLossTakeProfit(int entryCandle, ArrayList<Market.MarketValues> marketValues,
+                                                    double stopLossSwingPrice, double startPrice, int pipMultiply,
+                                                    int tf, int startCandle) {
         double stopLossTarget = stopLossSwingPrice;
         double stopLossPips = (stopLossTarget - startPrice) * pipMultiply;
         double takeProfitDifference = (stopLossTarget - startPrice) * 1.2;
@@ -205,12 +217,14 @@ public class DoubleTop {
 
         for (int i = entryCandle; i < marketValues.size() - entryCandle; i++) {
             if (marketValues.get(i).getLow() < takeProfitTarget) { // TP Hit
-                Patterns toAdd = new Patterns(tf, Status.DOUBLE_TOP, (int) takeProfitPips, startCandle, entryCandle, String.valueOf(i - startCandle));
+                Patterns toAdd = new Patterns(tf, Status.DOUBLE_TOP, (int) takeProfitPips, startCandle,
+                        entryCandle, String.valueOf(i - startCandle));
                 toAdd.setExitCandlePrice((float) takeProfitTarget);
                 toAdd.setExitCandle(i);
                 return toAdd;
             } else if (marketValues.get(i).getHigh() > stopLossTarget) { // SL Hit
-                Patterns toAdd = new Patterns(tf, Status.DOUBLE_TOP, -(int) stopLossPips, startCandle, entryCandle, String.valueOf(i - startCandle));
+                Patterns toAdd = new Patterns(tf, Status.DOUBLE_TOP, -(int) stopLossPips, startCandle,
+                        entryCandle, String.valueOf(i - startCandle));
                 toAdd.setExitCandlePrice((float) stopLossTarget);
                 toAdd.setExitCandle(i);
                 return toAdd;

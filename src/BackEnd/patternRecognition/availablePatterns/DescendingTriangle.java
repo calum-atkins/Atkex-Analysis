@@ -20,8 +20,10 @@ public class DescendingTriangle {
                 for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
                     if (d > values.getOpen() && d < values.getClose()) {
                         /* Go to method send start price, candle number, market values and timeframe. */
-                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()) != null) {
-                            descendingTriangles.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()));
+                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(),
+                                tf, market.getPipMultiply()) != null) {
+                            descendingTriangles.add(checkCandleForPattern(d, counter,
+                                    market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()));
                         }
                     }
                 }
@@ -30,7 +32,8 @@ public class DescendingTriangle {
         return descendingTriangles;
     }
 
-    public static Patterns checkCandleForPattern(double startPrice, int candleNumber, ArrayList<Market.MarketValues> valuesList, int tf, int pipMultiply) {
+    public static Patterns checkCandleForPattern(double startPrice, int candleNumber,
+                                                 ArrayList<Market.MarketValues> valuesList, int tf, int pipMultiply) {
         /**
          * Checks that occur:
          *  - If the candle has closed below price (check for failed or successful pattern).
@@ -72,7 +75,8 @@ public class DescendingTriangle {
                             }
 
                             if (value > lowerBound && value < upperBound) {
-//                                Patterns newDescendingTriangle = searchStopLossTakeProfit(entryCandle, valuesList, swingHighList.get(2), startPrice, pipMultiply, tf, candleNumber);
+//                                Patterns newDescendingTriangle = searchStopLossTakeProfit(entryCandle, valuesList,
+//                                      swingHighList.get(2), startPrice, pipMultiply, tf, candleNumber);
 //                                return newDescendingTriangle;
 
 
@@ -92,15 +96,30 @@ public class DescendingTriangle {
 
                                     int duration = candleCounter - candleNumber;
                                     if (valuesList.get(candleCounter) == null) {
-                                        Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
+                                        Patterns toAdd = new Patterns(tf,
+                                                Status.DESCENDING_TRIANGLE,
+                                                0,
+                                                candleNumber,
+                                                entryCandle,
+                                                "Pending");
                                         return toAdd;
                                     } else if ((takeProfitTarget - valuesList.get(candleCounter).getHigh()) < 0) {
-                                        Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf,
+                                                Status.DESCENDING_TRIANGLE,
+                                                (int) takeProfitPips,
+                                                candleNumber,
+                                                entryCandle,
+                                                String.valueOf(duration));
                                         toAdd.setExitCandlePrice((float) takeProfitTarget);
                                         toAdd.setExitCandle(candleCounter);
                                         return toAdd;
                                     } else if ((valuesList.get(candleCounter).getLow() - stopLossTarget) < 0) {
-                                        Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE, -(int) stopLossPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf,
+                                                Status.DESCENDING_TRIANGLE,
+                                                -(int) stopLossPips,
+                                                candleNumber,
+                                                entryCandle,
+                                                String.valueOf(duration));
                                         toAdd.setExitCandlePrice((float) stopLossTarget);
                                         toAdd.setExitCandle(candleCounter);
                                         return toAdd;
@@ -114,22 +133,28 @@ public class DescendingTriangle {
                     swingHighList.clear();
                     return null;
                 } /* If the pattern has closed out with 1 or less swing highs */
-                else if (valuesList.get(i).getClose() < startPrice && swingHighList.size() <= 1) {
+                else if (valuesList.get(i).getClose() < startPrice &&
+                        swingHighList.size() <= 1) {
                     swingHighList.clear();
                     return null;
                 }
 
                 /* If another high is formed, replace temp swing high with new high. */
-                if (valuesList.get(i).getClose() >= startPrice && valuesList.get(i).getClose() >= possibleSwingHigh && rise == true) {
+                if (valuesList.get(i).getClose() >= startPrice &&
+                        valuesList.get(i).getClose() >= possibleSwingHigh &&
+                        rise == true) {
                     possibleSwingHigh = valuesList.get(i).getClose();
                     rise = true;
-                } else if (valuesList.get(i).getClose() >= startPrice && valuesList.get(i).getClose() >= possibleSwingHigh && rise == false) {
+                } else if (valuesList.get(i).getClose() >= startPrice &&
+                        valuesList.get(i).getClose() >= possibleSwingHigh &&
+                        rise == false) {
                     swingHighList.clear();
                     rise = false;
                 }
 
                 /* If values reach horizontal line, add recent swing high to array and search for next swing high. */
-                if (valuesList.get(i).getLow() < startPrice && valuesList.get(i).getClose() > startPrice) {
+                if (valuesList.get(i).getLow() < startPrice &&
+                        valuesList.get(i).getClose() > startPrice) {
                     if (first) {
                         possibleSwingHigh = startPrice;
                     } else {
@@ -143,7 +168,8 @@ public class DescendingTriangle {
         return null;
     }
 
-//    public static Patterns searchStopLossTakeProfit(int entryCandle, ArrayList<Market.MarketValues> marketValues, double stopLossSwingPrice, double startPrice, int pipMultiply, int tf, int startCandle) {
+//    public static Patterns searchStopLossTakeProfit(int entryCandle, ArrayList<Market.MarketValues> marketValues,
+//          double stopLossSwingPrice, double startPrice, int pipMultiply, int tf, int startCandle) {
 //
 //        double stopLossTarget = stopLossSwingPrice;
 //        double stopLossPips = (stopLossTarget - startPrice) * pipMultiply;
@@ -154,12 +180,14 @@ public class DescendingTriangle {
 //
 //        for (int i = entryCandle; i < marketValues.size() - entryCandle; i++) {
 //            if (marketValues.get(i).getHigh() > takeProfitTarget) { // TP Hit
-//                Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE, (int) takeProfitPips, startCandle, entryCandle, String.valueOf(i - startCandle));
+//                Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE,
+//                      (int) takeProfitPips, startCandle, entryCandle, String.valueOf(i - startCandle));
 //                toAdd.setExitCandlePrice((float) takeProfitTarget);
 //                toAdd.setExitCandle(i);
 //                return toAdd;
 //            } else if (marketValues.get(i).getLow() < stopLossTarget) { // SL Hit
-//                Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE, -(int) stopLossPips, startCandle, entryCandle, String.valueOf(i - startCandle));
+//                Patterns toAdd = new Patterns(tf, Status.DESCENDING_TRIANGLE,
+//                      -(int) stopLossPips, startCandle, entryCandle, String.valueOf(i - startCandle));
 //                toAdd.setExitCandlePrice((float) stopLossTarget);
 //                toAdd.setExitCandle(i);
 //                return toAdd;

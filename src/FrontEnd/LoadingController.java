@@ -19,7 +19,7 @@ public class LoadingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        labelCurrentProcess.setText("Worknig");
+        labelCurrentProcess.setText("Working");
     }
 
     public void test(String str) {

@@ -34,10 +34,16 @@ public class AscendingTriangle {
                 counter++;
                 /* If resistance line is in between the open and the close then start price = close. */
                 for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
-                    if (d < values.getOpen() && d > values.getClose()) {
+                    if (d < values.getOpen() &&
+                            d > values.getClose()) {
                         /* Go to method send start price, candle number, market values and timeframe. */
-                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()) != null) {
-                            ascendingTriangles.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply()));
+                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf,
+                                market.getPipMultiply()) != null) {
+                            ascendingTriangles.add(checkCandleForPattern(d,
+                                    counter,
+                                    market.getTimeframesDataStore(tf).getMarketValues(),
+                                    tf,
+                                    market.getPipMultiply()));
                         }
                     }
                 }
@@ -46,7 +52,8 @@ public class AscendingTriangle {
         return ascendingTriangles;
     }
 
-    public static Patterns checkCandleForPattern(double startPrice, int candleNumber, ArrayList<Market.MarketValues> valuesList, int tf, int pipMultiply) {
+    public static Patterns checkCandleForPattern(double startPrice, int candleNumber,
+                                                 ArrayList<Market.MarketValues> valuesList, int tf, int pipMultiply) {
         /**
          * Checks that occur:
          *  - If the candle has closed above price (check for failed or successful pattern).
@@ -72,7 +79,7 @@ public class AscendingTriangle {
                 if (valuesList.get(i).getClose() > startPrice && swingLowList.size() >= 3) {
 
                     double percentageHighest = startPrice - swingLowList.get(0);
-                    double comparisonValue = 0;
+                    double comparisonValue;
                     double lowerBound = 0, upperBound = 0;
                     for (int a = 0; a < swingLowList.size(); a++) {
                         if (a != 0) {
@@ -103,15 +110,26 @@ public class AscendingTriangle {
 
                                     int duration = candleCounter - candleNumber;
                                     if (valuesList.get(candleCounter) == null) {
-                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, 0, candleNumber, entryCandle, "Pending");
+                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE,
+                                                0, candleNumber, entryCandle, "Pending");
                                         return toAdd;
                                     } else if ((takeProfitTarget - valuesList.get(candleCounter).getHigh()) < 0) {
-                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, (int) takeProfitPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf,
+                                                Status.ASCENDING_TRIANGLE,
+                                                (int) takeProfitPips,
+                                                candleNumber,
+                                                entryCandle,
+                                                String.valueOf(duration));
                                         toAdd.setExitCandlePrice((float) takeProfitTarget);
                                         toAdd.setExitCandle(candleCounter);
                                         return toAdd;
                                     } else if ((valuesList.get(candleCounter).getLow() - stopLossTarget) < 0) {
-                                        Patterns toAdd = new Patterns(tf, Status.ASCENDING_TRIANGLE, -(int) stopLossPips, candleNumber, entryCandle, String.valueOf(duration));
+                                        Patterns toAdd = new Patterns(tf,
+                                                Status.ASCENDING_TRIANGLE,
+                                                -(int) stopLossPips,
+                                                candleNumber,
+                                                entryCandle,
+                                                String.valueOf(duration));
                                         toAdd.setExitCandlePrice((float) stopLossTarget);
                                         toAdd.setExitCandle(candleCounter);
                                         return toAdd;
@@ -123,22 +141,28 @@ public class AscendingTriangle {
                     }
                     swingLowList.clear();
                     return null;
-                } else if (valuesList.get(i).getClose() > startPrice && swingLowList.size() <= 1) { /* If the pattern has closed out with 1 or less swing lows */
+                } else if (valuesList.get(i).getClose() > startPrice &&
+                        swingLowList.size() <= 1) { /* If the pattern has closed out with 1 or less swing lows */
                     swingLowList.clear();
                     return null;
                 }
 
                 /* If another low is formed, replace temp swing low with new low. */
-                if (valuesList.get(i).getClose() <= startPrice && valuesList.get(i).getClose() <= possibleSwingLow && rise == false) {
+                if (valuesList.get(i).getClose() <= startPrice &&
+                        valuesList.get(i).getClose() <= possibleSwingLow &&
+                        !rise) {
                     possibleSwingLow = valuesList.get(i).getClose();
                     rise = false;
-                } else if (valuesList.get(i).getClose() <= startPrice && valuesList.get(i).getClose() <= possibleSwingLow && rise == true) {
+                } else if (valuesList.get(i).getClose() <= startPrice &&
+                        valuesList.get(i).getClose() <= possibleSwingLow &&
+                        rise) {
                     swingLowList.clear();
                     rise = true;
                 }
 
                 /* If values reach horizontal line, add recent swing low to array and search for next swing low. */
-                if (valuesList.get(i).getHigh() > startPrice && valuesList.get(i).getClose() < startPrice) {
+                if (valuesList.get(i).getHigh() > startPrice &&
+                        valuesList.get(i).getClose() < startPrice) {
                     if (first) {
                         possibleSwingLow = startPrice;
                     } else {

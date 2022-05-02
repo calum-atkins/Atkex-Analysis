@@ -77,15 +77,17 @@ public class Pennant {
             }
 
             //Check if the candle is at a swing ->run checks if it is
-                System.out.println("Here " + market.getIndex());
 //            for (int i = 0; i < swingsList.size(); i++) {
 //                System.out.println(swingsListCandles.get(i));
 //            }
             for (int i = 0; i < market.getTimeframesDataStore(tf).getMarketValues().size(); i++) {
                 for (int swingCounter = 0; swingCounter <  swingsListCandles.size();  swingCounter++) {
                     if (i == swingsListCandles.get(swingCounter)) {
-                        if (checkCandleForPattern(i, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), swingsList, swingsListCandles, swingCounter) != null) {
-                            Patterns newDoubleBottom = checkCandleForPattern(i, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), swingsList, swingsListCandles, swingCounter);
+                        if (checkCandleForPattern(i, market.getTimeframesDataStore(tf).getMarketValues(),
+                                tf, market.getPipMultiply(), swingsList, swingsListCandles, swingCounter) != null) {
+                            Patterns newDoubleBottom = checkCandleForPattern(i,
+                                    market.getTimeframesDataStore(tf).getMarketValues(), tf,
+                                    market.getPipMultiply(), swingsList, swingsListCandles, swingCounter);
                         }
 
                     }
@@ -99,7 +101,9 @@ public class Pennant {
         return pennants;
     }
 
-    private static Patterns checkCandleForPattern(int startCounter, ArrayList<Market.MarketValues> marketValues, int tf, int pipMultiply, ArrayList<Double> swingsList, ArrayList<Integer> swingListCandles,int swingCounter) {
+    private static Patterns checkCandleForPattern(int startCounter, ArrayList<Market.MarketValues> marketValues,
+                                                  int tf, int pipMultiply, ArrayList<Double> swingsList,
+                                                  ArrayList<Integer> swingListCandles,int swingCounter) {
         //System.out.println(startCounter);
         if (swingListCandles.size() == swingCounter + 1) {
             swingCounter = swingCounter - 1;
@@ -176,7 +180,8 @@ public class Pennant {
 //                        }
 //                        if (marketValues.get(j).getClose() < lastSwingPrice) {
 //                            System.out.println("Search SP TP");
-//                            //return searchStopLossTakeProfit(swingListCandles.get(swingCounter), marketValues, price, lastSwingPrice, pipMultiply, tf, startCounter);
+//                            //return searchStopLossTakeProfit(swingListCandles.get(swingCounter), marketValues,
+//                                  price, lastSwingPrice, pipMultiply, tf, startCounter);
 //                        }
 //                    }
 

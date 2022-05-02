@@ -257,6 +257,14 @@ public class Main extends Application {
         markets = CriticalLevels.generateSupportLevels(markets);
         markets = CriticalLevels.generateResistanceLevels(markets);
 
+//        markets.get(0).setStatus(Status.SIGNAL);
+        /**
+         * Do something here
+         * For each market timeframe, if any of the support/resistance levels are + - certain percentage
+         * of the current price then set signal
+         *
+         */
+
         for (Market m : markets) {
             for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
                 for (int j = 0; j < m.getTimeframesDataStore(i).getSupport().size(); j++) {
@@ -273,7 +281,37 @@ public class Main extends Application {
                             m.getTimeframesDataStore(i).addResistanceLevel(
                                     (m.getTimeframesDataStore(i).getSupport().get(j) +
                                             m.getTimeframesDataStore(i).getResistance().get(k)) / 2);
+
+
                         }
+
+                    }
+                }
+
+            }
+        }
+        for (Market m : markets) {
+            for (int i = 0; i < NUMBER_OF_TIMEFRAMES; i++) {
+                for (Double d : m.getTimeframesDataStore(i).getCriticalLevels()) {
+                    /**
+                     * range = total
+                     * d / total * 100 = percentage up the range
+                     * curreptP / total * 100 = percenatge up the rnage
+                     * lowerB = d - percentageTrend
+                     * upperB = d + percentageTrend
+                     */
+
+                    double range = m.getTimeframesDataStore(i).getMaximumPrice()
+                            - m.getTimeframesDataStore(i).getMinimumPrice();
+
+                    double criticalLevelPercentage = ((d - m.getTimeframesDataStore(i).getMinimumPrice()) / range) * 100;
+                    double lowerBound = criticalLevelPercentage - 3.5;
+                    double upperBound = criticalLevelPercentage + 3.5;
+                    double currentPricePercentage = ((m.getTimeframesDataStore(i).getCurrentPrice() - m.getTimeframesDataStore(i).getMinimumPrice()) / range) * 100;
+
+                    if (currentPricePercentage < upperBound &&
+                            currentPricePercentage > lowerBound) {
+                        m.setStatus(Status.SIGNAL);
                     }
                 }
             }
@@ -287,6 +325,7 @@ public class Main extends Application {
         for (Market m : markets) {
             m.setTrend(MarketTrends.dayTrend(m.getTimeframesDataStore(0),
                     m.getTrendIndicatorPercentage()));
+
         }
     }
 
@@ -298,7 +337,7 @@ public class Main extends Application {
             m.setPatternsList(AscendingTriangle.findAscendingTriangles(m));
             m.addPatternsList(DescendingTriangle.findDescendingTriangles(m));
             m.addPatternsList(DoubleBottom.findDoubleBottoms(m));
-            //m.addPatternsList(DoubleTop.findDoubleTops(m));
+            m.addPatternsList(DoubleTop.findDoubleTops(m));
 //            m.addPatternsList(Pennant.findPennants(m));
 //            m.addPatternsList(Wedge.findWedges(m));
 
@@ -417,7 +456,8 @@ public class Main extends Application {
         double xAxisUpperBound = getXAxisUpperBound(market.getTimeframesDataStore(j).getMarketValues());
 
         final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound, market.getTimeframesDataStore(j).getChartYAxisTickValue());
+        final NumberAxis yAxis = new NumberAxis(xAxisLowerBound, xAxisUpperBound,
+                market.getTimeframesDataStore(j).getChartYAxisTickValue());
 
         final CandleStickChart bc = new CandleStickChart(xAxis, yAxis);
         /** Setup chart. */

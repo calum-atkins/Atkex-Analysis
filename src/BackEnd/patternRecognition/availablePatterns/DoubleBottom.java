@@ -22,11 +22,22 @@ public class DoubleBottom {
 
                 /* If resistance or support line is in between the open and close of the candle */
                 for (Double d : market.getTimeframesDataStore(tf).getCriticalLevels()) {
-                    if (d > values.getOpen() && d < values.getClose()) {
+                    if (d > values.getOpen() &&
+                            d < values.getClose()) {
 
                         /* Go to method start price, candle number, market values and timeframe. */
-                        if (checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()) != null) {
-                            Patterns newDoubleBottom = checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage());
+                        if (checkCandleForPattern(d,
+                                counter,
+                                market.getTimeframesDataStore(tf).getMarketValues(),
+                                tf,
+                                market.getPipMultiply(),
+                                market.getTrendIndicatorPercentage()) != null) {
+                            Patterns newDoubleBottom = checkCandleForPattern(d,
+                                    counter,
+                                    market.getTimeframesDataStore(tf).getMarketValues(),
+                                    tf,
+                                    market.getPipMultiply(),
+                                    market.getTrendIndicatorPercentage());
                             boolean duplicatePattern = false;
                             for (Patterns p : doubleBottoms) {
                                 if (newDoubleBottom.getStartCandle() - 10 < p.getStartCandle() &&
@@ -36,7 +47,12 @@ public class DoubleBottom {
                                 }
                             }
                             if (!duplicatePattern) {
-                                doubleBottoms.add(checkCandleForPattern(d, counter, market.getTimeframesDataStore(tf).getMarketValues(), tf, market.getPipMultiply(), market.getTrendIndicatorPercentage()));
+                                doubleBottoms.add(checkCandleForPattern(d,
+                                        counter,
+                                        market.getTimeframesDataStore(tf).getMarketValues(),
+                                        tf,
+                                        market.getPipMultiply(),
+                                        market.getTrendIndicatorPercentage()));
                             }
                         }
                     }
@@ -46,7 +62,9 @@ public class DoubleBottom {
         return doubleBottoms;
     }
 
-    private static Patterns checkCandleForPattern(Double d, int startCounter, ArrayList<Market.MarketValues> marketValues, int tf, int pipMultiply, double percentageChange) {
+    private static Patterns checkCandleForPattern(Double d, int startCounter,
+                                                  ArrayList<Market.MarketValues> marketValues, int tf,
+                                                  int pipMultiply, double percentageChange) {
         /**
          * Checks occur: Find the swings
          *  - if swing[4] < swing[3] && swing[4] > swing[1] Then move onto next

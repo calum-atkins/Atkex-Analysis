@@ -123,7 +123,9 @@ public class Market {
     public void setSegment(int segment) { this.segment = segment; }
 
     public double getTrendIndicatorPercentage() { return trendIndicatorPercentage; }
-    public void setTrendIndicatorPercentage(double trendIndicatorPercentage) { this.trendIndicatorPercentage = trendIndicatorPercentage; }
+    public void setTrendIndicatorPercentage(double trendIndicatorPercentage) {
+        this.trendIndicatorPercentage = trendIndicatorPercentage;
+    }
 
     public int getPipMultiply() {return pipMultiply;}
     public void setPipMultiply(int pipMultiply) {this.pipMultiply = pipMultiply;}
@@ -230,13 +232,19 @@ public class Market {
         public void setFilePath(String filePath) { this.filePath = filePath; }
 
         public CandleStickChart getCandleStickChartCriticalLevels() { return candleStickChartCriticalLevels; }
-        public void setCandleStickChartCriticalLevels(CandleStickChart candleStickChart) { this.candleStickChartCriticalLevels = candleStickChart; }
+        public void setCandleStickChartCriticalLevels(CandleStickChart candleStickChart) {
+            this.candleStickChartCriticalLevels = candleStickChart;
+        }
 
         public CandleStickChart getCandleStickChartPatternIdentifiers() { return candleStickChartPatternIdentifiers; }
-        public void setCandleStickChartPatternIdentifiers(CandleStickChart candleStickChart) { this.candleStickChartPatternIdentifiers = candleStickChart; }
+        public void setCandleStickChartPatternIdentifiers(CandleStickChart candleStickChart) {
+            this.candleStickChartPatternIdentifiers = candleStickChart;
+        }
 
-        public CandleStickChart getCandleStickChartEmpty() { return candleStickChartEmpty; }
-        public void setCandleStickChartEmpty(CandleStickChart candleStickChart) { this.candleStickChartEmpty = candleStickChart; }
+        public CandleStickChart getCandleStickChartEmpty() { return candleStickChartEmpty;}
+        public void setCandleStickChartEmpty(CandleStickChart candleStickChart) {
+            this.candleStickChartEmpty = candleStickChart;
+        }
 
         public ArrayList<MarketValues> getMarketValues() { return marketValues; }
         public void addMarketValue(MarketValues m) {

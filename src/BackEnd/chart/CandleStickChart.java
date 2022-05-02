@@ -156,7 +156,8 @@ public class CandleStickChart<X, Y> extends XYChart<X, Y> {
         Node candle = item.getNode();
         /* Check if candle has already been created. */
         if (candle instanceof Candle) {
-            ((Candle) candle).setSeriesAndDataStyleClasses("series" + seriesIndex, "data" + itemIndex);
+            ((Candle) candle).setSeriesAndDataStyleClasses("series" + seriesIndex,
+                    "data" + itemIndex);
         } else {
             candle = new Candle("series" + seriesIndex, "data" + itemIndex);
             item.setNode(candle);

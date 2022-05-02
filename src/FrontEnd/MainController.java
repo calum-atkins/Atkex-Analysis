@@ -331,12 +331,13 @@ public class MainController implements Initializable {
 
         int numberOfCandles = markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().size();
         textArea.clear();
-        textArea.appendText(selectedMarket.getIndex().toString() + "\n");
+        textArea.appendText("Index: " + selectedMarket.getIndex().toString() + "\n");
         textArea.appendText("Start Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(0).getDate() + "\n");
         textArea.appendText("End Date: " + markets.get(marketNumber).getTimeframesDataStore(timeframeInteger).getMarketValues().get(numberOfCandles - 1).getDate() + "\n");
         textArea.appendText("Number of Candles: " + numberOfCandles + "\n");
         textArea.appendText("Profit Loss (Pips): " + markets.get(marketNumber).getReturnsPips() + "\n");
-        textArea.appendText(currentTimeframe.toString());
+        textArea.appendText("Timeframe: " + currentTimeframe.toString() + "\n");
+        textArea.appendText("Pattern Count: " + markets.get(marketNumber).getPatternsList().size() + "\n");
 
         if (selectedMarket.getTrend() == MarketTrend.UP) {
             imageViewTrend.setImage(new Image("/img/uptrend_logo.png"));
